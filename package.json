@@ -1,0 +1,34 @@
+{
+  "name": "json-hypermedia-api-consumer",
+  "version": "0.0.1",
+  "author": "Bastian Krol",
+  "description": "consume JSON based hypermedia APIs, follow links in JSON responses automatically",
+  "repository": "https://github.com/basti1302/json-hypermedia-api-consumer.git",
+  "contributors": [],
+  "scripts": {
+    "test": "grunt"
+  },
+  "keywords": [
+    "JSON",
+    "hypermedia",
+    "REST",
+    "API"
+  ],
+  "install globally": {
+    "grunt-cli": "latest"
+  },
+  "dependencies": {
+    "JSONPath": "~0.9.1",
+    "uri-template": "~0.4.1"
+  },
+  "devDependencies": {
+    "chai": "~1.7.2",
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.6.4",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-mocha-test": "~0.7.0",
+    "mocha": "~1.12.1",
+    "request": "~2.27.0",
+    "sinon-chai": "~2.4.0"
+  }
+}
