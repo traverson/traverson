@@ -15,6 +15,7 @@ describe('The json walker', function() {
 
   /*
    * TEST/FEATURE TODOs
+   * - Implement actual fetching.
    * - documentation by example in README.md
    * - cache final links for path
    * - pass options array to constructor:
@@ -25,7 +26,10 @@ describe('The json walker', function() {
    *   }
    * - Customize JsonWalker by overriding methods for fetching, URI template
    *   resolving, caching, ...
-   * - [alternative formats to JSON? html? xml? hal? ... ]
+   * - support more media types in addition to JSON:
+   *   - html (jsdom, htmlparser2, cheerio, .... )
+   *   - xml?
+   *   - hal?
    */
 
   var fetch
