@@ -8,15 +8,16 @@ var sinon = require('sinon')
 var sinonChai = require('sinon-chai')
 chai.use(sinonChai)
 
-var linkWalker = new (require('../lib/link_walker'))()
+var traverson = require('../traverson')
+var jsonWalker = new traverson.JsonWalker()
 
-describe('The link walker', function() {
+describe('The json walker', function() {
 
   /*
    * TEST/FEATURE TODOs
    * - cache final links for path
-   * - linkWalker.disableJSONPath()
-   * - linkWalker.disableUriTemplates()
+   * - jsonWalker.disableJSONPath()
+   * - jsonWalker.disableUriTemplates()
    *   Dissect into several *public* sub-functions that can be overridden
    *   or disabled (fetching, URI template resolving, JSONPath resolving,
    *   caching, ...)
@@ -29,19 +30,19 @@ describe('The link walker', function() {
   var rootUri = 'http://api.io'
 
   beforeEach(function() {
-    linkWalker.fetch = fetch = sinon.stub()
+    jsonWalker.fetch = fetch = sinon.stub()
     callback = sinon.spy()
   })
 
   it('should access root URI', function() {
-    linkWalker.walk(rootUri, [], null, callback)
+    jsonWalker.walk(rootUri, [], null, callback)
     fetch.should.have.been.calledWith(rootUri, sinon.match.func)
   })
 
   it('should call callback with root doc', function(done) {
     var rootDoc = {root: 'doc'}
     fetch.callsArgWithAsync(1, null, rootDoc)
-    linkWalker.walk(rootUri, [], null, callback)
+    jsonWalker.walk(rootUri, [], null, callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -54,7 +55,7 @@ describe('The link walker', function() {
   it('should call callback with err', function(done) {
     var err = new Error('test error')
     fetch.callsArgWithAsync(1, err)
-    linkWalker.walk(rootUri, [], null, callback)
+    jsonWalker.walk(rootUri, [], null, callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -75,7 +76,7 @@ describe('The link walker', function() {
         1, null, rootDoc)
     fetch.withArgs(rootUri + '/link/to/thing',
         sinon.match.func).callsArgWithAsync(1, null, resultDoc)
-    linkWalker.walk(rootUri, ['link'], null, callback)
+    jsonWalker.walk(rootUri, ['link'], null, callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -89,7 +90,7 @@ describe('The link walker', function() {
     var rootDoc = { nothing: 'in here'}
     fetch.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
         1, null, rootDoc)
-    linkWalker.walk(rootUri, ['non-existing-link'], null, callback)
+    jsonWalker.walk(rootUri, ['non-existing-link'], null, callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -108,7 +109,7 @@ describe('The link walker', function() {
         1, null, { firstLink: rootUri + '/first' })
     fetch.withArgs(rootUri + '/first', sinon.match.func).callsArgWithAsync(
         1, err)
-    linkWalker.walk(rootUri, ['firstLink'], null, callback)
+    jsonWalker.walk(rootUri, ['firstLink'], null, callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -127,7 +128,7 @@ describe('The link walker', function() {
     fetch.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
         1, null, rootDoc)
     fetch.withArgs(uri, sinon.match.func).callsArgWithAsync(1, null, resultDoc)
-    linkWalker.walk(rootUri, ['$.deeply.nested.link'], null, callback)
+    jsonWalker.walk(rootUri, ['$.deeply.nested.link'], null, callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -144,7 +145,7 @@ describe('The link walker', function() {
     }
     fetch.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
         1, null, rootDoc)
-    linkWalker.walk(rootUri, ['$.deeply.nested.blink'], null, callback)
+    jsonWalker.walk(rootUri, ['$.deeply.nested.blink'], null, callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -164,7 +165,7 @@ describe('The link walker', function() {
     }
     fetch.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
         1, null, rootDoc)
-    linkWalker.walk(rootUri, ['$.arr[*].foo'], null, callback)
+    jsonWalker.walk(rootUri, ['$.arr[*].foo'], null, callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -185,7 +186,7 @@ describe('The link walker', function() {
         1, null, rootDoc)
     fetch.withArgs(rootUri + '/users/basti1302/things/4711',
         sinon.match.func).callsArgWithAsync(1, null, resultDoc)
-    linkWalker.walk(rootUri,
+    jsonWalker.walk(rootUri,
       ['template'],
       [{user: 'basti1302', thing: 4711}],
       callback)
@@ -229,7 +230,7 @@ describe('The link walker', function() {
         1, null, doc4)
     fetch.withArgs(path4, sinon.match.func).callsArgWithAsync(
         1, null, resultDoc)
-    linkWalker.walk(rootUri,
+    jsonWalker.walk(rootUri,
         ['link1', 'link2', '$[nested][array][1].link', 'link4'],
         [null, { param: 'gizmo' }, null, null],
         callback)
