@@ -1,9 +1,9 @@
 {
-  "name": "json-hypermedia-api-consumer",
+  "name": "traverson",
   "version": "0.0.1",
   "author": "Bastian Krol",
-  "description": "consume JSON based hypermedia APIs, follow links in JSON responses automatically",
-  "repository": "https://github.com/basti1302/json-hypermedia-api-consumer.git",
+  "description": "consume hypermedia APIs with ease",
+  "repository": "https://github.com/basti1302/traverson.git",
   "contributors": [],
   "scripts": {
     "test": "grunt"
