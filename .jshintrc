@@ -4,11 +4,12 @@
   "camelcase": true,
   "eqeqeq": true,
   "eqnull": true,
+  "expr": true,
   "forin": true,
   "immed": true,
   "indent": 2,
   "latedef": true,
-  "maxcomplexity": 7,
+  "maxcomplexity": 6,
   "maxdepth": 4,
   "maxlen": 80,
   "maxparams": 5,
@@ -23,9 +24,11 @@
   "trailing": true,
   "undef": true,
   "globals": {
-    "describe": true,
-    "it": true,
+    "after": true,
+    "afterEach": true,
+    "before": true,
     "beforeEach": true,
-    "afterEach": true
+    "describe": true,
+    "it": true
   }
 }

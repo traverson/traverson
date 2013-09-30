@@ -7,15 +7,19 @@ var expect = chai.expect
 var sinon = require('sinon')
 var sinonChai = require('sinon-chai')
 chai.use(sinonChai)
+var waitFor = require('./wait_for')
 
 var traverson = require('../traverson')
-var jsonWalker = new traverson.JsonWalker()
 
 describe('The json walker', function() {
 
   /*
    * TEST/FEATURE TODOs
    * - Implement actual fetching.
+   * - check http status code, should be in 200 - 299 range, otherwise
+   *   callback(err)
+   * - what about accept and content-type headers? API could have some custom
+   *   content type and still be JSON, so we probably can not check that
    * - documentation by example in README.md
    * - cache final links for path
    * - pass options array to constructor:
@@ -32,11 +36,13 @@ describe('The json walker', function() {
    *   - hal?
    */
 
+  var jsonWalker
   var fetch
   var callback
   var rootUri = 'http://api.io'
 
   beforeEach(function() {
+    jsonWalker = new traverson.JsonWalker()
     jsonWalker.fetch = fetch = sinon.stub()
     callback = sinon.spy()
   })
@@ -282,17 +288,4 @@ describe('The json walker', function() {
       }
     )
   })
-
-  // test helper
-  function waitFor(test, onSuccess, polling) {
-    if (polling === null || polling === undefined) {
-      polling = 10
-    }
-    var handle = setInterval(function() {
-      if (test()) {
-        clearInterval(handle)
-        onSuccess()
-      }
-    }, polling)
-  }
 })
