@@ -15,14 +15,17 @@ describe('The json walker', function() {
 
   /*
    * TEST/FEATURE TODOs
+   * - documentation by example in README.md
    * - cache final links for path
-   * - jsonWalker.disableJSONPath()
-   * - jsonWalker.disableUriTemplates()
-   *   Dissect into several *public* sub-functions that can be overridden
-   *   or disabled (fetching, URI template resolving, JSONPath resolving,
-   *   caching, ...)
-   * - [alternative formats to JSON? html? xml? hal? ... probably better
-   *   separate libs]
+   * - pass options array to constructor:
+   *   {
+   *     resolveJsonPath: false,
+   *     resolveUriTemplates: false,
+   *     caching: false
+   *   }
+   * - Customize JsonWalker by overriding methods for fetching, URI template
+   *   resolving, caching, ...
+   * - [alternative formats to JSON? html? xml? hal? ... ]
    */
 
   var fetch
@@ -179,16 +182,49 @@ describe('The json walker', function() {
 
   it('should evaluate URI templates', function(done) {
     var rootDoc = {
-      template: rootUri + '/users/{user}/things{/thing}'
+      firstTemplate: rootUri + '/users/{user}/things{/thing}'
+    }
+    var nextDoc = {
+      secondTemplate: rootUri + '/another/{id}'
     }
     var resultDoc = { we: 'can haz use uri templates!' }
     fetch.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
         1, null, rootDoc)
     fetch.withArgs(rootUri + '/users/basti1302/things/4711',
+        sinon.match.func).callsArgWithAsync(1, null, nextDoc)
+    fetch.withArgs(rootUri + '/another/42',
         sinon.match.func).callsArgWithAsync(1, null, resultDoc)
     jsonWalker.walk(rootUri,
-      ['template'],
-      [{user: 'basti1302', thing: 4711}],
+      ['firstTemplate', 'secondTemplate'],
+      {user: 'basti1302', thing: 4711, id: 42},
+      callback)
+    waitFor(
+      function() { return callback.called },
+      function() {
+        callback.should.have.been.calledWith(null, resultDoc)
+        done()
+      }
+    )
+  })
+
+  it('should evaluate URI templates with array of template params',
+      function(done) {
+    var rootDoc = {
+      firstTemplate: rootUri + '/users/{user}/things{/thing}'
+    }
+    var nextDoc = {
+      secondTemplate: rootUri + '/another_user/{user}'
+    }
+    var resultDoc = { we: 'can haz use uri templates!' }
+    fetch.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
+        1, null, rootDoc)
+    fetch.withArgs(rootUri + '/users/basti1302/things/4711',
+        sinon.match.func).callsArgWithAsync(1, null, nextDoc)
+    fetch.withArgs(rootUri + '/another_user/someone_else',
+        sinon.match.func).callsArgWithAsync(1, null, resultDoc)
+    jsonWalker.walk(rootUri,
+      ['firstTemplate', 'secondTemplate'],
+      [{user: 'basti1302', thing: 4711}, {user: 'someone_else'}],
       callback)
     waitFor(
       function() { return callback.called },
