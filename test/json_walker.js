@@ -13,29 +13,6 @@ var traverson = require('../traverson')
 
 describe('The json walker', function() {
 
-  /*
-   * TEST/FEATURE TODOs
-   * - Implement actual fetching.
-   * - check http status code, should be in 200 - 299 range, otherwise
-   *   callback(err)
-   * - what about accept and content-type headers? API could have some custom
-   *   content type and still be JSON, so we probably can not check that
-   * - documentation by example in README.md
-   * - cache final links for path
-   * - pass options array to constructor:
-   *   {
-   *     resolveJsonPath: false,
-   *     resolveUriTemplates: false,
-   *     caching: false
-   *   }
-   * - Customize JsonWalker by overriding methods for fetching, URI template
-   *   resolving, caching, ...
-   * - support more media types in addition to JSON:
-   *   - html (jsdom, htmlparser2, cheerio, .... )
-   *   - xml?
-   *   - hal?
-   */
-
   var jsonWalker
   var fetch
   var callback
