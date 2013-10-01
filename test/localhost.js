@@ -38,9 +38,7 @@ describe('The json walker (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        callback.callCount.should.equal(1)
-        var resultDoc = callback.firstCall.args[1]
-        resultDoc.should.exist
+        var resultDoc = basicChecks()
         resultDoc.first.should.exist
         resultDoc.first.should.equal(rootUri + 'first')
         done()
@@ -53,9 +51,7 @@ describe('The json walker (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        callback.callCount.should.equal(1)
-        var resultDoc = callback.firstCall.args[1]
-        resultDoc.should.exist
+        var resultDoc = basicChecks()
         resultDoc.first.should.exist
         resultDoc.first.should.equal('document')
         done()
@@ -68,9 +64,7 @@ describe('The json walker (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        callback.callCount.should.equal(1)
-        var resultDoc = callback.firstCall.args[1]
-        resultDoc.should.exist
+        var resultDoc = basicChecks()
         resultDoc.second.should.exist
         resultDoc.second.should.equal('document')
         done()
@@ -83,9 +77,7 @@ describe('The json walker (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        callback.callCount.should.equal(1)
-        var resultDoc = callback.firstCall.args[1]
-        resultDoc.should.exist
+        var resultDoc = basicChecks()
         resultDoc.third.should.exist
         resultDoc.third.should.equal('document')
         done()
@@ -99,9 +91,7 @@ describe('The json walker (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        callback.callCount.should.equal(1)
-        var resultDoc = callback.firstCall.args[1]
-        resultDoc.should.exist
+        var resultDoc = basicChecks()
         resultDoc.some.should.equal('document')
         resultDoc.param.should.equal('foobar')
         resultDoc.id.should.equal(13)
@@ -109,4 +99,57 @@ describe('The json walker (when tested against a local server)', function() {
       }
     )
   })
+
+  it('should fail gracefully on 404', function(done) {
+    jsonWalker.walk(rootUri, ['blind_alley'], null, callback)
+    waitFor(
+      function() { return callback.called },
+      function() {
+        callback.callCount.should.equal(1)
+        var error = callback.firstCall.args[0]
+        error.should.exist
+        error.name.should.equal('HTTPError')
+        error.message.should.equal('HTTP GET for ' + rootUri +
+            'does/not/exist' + ' resulted in HTTP status code 404.')
+        error.uri.should.equal(rootUri + 'does/not/exist')
+        error.httpStatus.should.equal(404)
+
+        var resultDoc = callback.firstCall.args[1]
+        resultDoc.should.exist
+        resultDoc.message.should.exist
+        resultDoc.message.should.equal('document not found')
+        done()
+      }
+    )
+  })
+
+  it('should fail gracefully on syntactically incorrect JSON', function(done) {
+    jsonWalker.walk(rootUri, ['garbage'], null, callback)
+    waitFor(
+      function() { return callback.called },
+      function() {
+        callback.callCount.should.equal(1)
+        var error = callback.firstCall.args[0]
+        error.should.exist
+        error.name.should.equal('JSONError')
+        error.message.should.equal('The document at ' + rootUri + 'junk' +
+          ' could not be parsed as JSON: { this will :: not parse')
+        error.uri.should.equal(rootUri + 'junk')
+        error.httpStatus.should.equal(200)
+        error.body.should.equal('{ this will :: not parse')
+
+        var resultDoc = callback.firstCall.args[1]
+        expect(resultDoc).to.not.exist
+        done()
+      }
+    )
+  })
+
+
+  function basicChecks() {
+    callback.callCount.should.equal(1)
+    var resultDoc = callback.firstCall.args[1]
+    resultDoc.should.exist
+    return resultDoc
+  }
 })

@@ -56,6 +56,8 @@ function TraversonTestServer() {
       return serveSecondDoc(response)
     case '/third':
       return serveThird(response)
+    case '/junk':
+      return serveJunk(response)
     }
 
     if (path.indexOf('/fixed/') >= 0) {
@@ -73,7 +75,9 @@ function TraversonTestServer() {
     response.write('  "jsonpath": {\n')
     response.write('    "nested": { "key": "' + baseUrl + '/third" }\n')
     response.write('  },\n')
-    response.write('  "uri_template": "' + baseUrl + '/{param}/fixed{/id}"\n')
+    response.write('  "uri_template": "' + baseUrl + '/{param}/fixed{/id}",\n')
+    response.write('  "blind_alley": "' + baseUrl + '/does/not/exist",\n')
+    response.write('  "garbage": "' + baseUrl + '/junk"\n')
     response.write('}')
     response.end()
   }
@@ -92,13 +96,13 @@ function TraversonTestServer() {
     response.end()
   }
 
-  function serveSecondDoc(response, baseUrl) {
+  function serveSecondDoc(response) {
     response.writeHead(200)
     response.write('{"second": "document"}')
     response.end()
   }
 
-  function serveThird(response, baseUrl) {
+  function serveThird(response) {
     response.writeHead(200)
     response.write('{"third": "document"}')
     response.end()
@@ -111,6 +115,14 @@ function TraversonTestServer() {
       tokens[3] + '}')
     response.end()
   }
+
+  function serveJunk(response) {
+    // server syntacically incorrect JSON
+    response.writeHead(200)
+    response.write('{ this will :: not parse')
+    response.end()
+  }
+
 
   function serve404(response) {
     response.writeHead(404)
