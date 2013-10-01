@@ -175,21 +175,57 @@ templates.
 
 ### JSONPath
 
-Traverson supports JSONPath expressions in the path array.
+Traverson supports [JSONPath](http://goessner.net/articles/JsonPath/) expressions in the path array. This will come in handy if the link you want to follow from a given document is not a direct property of that document. Consider the following example:
 
-TODO: Document the usage of JSONPath expressions and link general JSONPath documentation as well as the JSONPath npm module.
+    jsonWalker.walk('http://api.io',
+                   ['$.deeply.nested.link'],
+                   null,
+                   function(error, document) {
+       ...
+    }
+
+where the document at the root URI is
+
+    http://api.io
+    {
+      "deeply": {
+        "nested": {
+          "link: "http://api.io/congrats/you/have/found/me"
+        }
+      }
+    }
+
+    http://api.io/congrats/you/have/found/me
+    {
+      "the_document": "we wanted to have"
+    }
+
+Upon loading this document from the start URI `http://api.io`, Traverson will recognize that the first (and only) element in the path array is a JSONPath expression and evaluate it against the given document, which results in the URI 'http://api.io/congrats/you/have/found/me'. Of course you can also use path arrays with more than one element with JSONPath and you can freely mix JSONPath expressions with plain vanilla properties.
+
+Any element of the path array that begins with `$.` or `$[` is assumed to be a JSONPath expression, otherwise the element is interpreted as a plain object property.
+
+More information on JSONPath can be found [here](http://goessner.net/articles/JsonPath/). Traverson uses the npm module [JSONPath](https://github.com/s3u/JSONPath) to evaluate JSONPath expressions.
 
 ### Caching
 
-TODO
+There will be some sort of caching in future versions. When calling Traverson with the same start URI and the same path array, we would likely end up at the same final URI. The intermediate steps might be cached and not actually fetched from the server every time.
 
 Customizing Traverson
 ---------------------
 
 ### Enabling/Disabling Features
 
-TODO
+There will be some simple on/off toggles for certain parts of Traverson behaviour. For example, it should be possible to
+* disable URI templates,
+* disable JSONPath,
+* disable caching (a feature yet to be implemented in the first place)
 
 ### Overriding Parts of Traverson's `walk` Behaviour
 
 TODO
+
+Other Formats Media Types Besides JSON
+--------------------------------------
+
+In the far future, Traverson might also support HTML APIs and/or XML APIs. [HAL](http://stateless.co/hal_specification.html) is also interesting, although you already can use Traverson with `application/hal+json`, but a specialized HalJsonWalker might make better use of the standardized HAL format.
+
