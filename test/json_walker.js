@@ -194,6 +194,22 @@ describe('The json walker', function() {
     )
   })
 
+  it('should evaluate URI templates for the start URI', function(done) {
+    var rootDoc = { we: 'can haz use uri templates for finding root doc, yo!' }
+    var startUriTemplate = rootUri + '/{param}/whatever'
+    var startUri = rootUri + '/substituted/whatever'
+    fetch.withArgs(startUri, sinon.match.func).callsArgWithAsync(
+        1, null, rootDoc)
+    jsonWalker.walk(startUriTemplate, [], {param: 'substituted'}, callback)
+    waitFor(
+      function() { return callback.called },
+      function() {
+        callback.should.have.been.calledWith(null, rootDoc)
+        done()
+      }
+    )
+  })
+
   it('should evaluate URI templates with array of template params',
       function(done) {
     var rootDoc = {
@@ -211,7 +227,7 @@ describe('The json walker', function() {
         sinon.match.func).callsArgWithAsync(1, null, resultDoc)
     jsonWalker.walk(rootUri,
       ['firstTemplate', 'secondTemplate'],
-      [{user: 'basti1302', thing: 4711}, {user: 'someone_else'}],
+      [null, {user: 'basti1302', thing: 4711}, {user: 'someone_else'}],
       callback)
     waitFor(
       function() { return callback.called },
@@ -230,7 +246,7 @@ describe('The json walker', function() {
     var path4 = rootUri + '/path/to/the/last/resource'
 
     var rootDoc = { link1: path1 }
-    var doc2 = { link2: path2 }
+    var doc2 = { link2: template2 }
     var doc3 = {
       nested: {
         array: [
@@ -255,7 +271,7 @@ describe('The json walker', function() {
         1, null, resultDoc)
     jsonWalker.walk(rootUri,
         ['link1', 'link2', '$[nested][array][1].link', 'link4'],
-        [null, { param: 'gizmo' }, null, null],
+        { param: 'gizmo' },
         callback)
     waitFor(
       function() { return callback.called },
