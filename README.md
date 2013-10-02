@@ -3,13 +3,29 @@ Traverson - Hypermedia API Consumer
 [![Build
 Status](https://travis-ci.org/basti1302/traverson.png?branch=master)](https://travis-ci.org/basti1302/traverson)
 
+Introduction
+------------
+
 Traverson comes in handy when consuming hypermedia APIs, that is, REST APIs that have links between their resources. A hypermedia API typically has a root resource/endpoint, which publishes links to other resources. These resources in turn might also have, as part of their metadata, links to related resources. Sometimes you need to follow multiple consecutive links to get to the resource you want. This pattern makes it unnecessary for the client to hardcode all endpoint URIs of the API it uses, which in turn makes it easier for the API provider to change the structure if necessary.
 
 To follow a path of links you typically start at one URI (most often the root URI of the API), then look for the link you are interested in, fetch the document from there and repeat this process until you have reached the end of this path.
 
 Traverson does that for you. You just need to tell Traverson where it can find the link to follow in each consecutive document and Traverson will happily execute the hops from document to document for you and when it's done, hand you the final document, the one you really wanted to have in the first place.
 
-Currently only JSON APIs are supported
+Currently only JSON APIs are supported.
+
+Table of Contents
+-----------------
+
+* [Documentation by Example](#documentation-by-example)
+    * [Error Handling](#error-handling)
+    * [JSONPath](#jsonpath)
+    * [URI Templates](#uri-templates)
+* [Caching](#caching)
+* [Customizing Traverson](#customizing-traverson)
+    * [Enabling/Disabling Features](#enablingdisabling-features)
+    * [Overriding](#overriding-parts-of-traversons-walk-behaviour)
+* [Other Media Types](#other-formats-media-types-besides-json)
 
 Documentation by Example
 ------------------------
@@ -209,9 +225,10 @@ The first element of the template parameter array (`null`) will actually be used
 More information on URI templates: [RFC 6570](http://tools.ietf.org/html/rfc6570). Traverson uses the module [uri-templates](https://github.com/grncdr/uri-template) to resolve URI
 templates.
 
-### Caching
+Caching
+-------
 
-There will be some sort of caching in future versions. When calling Traverson with the same start URI and the same path array, we would likely end up at the same final URI. The intermediate steps might be cached and not actually fetched from the server every time.
+Currently, there is no caching implemented. There will be some sort of caching in future versions. When calling Traverson with the same start URI and the same path array, we would likely end up at the same final URI. The intermediate steps might be cached and not actually fetched from the server every time.
 
 Customizing Traverson
 ---------------------
@@ -227,7 +244,7 @@ There will be some simple on/off toggles for certain parts of Traverson behaviou
 
 TODO
 
-Other Formats Media Types Besides JSON
+Other Media Types Besides JSON
 --------------------------------------
 
 In the far future, Traverson might also support HTML APIs and/or XML APIs. [HAL](http://stateless.co/hal_specification.html) is also interesting, although you already can use Traverson with `application/hal+json`, but a specialized HalJsonWalker might make better use of the standardized HAL format.
