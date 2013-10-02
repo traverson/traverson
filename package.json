@@ -14,11 +14,13 @@
     "REST",
     "API"
   ],
-  "install globally": {
-    "grunt-cli": "latest"
+  "main": "./traverson",
+  "scripts": {
+    "test": "grunt"
   },
   "dependencies": {
     "JSONPath": "~0.9.1",
+    "request": "~2.27.0",
     "uri-template": "~0.4.1"
   },
   "devDependencies": {
@@ -28,7 +30,9 @@
     "grunt-contrib-watch": "~0.5.3",
     "grunt-mocha-test": "~0.7.0",
     "mocha": "~1.12.1",
-    "request": "~2.27.0",
     "sinon-chai": "~2.4.0"
+  },
+  "engines": {
+    "node": ">= 0.10.x"
   }
 }
