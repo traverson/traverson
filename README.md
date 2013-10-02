@@ -3,7 +3,13 @@ Traverson - Hypermedia API Consumer
 [![Build
 Status](https://travis-ci.org/basti1302/traverson.png?branch=master)](https://travis-ci.org/basti1302/traverson)
 
-Santa's little helper for consuming hypermedia APIs with ease. Currently only JSON APIs are supported
+Traverson comes in handy when consuming hypermedia APIs, that is, REST APIs that have links between their resources. A hypermedia API typically has a root resource/endpoint, which publishes links to other resources. These resources in turn might also have, as part of their metadata, links to related resources. Sometimes you need to follow multiple consecutive links to get to the resource you want. This pattern makes it unnecessary for the client to hardcode all endpoint URIs of the API it uses, which in turn makes it easier for the API provider to change the structure if necessary.
+
+To follow a path of links you typically start at one URI (most often the root URI of the API), then look for the link you are interested in, fetch the document from there and repeat this process until you have reached the end of this path.
+
+Traverson does that for you. You just need to tell Traverson where it can find the link to follow in each consecutive document and Traverson will happily execute the hops from document to document for you and when it's done, hand you the final document, the one you really wanted to have in the first place.
+
+Currently only JSON APIs are supported
 
 Documentation by Example
 ------------------------
@@ -13,9 +19,9 @@ Documentation by Example
 
 When working with Traverson, you will mostly use the `walk` method, which takes four parameters and looks like this:
 
-    walk = function(startUri, path, templateParams, callback)
+    walk = function(startUri, pathArray, templateParams, callback)
 
-Let's see what happens when this method is called.
+Let's see what happens when this method is called:
 
     jsonWalker.walk('http://api.io', ['link_to', 'resource'], null, function(error, document) {
       if (error) {
@@ -26,7 +32,7 @@ Let's see what happens when this method is called.
       }
     })
 
-Given this call, Traverson first fetches http://api.io. Let's say the response for this URI is
+Given this call, Traverson first fetches `http://api.io`. Let's say the response for this URI is
 
     http://api.io
     {
@@ -55,7 +61,7 @@ Now, since the next element in the path array is `resource`, Traverson will look
       ...
     }
 
-Because the path array is exhausted now (`resource` was the last element), this document will be passed into to the callback you provided when calling the walk method as the second parameter. Coming back to the example from the top, the output would be
+Because the path array is exhausted now (`resource` was the last element), this document will be passed into to the callback you provided when calling the `walk` method as the fourth parameter. Coming back to the example from the top, the output would be
 
     We have walked the path and reached the final resource.
 
@@ -63,20 +69,50 @@ Because the path array is exhausted now (`resource` was the last element), this 
 
 ### Error Handling
 
-If anything goes wrong during this journey from resource to resource, your
-callback would be called with the appropriate error as the first parameter and
-the output would be
+If anything goes wrong during this journey from resource to resource, Traverson will stop and call your callback with the appropriate error as the first parameter. In the example, the output would be
 
     No luck :-)
 
 Reasons for failure could be:
-
 * The start URI, one of the intermediate URIs, or the final URI is not reachable.
 * One of the documents can not be parsed as JSON, that is, it is not syntactically well formed.
 * One of the intermediate documents does not contain the property given in the path array.
 * If JSONPath (see below) is used:
     * One of the JSONPath expressions in the path array does not yield a match for the corresponding document.
     * One of the JSONPath expressions in the path array yields more than one match for the corresponding document.
+
+### JSONPath
+
+Traverson supports [JSONPath](http://goessner.net/articles/JsonPath/) expressions in the path array. This will come in handy if the link you want to follow from a given document is not a direct property of that document. Consider the following example:
+
+    jsonWalker.walk('http://api.io',
+                   ['$.deeply.nested.link'],
+                   null,
+                   function(error, document) {
+       ...
+    }
+
+where the document at the root URI is
+
+    http://api.io
+    {
+      "deeply": {
+        "nested": {
+          "link: "http://api.io/congrats/you/have/found/me"
+        }
+      }
+    }
+
+    http://api.io/congrats/you/have/found/me
+    {
+      "the_document": "we wanted to have"
+    }
+
+Upon loading this document from the start URI `http://api.io`, Traverson will recognize that the first (and only) element in the path array is a JSONPath expression and evaluate it against the given document, which results in the URI `http://api.io/congrats/you/have/found/me`. Of course you can also use path arrays with more than one element with JSONPath and you can freely mix JSONPath expressions with plain vanilla properties.
+
+Any element of the path array that begins with `$.` or `$[` is assumed to be a JSONPath expression, otherwise the element is interpreted as a plain object property.
+
+More information on JSONPath can be found [here](http://goessner.net/articles/JsonPath/). Traverson uses the npm module [JSONPath](https://github.com/s3u/JSONPath) to evaluate JSONPath expressions.
 
 ### URI Templates
 
@@ -89,19 +125,19 @@ Traverson supports URI templates ([RFC 6570](http://tools.ietf.org/html/rfc6570)
        ...
     }
 
-Again, Traverson first fetches http://api.io. This time, we assume a response with an URI template:
+Again, Traverson first fetches `http://api.io`. This time, we assume a response with an URI template:
 
     http://api.io
     {
       "user_thing_lookup": "http://api.io/users/{user_name}/things{/thing_id}"
     }
 
+Traverson recognizes that this is an URI template and resolves the template with the template parameters given as the third argument (`{user_name: "basti1302", thing_id: 4711}` in this case). The resulting URI is `http://api.io/users/basti1302/things/4711`. Traverson now fetches the document from this URI and passes the resulting document into the provided callback.
+
     http://api.io/users/basti1302/things/4711
     {
       "the_document": "we wanted to have"
     }
-
-Traverson recognizes that this is an URI template and resolves the template with the template parameters given as the third argument (`{user_name: "basti1302", thing_id: 4711}` in this case). The resulting URI is `http://api.io/users/basti1302/things/4711`. Traverson now fetches the document from this URI and passes the resulting document into the provided callback.
 
 To find out if URI templating is necessary, Traverson simply checks if the URI contains the character `{` and if URI template parameters have been provided.
 
@@ -133,11 +169,11 @@ and the following documents, with their corresponding URIs:
       "the_document": "we wanted to have"
     }
 
-Traverson will resolve the URI templates in the first and second document and finally reach the document at http://api.io/users/basti1302/things/4711.
+Traverson will resolve the URI templates in the first and second document and finally reach the document at `http://api.io/users/basti1302/things/4711`.
 
-Instead of using an object to provide the template parameters for each step, you can also provide an array of objects. Each element of the array will only be used for the corresponding step in the path array. This is useful if there are template parameters with identical names which are to be used in different steps.
+Instead of using a single object to provide the template parameters for each step, you can also provide an array of objects. Each element of the array will only be used for the corresponding step in the path array. This is useful if there are template parameters with identical names which are to be used in different steps.
 
-Let's look at an example:
+Let's look at an example
 
     jsonWalker.walk('http://api.io',
                    ['user_lookup', 'things', 'thing_lookup'],
@@ -172,39 +208,6 @@ The first element of the template parameter array (`null`) will actually be used
 
 More information on URI templates: [RFC 6570](http://tools.ietf.org/html/rfc6570). Traverson uses the module [uri-templates](https://github.com/grncdr/uri-template) to resolve URI
 templates.
-
-### JSONPath
-
-Traverson supports [JSONPath](http://goessner.net/articles/JsonPath/) expressions in the path array. This will come in handy if the link you want to follow from a given document is not a direct property of that document. Consider the following example:
-
-    jsonWalker.walk('http://api.io',
-                   ['$.deeply.nested.link'],
-                   null,
-                   function(error, document) {
-       ...
-    }
-
-where the document at the root URI is
-
-    http://api.io
-    {
-      "deeply": {
-        "nested": {
-          "link: "http://api.io/congrats/you/have/found/me"
-        }
-      }
-    }
-
-    http://api.io/congrats/you/have/found/me
-    {
-      "the_document": "we wanted to have"
-    }
-
-Upon loading this document from the start URI `http://api.io`, Traverson will recognize that the first (and only) element in the path array is a JSONPath expression and evaluate it against the given document, which results in the URI 'http://api.io/congrats/you/have/found/me'. Of course you can also use path arrays with more than one element with JSONPath and you can freely mix JSONPath expressions with plain vanilla properties.
-
-Any element of the path array that begins with `$.` or `$[` is assumed to be a JSONPath expression, otherwise the element is interpreted as a plain object property.
-
-More information on JSONPath can be found [here](http://goessner.net/articles/JsonPath/). Traverson uses the npm module [JSONPath](https://github.com/s3u/JSONPath) to evaluate JSONPath expressions.
 
 ### Caching
 
