@@ -1,5 +1,5 @@
 Traverson - Hypermedia API Consumer
-============================
+===================================
 [![Build
 Status](https://travis-ci.org/basti1302/traverson.png?branch=master)](https://travis-ci.org/basti1302/traverson)
 
@@ -25,7 +25,7 @@ Table of Contents
 * [Customizing Traverson](#customizing-traverson)
     * [Enabling/Disabling Features](#enablingdisabling-features)
     * [Overriding](#overriding-parts-of-traversons-walk-behaviour)
-* [Other Media Types](#other-formats-media-types-besides-json)
+* [Other Media Types](#other-media-types-besides-json)
 
 Documentation by Example
 ------------------------
