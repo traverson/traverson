@@ -1,46 +1,64 @@
+Some Dreamcode
+==============
+
+    var traverson = require('traverson')
+
+    var jsonWalker = traverson.jsonWalker
+    var jsonHalWalker = traverson.jsonHalWalker
+    var xmlWalker = traverson.xmlWalker
+    var xmlHalWalker = traverson.xmlHalWalker
+    var htmlWalker = traverson.htmlWalker
+
+    jsonWalker.from('http://api.io')
+        .walk('user', 'post')
+        .withTemplateParameters({user_id: 'basti1302', post_id: 4711})
+        .getResource(callback) // makes get request,
+                               // yields response body as JS object
+
+    var myApi = jsonWalker.from('http://api.io')
+    myApi.walk('user', 'post')
+        .withTemplateParameters({user_id: 'basti1302', post_id: 4711})
+        .getResponse(callback) // makes get request,
+                               // yields complete response
+                               // (status, body, headers, ...)
+
+    myApi.walk('user')
+        .withTemplateParameters({user_id: 'basti1302'})
+        .getUri(callback) // does not execute last request, delivers URL
+
+    myApi.walk('user')
+        .withTemplateParameters({user_id: 'basti1302'})
+        .post(body, callback) // same for put, patch
+
+    myApi.walk('user', 'post')
+        .withTemplateParameters({user_id: 'basti1302', post_id: 4711})
+        .delete(callback)
+
+    myApi.walk('link')
+        .accept('application/vnd.custom-api.v3+json')
+        .checkHttpStatus(200, 201)
+        .post(body, callback)
+
+
+    /* same is available for the other walkers (xml, hal, html, ...) */
+
+* `from` - returns a new walker with initialised startUri each time
+* `walk` - takes a list or an array, each element either a plain property key or a JSONPath expression, returns itself, with link array set
+* `withTemplateParameters` - takes an object or an array of objects, returns itself, with template params array set
+* `getResource`, `getResponse`, `getUri`, `post`, `put`, `patch`, `patch` - see above
+* callback always takes error first, then either document, response, uri, etc
+* `post`, `put`, `patch`, `patch` always deliver complete http response in callback
+* accept - sets accept header for requests
+* checkHttpStatus - sets up a check so that callback is only called with result, if the last request hat one of the given http status, otherwise callback is called with error.
+
+
 TODOs
 =====
 
 * Rename path/path array to link array. Path already has a meaning (the part of
   the URL after the host name/port, so we should not use it). In fact the
   correct hypermedia term is link, and this parameter is an array of links.
-* More methods:
-    * walkTo(startUri, linkArray, [templateParams], [httpMethod], [body], callback)
-      Types
-        * startUri: String
-        * linkArray: Array
-        * templateParams: Array
-        * httpMethod: String
-        * body: Object
-        * callback: Function
-      Makes GET requests all the way from startUri to the penultimate link in
-      linkArray, but the last request uses the given httpMethod and, if present,
-      the optional body (a plain object, converted to JSON). The given callback
-      is called with the response of the last request.
-   * walkToGet(startUri, linkArray, templateParams, callback)
-      same as walkTo with httpMethod === 'GET'
-   * walkToPost(startUri, linkArray, templateParams, [body], callback)
-      same as walkTo with httpMethod === 'POST'
-   * walkToPut(startUri, linkArray, templateParams, [body], callback)
-      same as walkTo with httpMethod === 'PUT'
-   * walkToPatch(startUri, linkArray, templateParams, [body], callback)
-      same as walkTo with httpMethod === 'PATCH'
-   * walkToDelete(startUri, linkArray, templateParams, callback)
-      same as walkTo with httpMethod === 'DELETE'
-   * walkToResource(startUri, linkArray, [templateParams], callback)
-      Same as current walk method. Equivalent to walktToGet, only that not the
-      complete resource but only the parsed JSON (as a JavaScript object) from
-      the body is passed into the callback.
-      Types:
-        * startUri: String
-        * linkArray: Array
-        * templateParams: Array
-        * callback: Function
-    * walkToUri(startUri, linkArray, [templateParams], callback)
-      Like walkToResource, but does not acces the last URI but instead delivers
-      it to the callback, so the client can do with it whatever it wants.. That
-      is, it makes one less GET request than walkToResource.
- what about accept and content-type headers? API could have some custom
+* what about accept and content-type headers? API could have some custom
   content type and still be JSON, so we probably can not check that
 * cache final links for path
 * pass options array to constructor:
