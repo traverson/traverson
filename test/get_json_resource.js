@@ -12,7 +12,7 @@ var waitFor = require('./wait_for')
 var traverson = require('../traverson')
 var JsonWalker = require('../lib/json_walker')
 
-describe('The json walker\'s', function() {
+describe('getResource for JSON', function() {
 
   var request
   var originalFetch
