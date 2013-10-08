@@ -22,6 +22,8 @@ describe('getResource for JSON', function() {
   var client = traverson.json.from(rootUri)
   var api
 
+  var result = mockResponse({ foo: 'bar' })
+
   beforeEach(function() {
     api = client.newRequest()
     originalFetch = JsonWalker.prototype.fetch
@@ -34,6 +36,11 @@ describe('getResource for JSON', function() {
   })
 
   describe('with its basic features', function() {
+    var rootResponse = mockResponse({
+      irrelevant: { stuff: 'to be ignored' },
+      link: rootUri + '/link/to/thing',
+      more: { stuff: { that: 'we do not care about' } }
+    })
 
     it('should access the root URI', function() {
       api.walk().getResource(callback)
@@ -41,13 +48,12 @@ describe('getResource for JSON', function() {
     })
 
     it('should call callback with the root doc', function(done) {
-      var rootDoc = {root: 'doc'}
-      fetch.callsArgWithAsync(1, null, rootDoc)
+      fetch.callsArgWithAsync(1, null, rootResponse)
       api.walk().getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, rootDoc)
+          callback.should.have.been.calledWith(null, rootResponse.doc)
           done()
         }
       )
@@ -67,51 +73,38 @@ describe('getResource for JSON', function() {
     })
 
     it('should walk a single element path', function(done) {
-      var rootDoc = {
-        irrelevant: { stuff: 'to be ignored' },
-        link: rootUri + '/link/to/thing',
-        more: { stuff: { that: 'we do not care about' } }
-      }
-      var resultDoc = { foo: 'bar' }
       fetch.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootDoc)
+          1, null, rootResponse)
       fetch.withArgs(rootUri + '/link/to/thing',
-          sinon.match.func).callsArgWithAsync(1, null, resultDoc)
+          sinon.match.func).callsArgWithAsync(1, null, result)
       api.walk('link').getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, resultDoc)
+          callback.should.have.been.calledWith(null, result.doc)
           done()
         }
       )
     })
 
     it('should walk a single element path as array', function(done) {
-      var rootDoc = {
-        irrelevant: { stuff: 'to be ignored' },
-        link: rootUri + '/link/to/thing',
-        more: { stuff: { that: 'we do not care about' } }
-      }
-      var resultDoc = { foo: 'bar' }
       fetch.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootDoc)
+          1, null, rootResponse)
       fetch.withArgs(rootUri + '/link/to/thing',
-          sinon.match.func).callsArgWithAsync(1, null, resultDoc)
+          sinon.match.func).callsArgWithAsync(1, null, result)
       api.walk(['link']).getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, resultDoc)
+          callback.should.have.been.calledWith(null, result.doc)
           done()
         }
       )
     })
 
     it('should call callback with err if link is not found', function(done) {
-      var rootDoc = { nothing: 'in here'}
       fetch.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootDoc)
+          1, null, rootResponse)
       api.walk('non-existing-link').getResource(callback)
       waitFor(
         function() { return callback.called },
@@ -128,7 +121,7 @@ describe('getResource for JSON', function() {
     it('should call callback with err inside recursion', function(done) {
       var err = new Error('test error')
       fetch.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, { firstLink: rootUri + '/first' })
+          1, null, mockResponse({ firstLink: rootUri + '/first' }))
       fetch.withArgs(rootUri + '/first', sinon.match.func).callsArgWithAsync(
           1, err)
       api.walk('firstLink').getResource(callback)
@@ -144,21 +137,23 @@ describe('getResource for JSON', function() {
 
   describe('with JSONPath', function() {
 
+    var uri = rootUri + '/path/to/resource'
+    var rootResponse = mockResponse({
+      deeply: { nested: { link: uri } }
+    })
+
+    var result = mockResponse({ the: 'result' })
+
     it('should walk to a link via JSONPath expression', function(done) {
-      var uri = rootUri + '/path/to/resource'
-      var rootDoc = {
-        deeply: { nested: { link: uri } }
-      }
-      var resultDoc = { the: 'result' }
       fetch.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootDoc)
+          1, null, rootResponse)
       fetch.withArgs(uri, sinon.match.func).callsArgWithAsync(1, null,
-          resultDoc)
+          result)
       api.walk('$.deeply.nested.link').getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, resultDoc)
+          callback.should.have.been.calledWith(null, result.doc)
           done()
         }
       )
@@ -166,12 +161,8 @@ describe('getResource for JSON', function() {
 
     it('should call callback with err if JSONPath has no match',
         function(done) {
-      var uri = rootUri + '/path/to/resource'
-      var rootDoc = {
-        deeply: { nested: { link: uri } }
-      }
       fetch.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootDoc)
+          1, null, rootResponse)
       api.walk('$.deeply.nested.blink').getResource(callback)
       waitFor(
         function() { return callback.called },
@@ -186,12 +177,11 @@ describe('getResource for JSON', function() {
 
     it('should call callback with err if JSONPath has multiple matches',
         function(done) {
-      var uri = rootUri + '/path/to/resource'
-      var rootDoc = {
+      var rootResponseMulti = mockResponse({
         arr: [ { foo: 'bar' }, { foo: 'baz' } ]
-      }
+      })
       fetch.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootDoc)
+          1, null, rootResponseMulti)
       api.walk('$.arr[*].foo').getResource(callback)
       waitFor(
         function() { return callback.called },
@@ -208,37 +198,38 @@ describe('getResource for JSON', function() {
   describe('with URI templating', function() {
 
     it('should evaluate URI templates', function(done) {
-      var rootDoc = {
+      var rootResponseUriTemplate = mockResponse({
         firstTemplate: rootUri + '/users/{user}/things{/thing}'
-      }
-      var nextDoc = {
+      })
+      var next = mockResponse({
         secondTemplate: rootUri + '/another/{id}'
-      }
-      var resultDoc = { we: 'can haz use uri templates!' }
+      })
+
       fetch.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootDoc)
+          1, null, rootResponseUriTemplate)
       fetch.withArgs(rootUri + '/users/basti1302/things/4711',
-          sinon.match.func).callsArgWithAsync(1, null, nextDoc)
+          sinon.match.func).callsArgWithAsync(1, null, next)
       fetch.withArgs(rootUri + '/another/42',
-          sinon.match.func).callsArgWithAsync(1, null, resultDoc)
+          sinon.match.func).callsArgWithAsync(1, null, result)
       api.walk('firstTemplate', 'secondTemplate')
          .withTemplateParameters({user: 'basti1302', thing: 4711, id: 42})
          .getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, resultDoc)
+          callback.should.have.been.calledWith(null, result.doc)
           done()
         }
       )
     })
 
     it('should evaluate URI templates for the start URI', function(done) {
-      var rootDoc = { we: 'can haz use uri templates for root doc, yo!' }
+      var rootUriTemplate = mockResponse(
+        { we: 'can haz use uri templates for root doc, yo!' })
       var startUriTemplate = rootUri + '/{param}/whatever'
       var startUri = rootUri + '/substituted/whatever'
       fetch.withArgs(startUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootDoc)
+          1, null, rootUriTemplate)
       traverson.json
           .from(startUriTemplate)
           .newRequest()
@@ -248,7 +239,7 @@ describe('getResource for JSON', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, rootDoc)
+          callback.should.have.been.calledWith(null, rootUriTemplate.doc)
           done()
         }
       )
@@ -256,19 +247,18 @@ describe('getResource for JSON', function() {
 
     it('should evaluate URI templates with array of template params',
         function(done) {
-      var rootDoc = {
+      var rootUriTemplate = mockResponse({
         firstTemplate: rootUri + '/users/{user}/things{/thing}'
-      }
-      var nextDoc = {
+      })
+      var next = mockResponse({
         secondTemplate: rootUri + '/another_user/{user}'
-      }
-      var resultDoc = { we: 'can haz use uri templates!' }
+      })
       fetch.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootDoc)
+          1, null, rootUriTemplate)
       fetch.withArgs(rootUri + '/users/basti1302/things/4711',
-          sinon.match.func).callsArgWithAsync(1, null, nextDoc)
+          sinon.match.func).callsArgWithAsync(1, null, next)
       fetch.withArgs(rootUri + '/another_user/someone_else',
-          sinon.match.func).callsArgWithAsync(1, null, resultDoc)
+          sinon.match.func).callsArgWithAsync(1, null, result)
       api.walk('firstTemplate', 'secondTemplate')
         .withTemplateParameters([null,
                                 {user: 'basti1302', thing: 4711},
@@ -277,7 +267,7 @@ describe('getResource for JSON', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, resultDoc)
+          callback.should.have.been.calledWith(null, result.doc)
           done()
         }
       )
@@ -293,9 +283,9 @@ describe('getResource for JSON', function() {
       var path3 = rootUri + '/path/to/another/resource'
       var path4 = rootUri + '/path/to/the/last/resource'
 
-      var rootDoc = { link1: path1 }
-      var doc2 = { link2: template2 }
-      var doc3 = {
+      var root = mockResponse({ link1: path1 })
+      var response2 = mockResponse({ link2: template2 })
+      var response3 = mockResponse({
         nested: {
           array: [
             { foo: 'bar' },
@@ -303,30 +293,37 @@ describe('getResource for JSON', function() {
             { bar: 'baz' }
           ]
         }
-      }
-      var doc4 = { link4: path4 }
-      var resultDoc = { gizmo: 'hell, yeah!' }
+      })
+      var response4 = mockResponse({ link4: path4 })
 
       fetch.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootDoc)
+          1, null, root)
       fetch.withArgs(path1, sinon.match.func).callsArgWithAsync(
-          1, null, doc2)
+          1, null, response2)
       fetch.withArgs(path2, sinon.match.func).callsArgWithAsync(
-          1, null, doc3)
+          1, null, response3)
       fetch.withArgs(path3, sinon.match.func).callsArgWithAsync(
-          1, null, doc4)
+          1, null, response4)
       fetch.withArgs(path4, sinon.match.func).callsArgWithAsync(
-          1, null, resultDoc)
+          1, null, result)
       api.walk(['link1', 'link2', '$[nested][array][1].link', 'link4'])
          .withTemplateParameters({ param: 'gizmo' })
          .getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, resultDoc)
+          callback.should.have.been.calledWith(null, result.doc)
           done()
         }
       )
     })
   })
+
+  function mockResponse(doc) {
+    var response = {}
+    response.body = JSON.stringify(doc)
+    response.statusCode = 200
+    response.doc = doc
+    return response
+  }
 })
