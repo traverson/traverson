@@ -13,8 +13,8 @@ var traverson = require('../traverson')
 
 describe('The json walker (when tested against a local server)', function() {
 
+  var api
   var testServer
-  var jsonWalker
   var callback
   var rootUri = 'http://127.0.0.1:2808/'
 
@@ -29,12 +29,12 @@ describe('The json walker (when tested against a local server)', function() {
   })
 
   beforeEach(function() {
-    jsonWalker = new traverson.JsonWalker()
+    api = traverson.json.from(rootUri).newRequest()
     callback = sinon.spy()
   })
 
   it('should fetch the root document', function(done) {
-    jsonWalker.walk(rootUri, [], null, callback)
+    api.walk().getResource(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -47,7 +47,7 @@ describe('The json walker (when tested against a local server)', function() {
   })
 
   it('should walk a single element path', function(done) {
-    jsonWalker.walk(rootUri, ['first'], null, callback)
+    api.walk('first').getResource(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -60,7 +60,7 @@ describe('The json walker (when tested against a local server)', function() {
   })
 
   it('should walk a multi-element path', function(done) {
-    jsonWalker.walk(rootUri, ['second', 'doc'], null, callback)
+    api.walk('second', 'doc').getResource(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -73,7 +73,7 @@ describe('The json walker (when tested against a local server)', function() {
   })
 
   it('should leverage JSONPath', function(done) {
-    jsonWalker.walk(rootUri, ['$.jsonpath.nested.key'], null, callback)
+    api.walk('$.jsonpath.nested.key').getResource(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -86,8 +86,9 @@ describe('The json walker (when tested against a local server)', function() {
   })
 
   it('should leverage URI templates', function(done) {
-    jsonWalker.walk(rootUri, ['uri_template'], {param: 'foobar', id: 13},
-      callback)
+    api.walk('uri_template')
+       .withTemplateParameters({param: 'foobar', id: 13})
+       .getResource(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -101,7 +102,7 @@ describe('The json walker (when tested against a local server)', function() {
   })
 
   it('should fail gracefully on 404', function(done) {
-    jsonWalker.walk(rootUri, ['blind_alley'], null, callback)
+    api.walk('blind_alley').getResource(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -124,7 +125,7 @@ describe('The json walker (when tested against a local server)', function() {
   })
 
   it('should fail gracefully on syntactically incorrect JSON', function(done) {
-    jsonWalker.walk(rootUri, ['garbage'], null, callback)
+    api.walk('garbage').getResource(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -144,7 +145,6 @@ describe('The json walker (when tested against a local server)', function() {
       }
     )
   })
-
 
   function basicChecks() {
     callback.callCount.should.equal(1)

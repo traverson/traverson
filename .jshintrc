@@ -8,7 +8,7 @@
   "forin": true,
   "immed": true,
   "indent": 2,
-  "latedef": true,
+  "latedef": false,
   "maxcomplexity": 6,
   "maxdepth": 4,
   "maxlen": 80,

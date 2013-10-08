@@ -3,11 +3,11 @@ Some Dreamcode
 
     var traverson = require('traverson')
 
-    var jsonWalker = traverson.jsonWalker
-    var jsonHalWalker = traverson.jsonHalWalker
-    var xmlWalker = traverson.xmlWalker
-    var xmlHalWalker = traverson.xmlHalWalker
-    var htmlWalker = traverson.htmlWalker
+    var jsonWalker = traverson.json
+    var jsonHalWalker = traverson.jsonHal
+    var xmlWalker = traverson.xml
+    var xmlHalWalker = traverson.xmlHal
+    var htmlWalker = traverson.html
 
     jsonWalker.from('http://api.io')
         .walk('user', 'post')
@@ -18,9 +18,9 @@ Some Dreamcode
     var myApi = jsonWalker.from('http://api.io')
     myApi.walk('user', 'post')
         .withTemplateParameters({user_id: 'basti1302', post_id: 4711})
-        .getResponse(callback) // makes get request,
-                               // yields complete response
-                               // (status, body, headers, ...)
+        .get(callback) // makes get request,
+                       // yields complete response
+                       // (status, body, headers, ...)
 
     myApi.walk('user')
         .withTemplateParameters({user_id: 'basti1302'})
