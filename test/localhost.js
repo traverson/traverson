@@ -33,12 +33,25 @@ describe('The json walker (when tested against a local server)', function() {
     callback = sinon.spy()
   })
 
+  it('should fetch the root response', function(done) {
+    api.walk().get(callback)
+    waitFor(
+      function() { return callback.called },
+      function() {
+        var resultDoc = checkResultResponse()
+        resultDoc.first.should.exist
+        resultDoc.first.should.equal(rootUri + 'first')
+        done()
+      }
+    )
+  })
+
   it('should fetch the root document', function(done) {
     api.walk().getResource(callback)
     waitFor(
       function() { return callback.called },
       function() {
-        var resultDoc = basicChecks()
+        var resultDoc = checkResultDoc()
         resultDoc.first.should.exist
         resultDoc.first.should.equal(rootUri + 'first')
         done()
@@ -51,7 +64,7 @@ describe('The json walker (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        var resultDoc = basicChecks()
+        var resultDoc = checkResultDoc()
         resultDoc.first.should.exist
         resultDoc.first.should.equal('document')
         done()
@@ -60,11 +73,24 @@ describe('The json walker (when tested against a local server)', function() {
   })
 
   it('should walk a multi-element path', function(done) {
+    api.walk('second', 'doc').get(callback)
+    waitFor(
+      function() { return callback.called },
+      function() {
+        var resultDoc = checkResultResponse()
+        resultDoc.second.should.exist
+        resultDoc.second.should.equal('document')
+        done()
+      }
+    )
+  })
+
+  it('should walk a multi-element path to a resource', function(done) {
     api.walk('second', 'doc').getResource(callback)
     waitFor(
       function() { return callback.called },
       function() {
-        var resultDoc = basicChecks()
+        var resultDoc = checkResultDoc()
         resultDoc.second.should.exist
         resultDoc.second.should.equal('document')
         done()
@@ -77,7 +103,7 @@ describe('The json walker (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        var resultDoc = basicChecks()
+        var resultDoc = checkResultDoc()
         resultDoc.third.should.exist
         resultDoc.third.should.equal('document')
         done()
@@ -92,7 +118,7 @@ describe('The json walker (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        var resultDoc = basicChecks()
+        var resultDoc = checkResultDoc()
         resultDoc.some.should.equal('document')
         resultDoc.param.should.equal('foobar')
         resultDoc.id.should.equal(13)
@@ -101,7 +127,47 @@ describe('The json walker (when tested against a local server)', function() {
     )
   })
 
-  it('should fail gracefully on 404', function(done) {
+  it('should fail gracefully on 404 with get()', function(done) {
+    api.walk('blind_alley', 'more', 'links').get(callback)
+    waitFor(
+      function() { return callback.called },
+      function() {
+        callback.callCount.should.equal(1)
+        var error = callback.firstCall.args[0]
+        error.should.exist
+        error.name.should.equal('HTTPError')
+        error.message.should.equal('HTTP GET for ' + rootUri +
+            'does/not/exist' + ' resulted in HTTP status code 404.')
+        error.uri.should.equal(rootUri + 'does/not/exist')
+        error.httpStatus.should.equal(404)
+
+        var resultResponse = callback.firstCall.args[1]
+        resultResponse.should.exist
+        var body = resultResponse.body
+        body.should.exist
+        var resultDoc = JSON.parse(body)
+        resultDoc.message.should.exist
+        resultDoc.message.should.equal('document not found')
+        done()
+      }
+    )
+  })
+
+  it('should just deliver the last response of get(), even when it\'s 404',
+      function(done) {
+    api.walk('blind_alley').get(callback)
+    waitFor(
+      function() { return callback.called },
+      function() {
+        var resultDoc = checkResultResponse()
+        resultDoc.message.should.exist
+        resultDoc.message.should.equal('document not found')
+        done()
+      }
+    )
+  })
+
+  it('should fail gracefully on 404 with getResource()', function(done) {
     api.walk('blind_alley').getResource(callback)
     waitFor(
       function() { return callback.called },
@@ -146,7 +212,17 @@ describe('The json walker (when tested against a local server)', function() {
     )
   })
 
-  function basicChecks() {
+  function checkResultResponse() {
+    callback.callCount.should.equal(1)
+    var resultResponse = callback.firstCall.args[1]
+    resultResponse.should.exist
+    var body = resultResponse.body
+    body.should.exist
+    var resultDoc = JSON.parse(body)
+    return resultDoc
+  }
+
+  function checkResultDoc() {
     callback.callCount.should.equal(1)
     var resultDoc = callback.firstCall.args[1]
     resultDoc.should.exist
