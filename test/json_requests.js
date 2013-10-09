@@ -24,7 +24,14 @@ describe('The JSON client\'s', function() {
   var client = traverson.json.from(rootUri)
   var api
 
-  var rootResponse = mockResponse({ link: rootUri + '/link/to/resource' })
+  var getUri = rootUri + '/link/to/resource'
+  var postUri = rootUri + '/post/something/here'
+
+  var rootResponse = mockResponse({
+    'get_link': getUri,
+    'post_link': postUri
+  })
+
   var result = mockResponse({ result: 'success' })
 
   beforeEach(function() {
@@ -35,8 +42,9 @@ describe('The JSON client\'s', function() {
 
     fetch.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
         1, null, rootResponse)
-    fetch.withArgs(rootUri + '/link/to/resource',
-        sinon.match.func).callsArgWithAsync(1, null, result)
+    fetch.withArgs(getUri, sinon.match.func).callsArgWithAsync(1, null, result)
+    fetch.withArgs(postUri, sinon.match.func).callsArgWithAsync(1,
+      new Error('GET is not implemented for this URI, only POST'))
   })
 
   afterEach(function() {
@@ -46,7 +54,7 @@ describe('The JSON client\'s', function() {
   describe('get method', function() {
 
     it('should walk along the links', function(done) {
-      api.walk('link').get(callback)
+      api.walk('get_link').get(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -61,7 +69,7 @@ describe('The JSON client\'s', function() {
       var err = new Error('test error')
       fetch.withArgs(rootUri + '/link/to/resource', sinon.match.func).
           callsArgWithAsync(1, err)
-      api.walk('link', 'another_link').get(callback)
+      api.walk('get_link', 'another_link').get(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -73,10 +81,11 @@ describe('The JSON client\'s', function() {
 
   })
 
-  describe.skip('post method', function() {
+  describe('post method', function() {
+
 
     it.skip('should walk along the links', function(done) {
-      api.walk('link').post(callback)
+      api.walk('post_link').post(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -91,7 +100,7 @@ describe('The JSON client\'s', function() {
       var err = new Error('test error')
       fetch.withArgs(rootUri + '/link/to/resource', sinon.match.func).
           callsArgWithAsync(1, err)
-      api.walk('link', 'another_link').post(callback)
+      api.walk('post_link', 'another_link').post(callback)
       waitFor(
         function() { return callback.called },
         function() {
