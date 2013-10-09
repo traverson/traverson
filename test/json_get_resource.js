@@ -7,7 +7,9 @@ var expect = chai.expect
 var sinon = require('sinon')
 var sinonChai = require('sinon-chai')
 chai.use(sinonChai)
+
 var waitFor = require('./wait_for')
+var mockResponse = require('./mock_response')
 
 var traverson = require('../traverson')
 var JsonWalker = require('../lib/json_walker')
@@ -318,12 +320,4 @@ describe('getResource for JSON', function() {
       )
     })
   })
-
-  function mockResponse(doc) {
-    var response = {}
-    response.body = JSON.stringify(doc)
-    response.statusCode = 200
-    response.doc = doc
-    return response
-  }
 })
