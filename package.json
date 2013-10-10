@@ -15,11 +15,9 @@
     "API"
   ],
   "main": "./traverson",
-  "scripts": {
-    "test": "grunt"
-  },
   "dependencies": {
     "JSONPath": "~0.9.1",
+    "minilog": "~2.0.2",
     "request": "~2.27.0",
     "uri-template": "~0.4.1"
   },

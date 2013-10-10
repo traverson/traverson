@@ -19,6 +19,8 @@ describe('The JSON client\'s', function() {
   var request
   var originalGet
   var get
+  var originalPost
+  var post
   var callback
   var rootUri = 'http://api.io'
   var client = traverson.json.from(rootUri)
@@ -36,8 +38,10 @@ describe('The JSON client\'s', function() {
 
   beforeEach(function() {
     api = client.newRequest()
+
     originalGet = JsonWalker.prototype.get
     JsonWalker.prototype.get = get = sinon.stub()
+
     callback = sinon.spy()
 
     get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
@@ -83,13 +87,28 @@ describe('The JSON client\'s', function() {
 
   describe('post method', function() {
 
+    var postBody = {
+      some: 'stuff',
+      data: 4711
+    }
 
-    it.skip('should walk along the links', function(done) {
-      api.walk('post_link').post(callback)
+    var result = mockResponse({ result: 'success' }, 201)
+
+    beforeEach(function() {
+      originalPost = JsonWalker.prototype.post
+      JsonWalker.prototype.post = post = sinon.stub()
+      post.withArgs(postUri, postBody, sinon.match.func).callsArgWithAsync(
+          2, null, null)
+    })
+
+    it('should walk along the links and post to the last URI',
+        function(done) {
+      api.walk('post_link').post(postBody, callback)
       waitFor(
-        function() { return callback.called },
+        function() { return post.called || callback.called },
         function() {
-          callback.should.have.been.calledWith(null, result)
+          post.should.have.been.calledWith(postUri, postBody, sinon.match.func)
+          callback.should.have.been.calledWith(null, null)
           done()
         }
       )
