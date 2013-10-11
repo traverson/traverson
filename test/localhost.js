@@ -7,6 +7,8 @@ var expect = chai.expect
 var sinon = require('sinon')
 var sinonChai = require('sinon-chai')
 chai.use(sinonChai)
+
+var TestServer = require('./util/test_server.js')
 var waitFor = require('./util/wait_for')
 
 var traverson = require('../traverson')
@@ -19,7 +21,6 @@ describe('The json walker (when tested against a local server)', function() {
   var rootUri = 'http://127.0.0.1:2808/'
 
   before(function() {
-    var TestServer = require('./server/test_server.js')
     testServer = new TestServer()
     testServer.start()
   })
