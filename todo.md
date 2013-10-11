@@ -54,8 +54,6 @@ Some Dreamcode
 TODOs
 =====
 
-* test/localhost.js needs tests for get, post, put, delete, ...!
-* finish patch & delete
 * update README.md with new API
 * update json_walker.walk doc comment
 * better name for RequestBuilder?
