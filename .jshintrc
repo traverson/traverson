@@ -1,6 +1,7 @@
 {
   "asi": true,
   "bitwise": true,
+  "boss": true,
   "camelcase": true,
   "eqeqeq": true,
   "eqnull": true,
