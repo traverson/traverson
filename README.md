@@ -21,6 +21,7 @@ Table of Contents
 -----------------
 
 * [Documentation by Example](#documentation-by-example)
+    * [Walking Along Links](#walking-along-links)
     * [Get Full HTTP Response](#more-control-receive-the-full-http-response)
     * [Pass Links as Array](#pass-a-link-array)
     * [POST, PUT, DELETE and PATCH](#post-put-delete-and-patch)
@@ -36,6 +37,12 @@ Table of Contents
 
 Documentation by Example
 ------------------------
+
+This section shows how to use Traverson's features with small examples.
+
+### Walking Along Links
+
+The most basic thing you can do with traverson is to let it start at the root URI of an API, follow some links and pass the resource that is found at the end of this journey back to you. Here's how:
 
     var traverson = require('traverson')
     var api = new traverson.json.from('http://api.io')
@@ -62,7 +69,7 @@ Given this call, Traverson first fetches `http://api.io` (because that's what we
 
 (To make the examples easier to read, we note the URI corresponding to the document above each document. The URI is of course not part of the JSON response body.)
 
-After receiving the document from the start URI, Traverson starts to follow the links given in provided via the `walk` method. Since the first link is `link_to`, it looks for a property with this name in the JSON response. In this case, this yields the next URI to access: `http://api.io/follow/me`. Traverson will fetch the document from there now. Let's assume this document looks like to this:
+After receiving the document from the start URI, Traverson starts to follow the provided via the `walk` method. Since the first link is `link_to`, it looks for a property with this name in the JSON response. In this case, this yields the next URI to access: `http://api.io/follow/me`. Traverson will fetch the document from there now. Let's assume this document looks like to this:
 
     https://api.io/follow/me
     {
