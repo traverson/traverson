@@ -1,38 +1,9 @@
 Some Dreamcode
 ==============
 
-    var traverson = require('traverson')
-
-    var jsonWalker = traverson.json
-    var jsonHalWalker = traverson.jsonHal
-    var xmlWalker = traverson.xml
-    var xmlHalWalker = traverson.xmlHal
-    var htmlWalker = traverson.html
-
-    jsonWalker.from('http://api.io')
-        .walk('user', 'post')
-        .withTemplateParameters({user_id: 'basti1302', post_id: 4711})
-        .getResource(callback) // makes get request,
-                               // yields response body as JS object
-
-    var myApi = jsonWalker.from('http://api.io')
-    myApi.walk('user', 'post')
-        .withTemplateParameters({user_id: 'basti1302', post_id: 4711})
-        .get(callback) // makes get request,
-                       // yields complete response
-                       // (status, body, headers, ...)
-
     myApi.walk('user')
         .withTemplateParameters({user_id: 'basti1302'})
         .getUri(callback) // does not execute last request, delivers URL
-
-    myApi.walk('user')
-        .withTemplateParameters({user_id: 'basti1302'})
-        .post(body, callback) // same for put, patch
-
-    myApi.walk('user', 'post')
-        .withTemplateParameters({user_id: 'basti1302', post_id: 4711})
-        .delete(callback)
 
     myApi.walk('link')
         .accept('application/vnd.custom-api.v3+json')
@@ -42,25 +13,37 @@ Some Dreamcode
 
     /* same is available for the other walkers (xml, hal, html, ...) */
 
-* `from` - returns a new walker with initialised startUri each time
-* `walk` - takes a list or an array, each element either a plain property key or a JSONPath expression, returns itself, with link array set
-* `withTemplateParameters` - takes an object or an array of objects, returns itself, with template params array set
-* `getResource`, `getResponse`, `getUri`, `post`, `put`, `patch`, `patch` - see above
-* callback always takes error first, then either document, response, uri, etc
-* `post`, `put`, `patch`, `patch` always deliver complete http response in callback
-* accept - sets accept header for requests
-* checkHttpStatus - sets up a check so that callback is only called with result, if the last request hat one of the given http status, otherwise callback is called with error.
+* Write a more formal API doc in addition to the documentation by example in README.md. Notes:
+    * `from` - returns a new walker with initialised startUri each time
+    * `walk` - takes a list or an array, each element either a plain property key or a JSONPath expression, returns itself, with link array set
+    * `withTemplateParameters` - takes an object or an array of objects, returns itself, with template params array set
+    * `getResource`, `getResponse`, `getUri`, `post`, `put`, `patch`, `patch` - see above
+    * callback always takes error first, then either document, response, uri, etc
+    * `post`, `put`, `patch`, `patch` always deliver complete http response in callback
+    * accept - sets accept header for requests
+    * checkHttpStatus - sets up a check so that callback is only called with result, if the last request hat one of the given http status, otherwise callback is called with error.
 
 TODOs
 =====
 
-* update json_walker.walk doc comment
+* getUri (alternative to get() and getResource()): does not execute last request, delivers URL to callback instead of response or document
+* checkHttpStatus - provide http status codes that will be checked only for the last request - needs better name that makes clear that it only relates to the last get()/post()/put()/... call.
+* Authentication
+    * basic auth
+    * OAuth
+    * ?
+* headers(...) - adds custom headers to all requests
+* accept('application/vnd.custom-api.v3+json') -> adds accept headers to all requests
+* Should work in browser (maybe via browserify)
 * better name for RequestBuilder?
+* update json_walker.walk doc comment
+* application/hal+json:
+    * http://stateless.co/hal_specification.html
+    * http://tools.ietf.org/html/draft-kelly-json-hal-06
 * what about accept and content-type headers? API could have some custom
   content type and still be JSON, so we probably can not check that
 * cache final links for path
 * pass options array to constructor:
-
     {
       resolveJsonPath: false,
       resolveUriTemplates: false,
@@ -72,6 +55,6 @@ TODOs
     * Tests
     * Examples in README.md
 * support more media types in addition to JSON:
-    * html (jsdom, htmlparser2, cheerio, .... )
     * xml?
-    * hal?
+    * html (jsdom, htmlparser2, cheerio, .... )
+    * application/hal+xml? Does anybody use this? There's no RFC for that, but http://stateless.co/hal_specification.html mentions it.
