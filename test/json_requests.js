@@ -8,11 +8,11 @@ var sinon = require('sinon')
 var sinonChai = require('sinon-chai')
 chai.use(sinonChai)
 
-var waitFor = require('./wait_for')
-var mockResponse = require('./mock_response')
-
 var traverson = require('../traverson')
 var JsonWalker = require('../lib/json_walker')
+
+var mockResponse = require('./mock_response')
+var waitFor = require('./wait_for')
 
 /*
  * Tests for all of Json Walker's request methods except getResource, which is
@@ -23,13 +23,6 @@ var JsonWalker = require('../lib/json_walker')
  * getResource tests are more comprehensive.
  */
 describe('The JSON client\'s', function() {
-
-  var request
-  var originalGet
-  var originalPost
-  var originalPut
-  var originalPatch
-  var originalDelete
 
   var get
   var post
@@ -64,11 +57,9 @@ describe('The JSON client\'s', function() {
   }
 
   beforeEach(function() {
+
     api = client.newRequest()
-
-    originalGet = JsonWalker.prototype.get
-    JsonWalker.prototype.get = get = sinon.stub()
-
+    get = sinon.stub(JsonWalker.prototype, 'get')
     callback = sinon.spy()
 
     get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
@@ -79,7 +70,7 @@ describe('The JSON client\'s', function() {
   })
 
   afterEach(function() {
-    JsonWalker.prototype.get = originalGet
+    JsonWalker.prototype.get.restore()
   })
 
   describe('get method', function() {
@@ -117,8 +108,11 @@ describe('The JSON client\'s', function() {
     var result = mockResponse({ result: 'success' }, 201)
 
     beforeEach(function() {
-      originalPost = JsonWalker.prototype.post
-      JsonWalker.prototype.post = post = sinon.stub()
+      post = sinon.stub(JsonWalker.prototype, 'post')
+    })
+
+    afterEach(function() {
+      JsonWalker.prototype.post.restore()
     })
 
     it('should walk along the links and post to the last URI',
@@ -160,13 +154,15 @@ describe('The JSON client\'s', function() {
      * - move post, put, ... from JsonWalker to RequestBuilder
      * - better name for RequestBuilder?
      * - test/localhost.js needs tests for get, post, put, delete, ...!
-     * - extract replacing get, put, post, ... into a test utility
      * - put and post is the same - dry it up
      */
 
     beforeEach(function() {
-      originalPut = JsonWalker.prototype.put
-      JsonWalker.prototype.put = put = sinon.stub()
+      put = sinon.stub(JsonWalker.prototype, 'put')
+    })
+
+    afterEach(function() {
+      JsonWalker.prototype.put.restore()
     })
 
     it('should walk along the links and put to the last URI',

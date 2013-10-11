@@ -17,7 +17,6 @@ var JsonWalker = require('../lib/json_walker')
 describe('getResource for JSON', function() {
 
   var request
-  var originalGet
   var get
   var callback
   var rootUri = 'http://api.io'
@@ -28,13 +27,12 @@ describe('getResource for JSON', function() {
 
   beforeEach(function() {
     api = client.newRequest()
-    originalGet = JsonWalker.prototype.get
-    JsonWalker.prototype.get = get = sinon.stub()
+    get = sinon.stub(JsonWalker.prototype, 'get')
     callback = sinon.spy()
   })
 
   afterEach(function() {
-    JsonWalker.prototype.get = originalGet
+    JsonWalker.prototype.get.restore()
   })
 
   describe('with its basic features', function() {
