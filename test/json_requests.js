@@ -44,6 +44,11 @@ describe('The JSON client\'s', function() {
 
   var result = mockResponse({ result: 'success' })
 
+  var payload = {
+    some: 'stuff',
+    data: 4711
+  }
+
   beforeEach(function() {
     api = client.newRequest()
 
@@ -95,11 +100,6 @@ describe('The JSON client\'s', function() {
 
   describe('post method', function() {
 
-    var postBody = {
-      some: 'stuff',
-      data: 4711
-    }
-
     var result = mockResponse({ result: 'success' }, 201)
 
     beforeEach(function() {
@@ -109,13 +109,13 @@ describe('The JSON client\'s', function() {
 
     it('should walk along the links and post to the last URI',
         function(done) {
-      post.withArgs(postUri, postBody, sinon.match.func).callsArgWithAsync(
+      post.withArgs(postUri, payload, sinon.match.func).callsArgWithAsync(
           2, null, null)
-      api.walk('post_link').post(postBody, callback)
+      api.walk('post_link').post(payload, callback)
       waitFor(
         function() { return post.called || callback.called },
         function() {
-          post.should.have.been.calledWith(postUri, postBody, sinon.match.func)
+          post.should.have.been.calledWith(postUri, payload, sinon.match.func)
           callback.should.have.been.calledWith(null, null)
           done()
         }
@@ -125,9 +125,9 @@ describe('The JSON client\'s', function() {
     it('should call callback with err when post fails',
         function(done) {
       var err = new Error('test error')
-      post.withArgs(postUri, postBody, sinon.match.func).callsArgWithAsync(
+      post.withArgs(postUri, payload, sinon.match.func).callsArgWithAsync(
           2, err, null)
-      api.walk('post_link').post(postBody, callback)
+      api.walk('post_link').post(payload, callback)
       waitFor(
         function() { return callback.called },
         function() {
