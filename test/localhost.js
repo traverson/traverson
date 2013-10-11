@@ -4,6 +4,7 @@ var chai = require('chai')
 chai.should()
 var assert = chai.assert
 var expect = chai.expect
+var log = require('minilog')('test');
 var sinon = require('sinon')
 var sinonChai = require('sinon-chai')
 chai.use(sinonChai)
@@ -39,7 +40,7 @@ describe('The json walker (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        var resultDoc = checkResultResponse()
+        var resultDoc = checkResponse()
         resultDoc.first.should.exist
         resultDoc.first.should.equal(rootUri + 'first')
         done()
@@ -78,7 +79,7 @@ describe('The json walker (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        var resultDoc = checkResultResponse()
+        var resultDoc = checkResponse()
         resultDoc.second.should.exist
         resultDoc.second.should.equal('document')
         done()
@@ -160,7 +161,7 @@ describe('The json walker (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        var resultDoc = checkResultResponse()
+        var resultDoc = checkResponse(404)
         resultDoc.message.should.exist
         resultDoc.message.should.equal('document not found')
         done()
@@ -213,10 +214,45 @@ describe('The json walker (when tested against a local server)', function() {
     )
   })
 
-  function checkResultResponse() {
+  it('should post', function(done) {
+    var payload = {'new': 'document'}
+    api.walk('post_link').post(payload, callback)
+    waitFor(
+      function() { return callback.called },
+      function() {
+        var resultDoc = checkResponse(201)
+        resultDoc.document.should.exist
+        resultDoc.document.should.equal('created')
+        resultDoc.received.should.exist
+        resultDoc.received.should.deep.equal(payload)
+        done()
+      }
+    )
+  })
+
+  it('should put', function(done) {
+    var payload = {'updated': 'document'}
+    api.walk('put_link').put(payload, callback)
+    waitFor(
+      function() { return callback.called },
+      function() {
+        var resultDoc = checkResponse()
+        resultDoc.document.should.exist
+        resultDoc.document.should.equal('updated')
+        resultDoc.received.should.exist
+        resultDoc.received.should.deep.equal(payload)
+        done()
+      }
+    )
+  })
+
+  function checkResponse(httpStatus) {
+    httpStatus = httpStatus || 200
     callback.callCount.should.equal(1)
     var resultResponse = callback.firstCall.args[1]
     resultResponse.should.exist
+    resultResponse.statusCode.should.exist
+    resultResponse.statusCode.should.equal(httpStatus)
     var body = resultResponse.body
     body.should.exist
     var resultDoc = JSON.parse(body)

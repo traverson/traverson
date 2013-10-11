@@ -4,6 +4,7 @@
  * Starts a http server for testing purposes.
  */
 var http = require('http')
+var log = require('minilog')('test_server');
 var url = require('url')
 
 /* jshint -W074 */
@@ -20,7 +21,7 @@ function TraversonTestServer() {
 
   this.stop = function() {
     server.close(function() {
-      console.log('Traverson test server stopped')
+      log.info('Traverson test server stopped')
     })
   }
 
@@ -35,16 +36,33 @@ function TraversonTestServer() {
   }
 
   function printWelcomeMessage(startTime) {
-    console.log('Traverson test server started')
-    console.log('Listening on port: ' + port)
-    console.log('Bind address: ' +  bindAddress)
+    log.info('Traverson test server started')
+    log.info('Listening on port: ' + port)
+    log.info('Bind address: ' +  bindAddress)
   }
 
 
   function serve(request, response) {
+    var path = url.parse(request.url).path
+    switch (request.method) {
+    case 'GET':
+      return handleGet(request, response, path)
+    case 'POST':
+      return handlePost(request, response, path)
+    case 'PUT':
+      return handlePut(request, response, path)
+    case 'PATCH':
+      return handlePatch(request, response, path)
+    case 'DELETE':
+      return handleDelete(request, response, path)
+    default:
+      return serve501(response, request.method)
+    }
+  }
+
+  function handleGet(request, response, path) {
     var host = request.headers.host
     var baseUrl = 'http://' + host
-    var path = url.parse(request.url).path
     switch (path) {
     case '/':
       return serveRoot(response, baseUrl)
@@ -61,10 +79,65 @@ function TraversonTestServer() {
     }
 
     if (path.indexOf('/fixed/') >= 0) {
-      serveForUriTemplate(response, path)
+      return serveForUriTemplate(response, path)
     } else {
-      serve404(response)
+      return serve404(response)
     }
+  }
+
+  function handlePost(request, response, path) {
+    readBody(request, function(err, body) {
+      switch (path) {
+      case '/postings':
+        return servePostings(response, body)
+      default:
+        return serve404(response)
+      }
+    })
+  }
+
+  function handlePut(request, response, path) {
+    readBody(request, function(err, body) {
+      switch (path) {
+      case '/puttings/42':
+        return servePuttings(response, body)
+      default:
+        return serve404(response)
+      }
+    })
+  }
+
+  function handlePatch(request, response, path) {
+    readBody(request, function(err, body) {
+      switch (path) {
+      case '/patch/me':
+        return servePatchMe(response, body)
+      default:
+        return serve404(response)
+      }
+    })
+  }
+
+  function handleDelete(request, response, path) {
+    switch (path) {
+    case '/delete/me':
+      return serveDeleteMe(response)
+    default:
+      return serve404(response)
+    }
+  }
+
+  function readBody(request, callback) {
+
+    var bodyChunks = []
+
+    request.on('data', function(chunk) {
+      bodyChunks.push(chunk)
+    })
+
+    request.on('end', function() {
+      callback(null, bodyChunks.join())
+    })
   }
 
   function serveRoot(response, baseUrl) {
@@ -76,6 +149,10 @@ function TraversonTestServer() {
     response.write('    "nested": { "key": "' + baseUrl + '/third" }\n')
     response.write('  },\n')
     response.write('  "uri_template": "' + baseUrl + '/{param}/fixed{/id}",\n')
+    response.write('  "post_link": "' + baseUrl + '/postings",\n')
+    response.write('  "put_link": "' + baseUrl + '/puttings/42",\n')
+    response.write('  "patch_link": "' + baseUrl + '/patch/me",\n')
+    response.write('  "delete_link": "' + baseUrl + '/delete/me",\n')
     response.write('  "blind_alley": "' + baseUrl + '/does/not/exist",\n')
     response.write('  "garbage": "' + baseUrl + '/junk"\n')
     response.write('}')
@@ -108,6 +185,37 @@ function TraversonTestServer() {
     response.end()
   }
 
+  function servePostings(response, body) {
+    var parsedBody = JSON.parse(body)
+    response.writeHead(201)
+    response.write('{' +
+      '"document": "created", ' +
+      '"received": ' + JSON.stringify(parsedBody) +
+    '}')
+    response.end()
+  }
+
+  function servePuttings(response, body) {
+    var parsedBody = JSON.parse(body)
+    response.writeHead(200)
+    response.write('{' +
+      '"document": "updated", ' +
+      '"received": ' + JSON.stringify(parsedBody) +
+    '}')
+    response.end()
+  }
+
+  function servePatchMe(response, body) {
+    console.log(JSON.stringify(JSON.parse(body)))
+    response.writeHead(204)
+    response.end()
+  }
+
+  function serveDeleteMe(response) {
+    response.writeHead(204)
+    response.end()
+  }
+
   function serveForUriTemplate(response, path) {
     var tokens = path.split('/')
     response.writeHead(200)
@@ -129,7 +237,15 @@ function TraversonTestServer() {
     response.write('{"message": "document not found"}')
     response.end()
   }
+
+  function serve501(response, verb) {
+    response.writeHead(501)
+    response.write('{"message": "http method verb ' + verb +
+      ' not supported"}')
+    response.end()
+  }
 }
+
 /* jshint +W074 */
 
 module.exports = TraversonTestServer
