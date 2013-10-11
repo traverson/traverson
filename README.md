@@ -2,7 +2,9 @@ Traverson - Hypermedia API Consumer
 ===================================
 [![Build Status](https://travis-ci.org/basti1302/traverson.png?branch=master)](https://travis-ci.org/basti1302/traverson)
 [![Dependency Status](https://david-dm.org/basti1302/traveson.png)](https://david-dm.org/basti1302/traverson)
-[![NPM version](https://badge.fury.io/js/traverson.png)](http://badge.fury.io/js/traverson)
+
+[![NPM](https://nodei.co/npm/traverson.png?downloads=true&stars=true)](https://nodei.co/npm/traverson/)
+
 
 Introduction
 ------------
