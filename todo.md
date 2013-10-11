@@ -14,14 +14,14 @@ Docs
 TODOs
 =====
 
-* better name for RequestBuilder?
-* checkHttpStatus - provide http status codes that will be checked only for the last request - needs better name that makes clear that it only relates to the last get()/post()/put()/... call.
+* better name for RequestBuilder? Maybe... ApiClient? HypermediaClient? ?? Also, RequestBuilder currently has two responsibilities: Gathering parameters and preparing the JsonWalker#walk call *AND* issuing the final request (POST, PUT, ...) or delegating that to JsonWalker again, if it is a get. Should be split.
+* RequestClient#checkHttpStatus(200, 201, ...) - provide http status codes that will be checked only for the last request - needs better name that makes clear that it only relates to the last get()/post()/put()/... call.
+* headers(...) - adds custom headers to all requests
+* accept('application/vnd.custom-api.v3+json') -> adds accept headers to all requests
 * Authentication
     * basic auth
     * OAuth
     * ?
-* headers(...) - adds custom headers to all requests
- accept('application/vnd.custom-api.v3+json') -> adds accept headers to all requests
 * Should work in browser (maybe via browserify)
 * application/hal+json:
     * http://stateless.co/hal_specification.html ._ Informal Spec
