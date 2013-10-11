@@ -16,7 +16,6 @@ TODOs
 
 * update Json Walker walk doc comment
 * better name for RequestBuilder?
-* getUri (alternative to get() and getResource()): does not execute last request, delivers URL to callback instead of response or document
 * checkHttpStatus - provide http status codes that will be checked only for the last request - needs better name that makes clear that it only relates to the last get()/post()/put()/... call.
 * Authentication
     * basic auth

@@ -103,6 +103,21 @@ describe('The JSON client\'s', function() {
 
   })
 
+  describe('getUri method', function() {
+    it('should walk along the links and yield the last URI', function(done) {
+      api.walk('get_link').getUri(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          callback.should.have.been.calledWith(null, getUri)
+          get.callCount.should.equal(1)
+          done()
+        }
+      )
+    })
+  })
+
+
   describe('post method', function() {
 
     var result = mockResponse({ result: 'success' }, 201)
