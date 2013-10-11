@@ -206,8 +206,12 @@ function TraversonTestServer() {
   }
 
   function servePatchMe(response, body) {
-    console.log(JSON.stringify(JSON.parse(body)))
-    response.writeHead(204)
+    var parsedBody = JSON.parse(body)
+    response.writeHead(200)
+    response.write('{' +
+      '"document": "patched", ' +
+      '"received": ' + JSON.stringify(parsedBody) +
+    '}')
     response.end()
   }
 

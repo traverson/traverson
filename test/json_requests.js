@@ -55,20 +55,22 @@ describe('The JSON client\'s', function() {
   }
 
   beforeEach(function() {
-
     api = client.newRequest()
-    get = sinon.stub(JsonWalker.prototype, 'get')
     callback = sinon.spy()
 
+    get = sinon.stub(JsonWalker.prototype, 'get')
     get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
         1, null, rootResponse)
     get.withArgs(getUri, sinon.match.func).callsArgWithAsync(1, null, result)
     get.withArgs(postUri, sinon.match.func).callsArgWithAsync(1,
       new Error('GET is not implemented for this URI, only POST'))
+
+    executeRequest = sinon.stub(RequestBuilder.prototype, 'executeRequest')
   })
 
   afterEach(function() {
     JsonWalker.prototype.get.restore()
+    RequestBuilder.prototype.executeRequest.restore()
   })
 
   describe('get method', function() {
@@ -105,14 +107,6 @@ describe('The JSON client\'s', function() {
 
     var result = mockResponse({ result: 'success' }, 201)
 
-    beforeEach(function() {
-      executeRequest = sinon.stub(RequestBuilder.prototype, 'executeRequest')
-    })
-
-    afterEach(function() {
-      RequestBuilder.prototype.executeRequest.restore()
-    })
-
     it('should walk along the links and post to the last URI',
         function(done) {
       executeRequest.withArgs(postUri, sinon.match.func, payload,
@@ -148,14 +142,6 @@ describe('The JSON client\'s', function() {
 
   describe('put method', function() {
 
-    beforeEach(function() {
-      executeRequest = sinon.stub(RequestBuilder.prototype, 'executeRequest')
-    })
-
-    afterEach(function() {
-      RequestBuilder.prototype.executeRequest.restore()
-    })
-
     it('should walk along the links and put to the last URI',
         function(done) {
       executeRequest.withArgs(putUri, sinon.match.func, payload,
@@ -186,6 +172,39 @@ describe('The JSON client\'s', function() {
         }
       )
     })
+  })
 
+  describe('patch method', function() {
+
+    it('should walk along the links and patch to the last URI',
+        function(done) {
+      executeRequest.withArgs(patchUri, sinon.match.func, payload,
+          sinon.match.func).callsArgWithAsync(3, null, null)
+      api.walk('patch_link').patch(payload, callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          executeRequest.should.have.been.calledWith(patchUri, sinon.match.func,
+              payload, sinon.match.func)
+          callback.should.have.been.calledWith(null, null)
+          done()
+        }
+      )
+    })
+
+    it('should call callback with err when patch fails',
+        function(done) {
+      var err = new Error('test error')
+      executeRequest.withArgs(patchUri, sinon.match.func, payload,
+          sinon.match.func).callsArgWithAsync(3, err, null)
+      api.walk('patch_link').patch(payload, callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          callback.should.have.been.calledWith(err)
+          done()
+        }
+      )
+    })
   })
 })

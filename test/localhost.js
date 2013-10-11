@@ -246,6 +246,23 @@ describe('The json walker (when tested against a local server)', function() {
     )
   })
 
+  it('should patch', function(done) {
+    var payload = {'patched': 'document'}
+    api.walk('patch_link').patch(payload, callback)
+    waitFor(
+      function() { return callback.called },
+      function() {
+        var resultDoc = checkResponse()
+        resultDoc.document.should.exist
+        resultDoc.document.should.equal('patched')
+        resultDoc.received.should.exist
+        resultDoc.received.should.deep.equal(payload)
+        done()
+      }
+    )
+  })
+
+
   function checkResponse(httpStatus) {
     httpStatus = httpStatus || 200
     callback.callCount.should.equal(1)
