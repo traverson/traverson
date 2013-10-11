@@ -54,12 +54,8 @@ Some Dreamcode
 TODOs
 =====
 
-* update README.md with new API
 * update json_walker.walk doc comment
 * better name for RequestBuilder?
-* Rename path/path array to link array. Path already has a meaning (the part of
-  the URL after the host name/port, so we should not use it). In fact the
-  correct hypermedia term is link, and this parameter is an array of links.
 * what about accept and content-type headers? API could have some custom
   content type and still be JSON, so we probably can not check that
 * cache final links for path
