@@ -1,12 +1,16 @@
 'use strict';
 
-var ApiClient = require('./lib/api_client')
 var mediaTypes = require('./lib/media_types')
-
+var RequestBuilder = require('./lib/request_builder')
+//
 //require('minilog').enable();
 
 exports.json = {
-  from: function(startUri) {
-    return new ApiClient(mediaTypes.JSON, startUri)
+  from: function(uri) {
+    return {
+      newRequest: function() {
+        return new RequestBuilder(mediaTypes.JSON, uri)
+      }
+    }
   }
 }
