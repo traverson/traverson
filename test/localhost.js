@@ -7,7 +7,7 @@ var expect = chai.expect
 var sinon = require('sinon')
 var sinonChai = require('sinon-chai')
 chai.use(sinonChai)
-var waitFor = require('./wait_for')
+var waitFor = require('./util/wait_for')
 
 var traverson = require('../traverson')
 

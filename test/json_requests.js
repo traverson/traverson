@@ -12,8 +12,8 @@ var traverson = require('../traverson')
 var JsonWalker = require('../lib/json_walker')
 var RequestBuilder = require('../lib/request_builder')
 
-var mockResponse = require('./mock_response')
-var waitFor = require('./wait_for')
+var mockResponse = require('./util/mock_response')
+var waitFor = require('./util/wait_for')
 
 /*
  * Tests for all of Json Walker's request methods except getResource, which is

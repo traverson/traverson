@@ -8,8 +8,8 @@ var sinon = require('sinon')
 var sinonChai = require('sinon-chai')
 chai.use(sinonChai)
 
-var waitFor = require('./wait_for')
-var mockResponse = require('./mock_response')
+var mockResponse = require('./util/mock_response')
+var waitFor = require('./util/wait_for')
 
 var traverson = require('../traverson')
 var JsonWalker = require('../lib/json_walker')
