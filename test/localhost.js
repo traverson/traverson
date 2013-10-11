@@ -214,6 +214,20 @@ describe('The json walker (when tested against a local server)', function() {
     )
   })
 
+  it('should yield the last URI', function(done) {
+    api.walk('second', 'doc').getUri(callback)
+    waitFor(
+      function() { return callback.called },
+      function() {
+        callback.callCount.should.equal(1)
+        var result = callback.firstCall.args[1]
+        result.should.exist
+        result.should.equal(rootUri + 'second/document')
+        done()
+      }
+    )
+  })
+
   it('should post', function(done) {
     var payload = {'new': 'document'}
     api.walk('post_link').post(payload, callback)
@@ -261,7 +275,6 @@ describe('The json walker (when tested against a local server)', function() {
       }
     )
   })
-
 
   function checkResponse(httpStatus) {
     httpStatus = httpStatus || 200
