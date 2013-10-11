@@ -10,6 +10,7 @@ chai.use(sinonChai)
 
 var traverson = require('../traverson')
 var JsonWalker = require('../lib/json_walker')
+var RequestBuilder = require('../lib/request_builder')
 
 var mockResponse = require('./mock_response')
 var waitFor = require('./wait_for')
@@ -25,10 +26,10 @@ var waitFor = require('./wait_for')
 describe('The JSON client\'s', function() {
 
   var get
-  var post
-  var put
-  var patch
-  var deleteMethod
+  var doPost
+  var doPut
+  var doPatch
+  var doDelete
 
   var callback
   var rootUri = 'http://api.io'
@@ -108,22 +109,22 @@ describe('The JSON client\'s', function() {
     var result = mockResponse({ result: 'success' }, 201)
 
     beforeEach(function() {
-      post = sinon.stub(JsonWalker.prototype, 'post')
+      doPost = sinon.stub(RequestBuilder.prototype, 'doPost')
     })
 
     afterEach(function() {
-      JsonWalker.prototype.post.restore()
+      RequestBuilder.prototype.doPost.restore()
     })
 
     it('should walk along the links and post to the last URI',
         function(done) {
-      post.withArgs(postUri, payload, sinon.match.func).callsArgWithAsync(
+      doPost.withArgs(postUri, payload, sinon.match.func).callsArgWithAsync(
           2, null, null)
       api.walk('post_link').post(payload, callback)
       waitFor(
-        function() { return post.called || callback.called },
+        function() { return callback.called },
         function() {
-          post.should.have.been.calledWith(postUri, payload, sinon.match.func)
+          doPost.should.have.been.calledWith(postUri, payload, sinon.match.func)
           callback.should.have.been.calledWith(null, null)
           done()
         }
@@ -133,7 +134,7 @@ describe('The JSON client\'s', function() {
     it('should call callback with err when post fails',
         function(done) {
       var err = new Error('test error')
-      post.withArgs(postUri, payload, sinon.match.func).callsArgWithAsync(
+      doPost.withArgs(postUri, payload, sinon.match.func).callsArgWithAsync(
           2, err, null)
       api.walk('post_link').post(payload, callback)
       waitFor(
@@ -151,29 +152,28 @@ describe('The JSON client\'s', function() {
 
     /*
      * Refactorings:
-     * - move post, put, ... from JsonWalker to RequestBuilder
      * - better name for RequestBuilder?
      * - test/localhost.js needs tests for get, post, put, delete, ...!
      * - put and post is the same - dry it up
      */
 
     beforeEach(function() {
-      put = sinon.stub(JsonWalker.prototype, 'put')
+      doPut = sinon.stub(RequestBuilder.prototype, 'doPut')
     })
 
     afterEach(function() {
-      JsonWalker.prototype.put.restore()
+      RequestBuilder.prototype.doPut.restore()
     })
 
     it('should walk along the links and put to the last URI',
         function(done) {
-      put.withArgs(putUri, payload, sinon.match.func).callsArgWithAsync(
+      doPut.withArgs(putUri, payload, sinon.match.func).callsArgWithAsync(
           2, null, null)
       api.walk('put_link').put(payload, callback)
       waitFor(
-        function() { return put.called || callback.called },
+        function() { return callback.called },
         function() {
-          put.should.have.been.calledWith(putUri, payload, sinon.match.func)
+          doPut.should.have.been.calledWith(putUri, payload, sinon.match.func)
           callback.should.have.been.calledWith(null, null)
           done()
         }
@@ -183,7 +183,7 @@ describe('The JSON client\'s', function() {
     it('should call callback with err when put fails',
         function(done) {
       var err = new Error('test error')
-      put.withArgs(putUri, payload, sinon.match.func).callsArgWithAsync(
+      doPut.withArgs(putUri, payload, sinon.match.func).callsArgWithAsync(
           2, err, null)
       api.walk('put_link').put(payload, callback)
       waitFor(
