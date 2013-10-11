@@ -21,14 +21,18 @@ Table of Contents
 -----------------
 
 * [Documentation by Example](#documentation-by-example)
+    * [Get Full HTTP Response](#more-control-receive-the-full-http-response)
+    * [Pass Links as Array](#pass-a-link-array)
+    * [POST, PUT, DELETE and PATCH](#post-put-delete-and-patch)
     * [Error Handling](#error-handling)
     * [JSONPath](#jsonpath)
     * [URI Templates](#uri-templates)
-* [Caching](#caching)
-* [Customizing Traverson](#customizing-traverson)
-    * [Enabling/Disabling Features](#enablingdisabling-features)
-    * [Overriding](#overriding-parts-of-traversons-walk-behaviour)
-* [Other Media Types](#other-media-types-besides-json)
+* [Features From the Future](#features-from-the-future)
+    * [Caching](#caching)
+    * [Customizing Traverson](#customizing-traverson)
+        * [Enabling/Disabling Features](#enablingdisabling-features)
+        * [Overriding](#overriding-parts-of-traversons-walk-behaviour)
+    * [Other Media Types](#other-media-types-besides-json)
 
 Documentation by Example
 ------------------------
@@ -81,7 +85,7 @@ Because the list of links given to `walk` is exhausted now (`resource` was the l
     We have walked the path and reached the final resource.
     { "the_document": "that we really wanted to have", "with": "lots of interesting and valuable content", ...  }
 
-### More control: Receive the full HTTP response
+### More Control: Receive the Full HTTP Response
 
 The example above chained the `getResource` method to the `walk` method. For this method, Traverson will parse the JSON from the last HTTP response and pass the resulting JavaScript object to your callback. In certain situations you might want more control and would like to receive the full HTTP response object instead of the body, already parsed to an object. This is what the `get` method is for:
 
@@ -113,7 +117,7 @@ is equivalent to
 
 If the first argument to `walk` is an array, all remaining arguments will be ignored, though.
 
-### `post`, `put`, `delete` and `patch`
+### POST, PUT, DELETE and PATCH
 
 So far we only have concerned ourselves with fetching information from a REST API. Of course, Traverson also supports the usual HTTP method verbs to modify data, that is, POST, PUT, DELETE and PATCH. HEAD and OPTIONS are currently not implemented, though.
 
