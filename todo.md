@@ -51,16 +51,14 @@ Some Dreamcode
 * accept - sets accept header for requests
 * checkHttpStatus - sets up a check so that callback is only called with result, if the last request hat one of the given http status, otherwise callback is called with error.
 
-Short Term Refactorings
-=======================
-
-* better name for RequestBuilder?
-* put and post is the same - dry it up
-
 TODOs
 =====
 
 * test/localhost.js needs tests for get, post, put, delete, ...!
+* finish patch & delete
+* update README.md with new API
+* update json_walker.walk doc comment
+* better name for RequestBuilder?
 * Rename path/path array to link array. Path already has a meaning (the part of
   the URL after the host name/port, so we should not use it). In fact the
   correct hypermedia term is link, and this parameter is an array of links.
