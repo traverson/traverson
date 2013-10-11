@@ -14,6 +14,14 @@ var mockResponse = require('./mock_response')
 var traverson = require('../traverson')
 var JsonWalker = require('../lib/json_walker')
 
+/*
+ * Tests for all of Json Walker's request methods except getResource, which is
+ * tested extensively in json_get_resource.js. This test suite contains tests
+ * for get, post, put, delete and patch. Each http method verb has it's own
+ * describe-section. Since most of the code path is the same for getResource
+ * and get, post, ..., there are only a few basic tests here for each verb. The
+ * getResource tests are more comprehensive.
+ */
 describe('The JSON client\'s', function() {
 
   var request
@@ -97,12 +105,12 @@ describe('The JSON client\'s', function() {
     beforeEach(function() {
       originalPost = JsonWalker.prototype.post
       JsonWalker.prototype.post = post = sinon.stub()
-      post.withArgs(postUri, postBody, sinon.match.func).callsArgWithAsync(
-          2, null, null)
     })
 
     it('should walk along the links and post to the last URI',
         function(done) {
+      post.withArgs(postUri, postBody, sinon.match.func).callsArgWithAsync(
+          2, null, null)
       api.walk('post_link').post(postBody, callback)
       waitFor(
         function() { return post.called || callback.called },
@@ -114,12 +122,12 @@ describe('The JSON client\'s', function() {
       )
     })
 
-    it.skip('should call callback with err when walking along the links fails',
+    it('should call callback with err when post fails',
         function(done) {
       var err = new Error('test error')
-      get.withArgs(rootUri + '/link/to/resource', sinon.match.func).
-          callsArgWithAsync(1, err)
-      api.walk('post_link', 'another_link').post(callback)
+      post.withArgs(postUri, postBody, sinon.match.func).callsArgWithAsync(
+          2, err, null)
+      api.walk('post_link').post(postBody, callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -130,6 +138,5 @@ describe('The JSON client\'s', function() {
     })
 
   })
-
 
 })
