@@ -143,9 +143,9 @@ describe('The json walker (when tested against a local server)', function() {
         error.uri.should.equal(rootUri + 'does/not/exist')
         error.httpStatus.should.equal(404)
 
-        var resultResponse = callback.firstCall.args[1]
-        resultResponse.should.exist
-        var body = resultResponse.body
+        var response = callback.firstCall.args[1]
+        response.should.exist
+        var body = response.body
         body.should.exist
         var resultDoc = JSON.parse(body)
         resultDoc.message.should.exist
@@ -276,17 +276,33 @@ describe('The json walker (when tested against a local server)', function() {
     )
   })
 
+  it('should delete', function(done) {
+    api.walk('delete_link').delete(callback)
+    waitFor(
+      function() { return callback.called },
+      function() {
+        var response = checkResponseNoBody(204)
+        done()
+      }
+    )
+  })
+
   function checkResponse(httpStatus) {
-    httpStatus = httpStatus || 200
-    callback.callCount.should.equal(1)
-    var resultResponse = callback.firstCall.args[1]
-    resultResponse.should.exist
-    resultResponse.statusCode.should.exist
-    resultResponse.statusCode.should.equal(httpStatus)
-    var body = resultResponse.body
+    var response = checkResponseNoBody(httpStatus)
+    var body = response.body
     body.should.exist
     var resultDoc = JSON.parse(body)
     return resultDoc
+  }
+
+  function checkResponseNoBody(httpStatus) {
+    httpStatus = httpStatus || 200
+    callback.callCount.should.equal(1)
+    var response = callback.firstCall.args[1]
+    response.should.exist
+    response.statusCode.should.exist
+    response.statusCode.should.equal(httpStatus)
+    return response
   }
 
   function checkResultDoc() {
