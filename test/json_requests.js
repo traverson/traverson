@@ -207,4 +207,38 @@ describe('The JSON client\'s', function() {
       )
     })
   })
+
+  describe('delete method', function() {
+
+    it('should walk along the links and delete the last URI',
+        function(done) {
+      executeRequest.withArgs(deleteUri, sinon.match.func, null,
+          sinon.match.func).callsArgWithAsync(3, null, null)
+      api.walk('delete_link').delete(callback)
+      waitFor(
+        function() { return executeRequest.called || callback.called },
+        function() {
+          executeRequest.should.have.been.calledWith(deleteUri,
+              sinon.match.func, null, sinon.match.func)
+          callback.should.have.been.calledWith(null, null)
+          done()
+        }
+      )
+    })
+
+    it('should call callback with err when delete fails',
+        function(done) {
+      var err = new Error('test error')
+      executeRequest.withArgs(deleteUri, sinon.match.func, null,
+          sinon.match.func).callsArgWithAsync(3, err, null)
+      api.walk('delete_link').delete(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          callback.should.have.been.calledWith(err)
+          done()
+        }
+      )
+    })
+  })
 })
