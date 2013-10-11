@@ -1,17 +1,5 @@
-Some Dreamcode
-==============
-
-    myApi.walk('user')
-        .withTemplateParameters({user_id: 'basti1302'})
-        .getUri(callback) // does not execute last request, delivers URL
-
-    myApi.walk('link')
-        .accept('application/vnd.custom-api.v3+json')
-        .checkHttpStatus(200, 201)
-        .post(body, callback)
-
-
-    /* same is available for the other walkers (xml, hal, html, ...) */
+Docs
+====
 
 * Write a more formal API doc in addition to the documentation by example in README.md. Notes:
     * `from` - returns a new walker with initialised startUri each time
@@ -26,6 +14,8 @@ Some Dreamcode
 TODOs
 =====
 
+* update Json Walker walk doc comment
+* better name for RequestBuilder?
 * getUri (alternative to get() and getResource()): does not execute last request, delivers URL to callback instead of response or document
 * checkHttpStatus - provide http status codes that will be checked only for the last request - needs better name that makes clear that it only relates to the last get()/post()/put()/... call.
 * Authentication
@@ -33,13 +23,13 @@ TODOs
     * OAuth
     * ?
 * headers(...) - adds custom headers to all requests
-* accept('application/vnd.custom-api.v3+json') -> adds accept headers to all requests
+ accept('application/vnd.custom-api.v3+json') -> adds accept headers to all requests
 * Should work in browser (maybe via browserify)
-* better name for RequestBuilder?
-* update json_walker.walk doc comment
 * application/hal+json:
-    * http://stateless.co/hal_specification.html
-    * http://tools.ietf.org/html/draft-kelly-json-hal-06
+    * http://stateless.co/hal_specification.html ._ Informal Spec
+    * http://tools.ietf.org/html/draft-kelly-json-hal-06 Formal Spec
+    * https://github.com/mikekelly/hal_specification/wiki/APIs ._ Public HAL APIs
+    * https://github.com/xcambar/halbert - node hal parser
 * what about accept and content-type headers? API could have some custom
   content type and still be JSON, so we probably can not check that
 * cache final links for path
@@ -57,4 +47,4 @@ TODOs
 * support more media types in addition to JSON:
     * xml?
     * html (jsdom, htmlparser2, cheerio, .... )
-    * application/hal+xml? Does anybody use this? There's no RFC for that, but http://stateless.co/hal_specification.html mentions it.
+    * application/hal+xml? Does anybody use this? There's no RFC for that, but http://stateless.co/hal_specification.html ._ mentions it.
