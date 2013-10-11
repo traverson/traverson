@@ -27,6 +27,7 @@ TODOs
     * http://stateless.co/hal_specification.html ._ Informal Spec
     * http://tools.ietf.org/html/draft-kelly-json-hal-06 Formal Spec
     * https://github.com/mikekelly/hal_specification/wiki/APIs ._ Public HAL APIs
+    * http://haltalk.herokuapp.com/explorer/browser.html#/ (showcase in browser + public API)
     * https://github.com/xcambar/halbert - node hal parser
 * what about accept and content-type headers? API could have some custom
   content type and still be JSON, so we probably can not check that
