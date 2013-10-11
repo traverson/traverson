@@ -14,7 +14,6 @@ Docs
 TODOs
 =====
 
-* update Json Walker walk doc comment
 * better name for RequestBuilder?
 * checkHttpStatus - provide http status codes that will be checked only for the last request - needs better name that makes clear that it only relates to the last get()/post()/put()/... call.
 * Authentication
