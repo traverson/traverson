@@ -26,9 +26,17 @@ describe('The JSON client\'s', function() {
 
   var request
   var originalGet
-  var get
   var originalPost
+  var originalPut
+  var originalPatch
+  var originalDelete
+
+  var get
   var post
+  var put
+  var patch
+  var deleteMethod
+
   var callback
   var rootUri = 'http://api.io'
   var client = traverson.json.from(rootUri)
@@ -36,10 +44,16 @@ describe('The JSON client\'s', function() {
 
   var getUri = rootUri + '/link/to/resource'
   var postUri = rootUri + '/post/something/here'
+  var putUri = rootUri + '/put/something/here'
+  var patchUri = rootUri + '/patch/me'
+  var deleteUri = rootUri + '/delete/me'
 
   var rootResponse = mockResponse({
     'get_link': getUri,
-    'post_link': postUri
+    'post_link': postUri,
+    'put_link': putUri,
+    'patch_link': patchUri,
+    'delete_link': deleteUri
   })
 
   var result = mockResponse({ result: 'success' })
@@ -139,4 +153,51 @@ describe('The JSON client\'s', function() {
 
   })
 
+  describe('put method', function() {
+
+    /*
+     * Refactorings:
+     * - move post, put, ... from JsonWalker to RequestBuilder
+     * - better name for RequestBuilder?
+     * - test/localhost.js needs tests for get, post, put, delete, ...!
+     * - extract replacing get, put, post, ... into a test utility
+     * - put and post is the same - dry it up
+     */
+
+    beforeEach(function() {
+      originalPut = JsonWalker.prototype.put
+      JsonWalker.prototype.put = put = sinon.stub()
+    })
+
+    it('should walk along the links and put to the last URI',
+        function(done) {
+      put.withArgs(putUri, payload, sinon.match.func).callsArgWithAsync(
+          2, null, null)
+      api.walk('put_link').put(payload, callback)
+      waitFor(
+        function() { return put.called || callback.called },
+        function() {
+          put.should.have.been.calledWith(putUri, payload, sinon.match.func)
+          callback.should.have.been.calledWith(null, null)
+          done()
+        }
+      )
+    })
+
+    it('should call callback with err when put fails',
+        function(done) {
+      var err = new Error('test error')
+      put.withArgs(putUri, payload, sinon.match.func).callsArgWithAsync(
+          2, err, null)
+      api.walk('put_link').put(payload, callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          callback.should.have.been.calledWith(err)
+          done()
+        }
+      )
+    })
+
+  })
 })
