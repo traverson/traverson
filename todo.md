@@ -14,6 +14,15 @@ Docs
 TODOs
 =====
 
+* WalkerBuilder#withRequestOptions({...}) - use the given options with all requests
+    - internally, might use request.defaults(options) or pass them explicitely at each request
+    - this might already be sufficient for
+        - headers
+        - accept
+        - basic auth, OAuth
+    - because everything that request offers is then available to Traverson clients
+* WalkerBuilder#withLastRequestOptions({...}) - use the given options, but only in the last request
+  (the one which get/post/put/getResource control)
 * WalkerBuilder#checkHttpStatus(200, 201, ...) - provide http status codes that will be checked only for the last request - needs better name that makes clear that it only relates to the last get()/post()/put()/... call.
 * headers(...) - adds custom headers to all requests
 * accept('application/vnd.custom-api.v3+json') -> adds accept headers to all requests
