@@ -3,7 +3,7 @@
 var mediaTypes = require('./lib/media_types')
 var WalkerBuilder = require('./lib/walker_builder')
 
-//require('minilog').enable();
+require('minilog').enable();
 
 exports.json = {
   from: function(uri) {
