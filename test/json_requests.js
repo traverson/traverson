@@ -10,7 +10,7 @@ chai.use(sinonChai)
 
 var traverson = require('../traverson')
 var JsonWalker = require('../lib/json_walker')
-var RequestBuilder = require('../lib/request_builder')
+var WalkerBuilder = require('../lib/walker_builder')
 
 var mockResponse = require('./util/mock_response')
 var waitFor = require('./util/wait_for')
@@ -65,12 +65,12 @@ describe('The JSON client\'s', function() {
     get.withArgs(postUri, sinon.match.func).callsArgWithAsync(1,
       new Error('GET is not implemented for this URI, only POST'))
 
-    executeRequest = sinon.stub(RequestBuilder.prototype, 'executeRequest')
+    executeRequest = sinon.stub(WalkerBuilder.prototype, 'executeRequest')
   })
 
   afterEach(function() {
     JsonWalker.prototype.get.restore()
-    RequestBuilder.prototype.executeRequest.restore()
+    WalkerBuilder.prototype.executeRequest.restore()
   })
 
   describe('get method', function() {
