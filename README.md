@@ -28,6 +28,7 @@ Table of Contents
     * [Error Handling](#error-handling)
     * [JSONPath](#jsonpath)
     * [URI Templates](#uri-templates)
+    * [Headers and Authentication](#headers-http-basicauth-oauth-and-whatnot)
 * [Features From the Future](#features-from-the-future)
     * [Caching](#caching)
     * [Customizing Traverson](#customizing-traverson)
@@ -301,6 +302,18 @@ The first element of the template parameter array (`null`) will actually be used
 
 More information on URI templates: [RFC 6570](http://tools.ietf.org/html/rfc6570). Traverson uses the module [uri-templates](https://github.com/grncdr/uri-template) to resolve URI
 templates.
+
+### Headers, HTTP Basic Auth, OAuth and Whatnot
+
+Traverson uses Mikeal Rogers' [request](https://github.com/mikeal/request) module for all HTTP requests. You can use all options that `request` provides with Traverson by passing an options object into the `withRequestOptions` method, like this:
+
+    api.walk('link_one', 'link_two', 'link_three')
+      .withRequestOptions({ headers: { 'x-my-special-header': 'foo' } })
+      .getResource(function(error, document) {
+        ...
+    })
+
+This would add the header `x-my-special-header` to all requests issued for this three link walk. Check out the [request docs](https://github.com/mikeal/request#requestoptions-callback) to see which options to use. Among other things, you can set custom headers, do HTTP basic authentication, [OAuth](https://github.com/mikeal/request#oauth-signing) and other cool stuff.
 
 Features From the Future
 ------------------------

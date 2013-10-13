@@ -40,7 +40,7 @@ describe('The json walker (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        var resultDoc = checkResponse()
+        var resultDoc = checkResponseWithBody()
         resultDoc.first.should.exist
         resultDoc.first.should.equal(rootUri + 'first')
         done()
@@ -79,7 +79,7 @@ describe('The json walker (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        var resultDoc = checkResponse()
+        var resultDoc = checkResponseWithBody()
         resultDoc.second.should.exist
         resultDoc.second.should.equal('document')
         done()
@@ -161,7 +161,7 @@ describe('The json walker (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        var resultDoc = checkResponse(404)
+        var resultDoc = checkResponseWithBody(404)
         resultDoc.message.should.exist
         resultDoc.message.should.equal('document not found')
         done()
@@ -234,7 +234,7 @@ describe('The json walker (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        var resultDoc = checkResponse(201)
+        var resultDoc = checkResponseWithBody(201)
         resultDoc.document.should.exist
         resultDoc.document.should.equal('created')
         resultDoc.received.should.exist
@@ -250,7 +250,7 @@ describe('The json walker (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        var resultDoc = checkResponse()
+        var resultDoc = checkResponseWithBody()
         resultDoc.document.should.exist
         resultDoc.document.should.equal('updated')
         resultDoc.received.should.exist
@@ -266,7 +266,7 @@ describe('The json walker (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        var resultDoc = checkResponse()
+        var resultDoc = checkResponseWithBody()
         resultDoc.document.should.exist
         resultDoc.document.should.equal('patched')
         resultDoc.received.should.exist
@@ -281,21 +281,39 @@ describe('The json walker (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        var response = checkResponseNoBody(204)
+        var response = checkResponse(204)
         done()
       }
     )
   })
 
-  function checkResponse(httpStatus) {
-    var response = checkResponseNoBody(httpStatus)
+  it('should use provided request options', function(done) {
+    api.walk()
+      .withRequestOptions({ headers: { 'x-my-special-header': 'foo' } })
+      .get(callback)
+    waitFor(
+      function() { return callback.called },
+      function() {
+        var resultDoc = checkResponseWithBody()
+        var headers = resultDoc.requestHeaders
+        headers.should.exist
+        var mySpecialHeader = headers['x-my-special-header']
+        mySpecialHeader.should.exist
+        mySpecialHeader.should.equal('foo')
+        done()
+      }
+    )
+  })
+
+  function checkResponseWithBody(httpStatus) {
+    var response = checkResponse(httpStatus)
     var body = response.body
     body.should.exist
     var resultDoc = JSON.parse(body)
     return resultDoc
   }
 
-  function checkResponseNoBody(httpStatus) {
+  function checkResponse(httpStatus) {
     httpStatus = httpStatus || 200
     callback.callCount.should.equal(1)
     var response = callback.firstCall.args[1]
