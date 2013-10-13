@@ -43,6 +43,10 @@ function TraversonTestServer() {
 
 
   function serve(request, response) {
+    log.debug('serving request: ')
+    log.debug(request.method + ' ' + request.url)
+    log.debug('headers: ')
+    log.debug(request.headers)
     var path = url.parse(request.url).path
     switch (request.method) {
     case 'GET':
@@ -56,7 +60,7 @@ function TraversonTestServer() {
     case 'DELETE':
       return handleDelete(request, response, path)
     default:
-      return serve501(response, request.method)
+      return serve501(request, response, request.method)
     }
   }
 
@@ -65,23 +69,23 @@ function TraversonTestServer() {
     var baseUrl = 'http://' + host
     switch (path) {
     case '/':
-      return serveRoot(response, baseUrl)
+      return serveRoot(request, response, baseUrl)
     case '/first':
-      return serveFirst(response)
+      return serveFirst(request, response)
     case '/second':
-      return serveSecond(response, baseUrl)
+      return serveSecond(request, response, baseUrl)
     case '/second/document':
-      return serveSecondDoc(response)
+      return serveSecondDoc(request, response)
     case '/third':
-      return serveThird(response)
+      return serveThird(request, response)
     case '/junk':
-      return serveJunk(response)
+      return serveJunk(request, response)
     }
 
     if (path.indexOf('/fixed/') >= 0) {
-      return serveForUriTemplate(response, path)
+      return serveForUriTemplate(request, response, path)
     } else {
-      return serve404(response)
+      return serve404(request, response)
     }
   }
 
@@ -89,9 +93,9 @@ function TraversonTestServer() {
     readBody(request, function(err, body) {
       switch (path) {
       case '/postings':
-        return servePostings(response, body)
+        return servePostings(request, response, body)
       default:
-        return serve404(response)
+        return serve404(request, response)
       }
     })
   }
@@ -100,9 +104,9 @@ function TraversonTestServer() {
     readBody(request, function(err, body) {
       switch (path) {
       case '/puttings/42':
-        return servePuttings(response, body)
+        return servePuttings(request, response, body)
       default:
-        return serve404(response)
+        return serve404(request, response)
       }
     })
   }
@@ -111,9 +115,9 @@ function TraversonTestServer() {
     readBody(request, function(err, body) {
       switch (path) {
       case '/patch/me':
-        return servePatchMe(response, body)
+        return servePatchMe(request, response, body)
       default:
-        return serve404(response)
+        return serve404(request, response)
       }
     })
   }
@@ -121,9 +125,9 @@ function TraversonTestServer() {
   function handleDelete(request, response, path) {
     switch (path) {
     case '/delete/me':
-      return serveDeleteMe(response)
+      return serveDeleteMe(request, response)
     default:
-      return serve404(response)
+      return serve404(request, response)
     }
   }
 
@@ -140,112 +144,102 @@ function TraversonTestServer() {
     })
   }
 
-  function serveRoot(response, baseUrl) {
+  function serveRoot(request, response, baseUrl) {
     response.writeHead(200)
-    response.write('{\n')
-    response.write('  "first": "' + baseUrl + '/first",\n')
-    response.write('  "second": "' + baseUrl + '/second",\n')
-    response.write('  "jsonpath": {\n')
-    response.write('    "nested": { "key": "' + baseUrl + '/third" }\n')
-    response.write('  },\n')
-    response.write('  "uri_template": "' + baseUrl + '/{param}/fixed{/id}",\n')
-    response.write('  "post_link": "' + baseUrl + '/postings",\n')
-    response.write('  "put_link": "' + baseUrl + '/puttings/42",\n')
-    response.write('  "patch_link": "' + baseUrl + '/patch/me",\n')
-    response.write('  "delete_link": "' + baseUrl + '/delete/me",\n')
-    response.write('  "blind_alley": "' + baseUrl + '/does/not/exist",\n')
-    response.write('  "garbage": "' + baseUrl + '/junk"\n')
-    response.write('}')
-    response.end()
+    var content = {
+      'first': baseUrl + '/first',
+      'second': baseUrl + '/second',
+      'jsonpath': {
+        'nested': { 'key': baseUrl + '/third' }
+      },
+      'uri_template': baseUrl + '/{param}/fixed{/id}',
+      'post_link': baseUrl + '/postings',
+      'put_link': baseUrl + '/puttings/42',
+      'patch_link': baseUrl + '/patch/me',
+      'delete_link': baseUrl + '/delete/me',
+      'blind_alley': baseUrl + '/does/not/exist',
+      'garbage': baseUrl + '/junk'
+    }
+    endResponse(content, request, response)
   }
 
-  function serveFirst(response) {
+  function serveFirst(request, response) {
     response.writeHead(200)
-    response.write('{"first": "document"}')
-    response.end()
+    endResponse({'first': 'document'}, request, response)
   }
 
-  function serveSecond(response, baseUrl) {
+  function serveSecond(request, response, baseUrl) {
     response.writeHead(200)
-    response.write('{')
-    response.write('"doc": "' + baseUrl + '/second/document' + '"')
-    response.write('}')
-    response.end()
+    endResponse({ 'doc': baseUrl + '/second/document' }, request, response)
   }
 
-  function serveSecondDoc(response) {
+  function serveSecondDoc(request, response) {
     response.writeHead(200)
-    response.write('{"second": "document"}')
-    response.end()
+    endResponse({ 'second': 'document' }, request, response)
   }
 
-  function serveThird(response) {
+  function serveThird(request, response) {
     response.writeHead(200)
-    response.write('{"third": "document"}')
-    response.end()
+    endResponse({ 'third': 'document' }, request, response)
   }
 
-  function servePostings(response, body) {
+  function servePostings(request, response, body) {
     var parsedBody = JSON.parse(body)
     response.writeHead(201)
-    response.write('{' +
-      '"document": "created", ' +
-      '"received": ' + JSON.stringify(parsedBody) +
-    '}')
-    response.end()
+    endResponse({ 'document': 'created', 'received': parsedBody }, request,
+        response)
   }
 
-  function servePuttings(response, body) {
+  function servePuttings(request, response, body) {
     var parsedBody = JSON.parse(body)
     response.writeHead(200)
-    response.write('{' +
-      '"document": "updated", ' +
-      '"received": ' + JSON.stringify(parsedBody) +
-    '}')
-    response.end()
+    endResponse({ 'document': 'updated', 'received': parsedBody }, request,
+        response)
   }
 
-  function servePatchMe(response, body) {
+  function servePatchMe(request, response, body) {
     var parsedBody = JSON.parse(body)
     response.writeHead(200)
-    response.write('{' +
-      '"document": "patched", ' +
-      '"received": ' + JSON.stringify(parsedBody) +
-    '}')
-    response.end()
+    endResponse({ 'document': 'patched', 'received': parsedBody }, request,
+        response)
   }
 
-  function serveDeleteMe(response) {
+  function serveDeleteMe(request, response) {
     response.writeHead(204)
-    response.end()
+    endResponse({}, request, response)
   }
 
-  function serveForUriTemplate(response, path) {
+  function serveForUriTemplate(request, response, path) {
     var tokens = path.split('/')
     response.writeHead(200)
-    response.write('{"some": "document", "param": "' + tokens[1] + '", "id": ' +
-      tokens[3] + '}')
-    response.end()
+    endResponse({ 'some': 'document', 'param': tokens[1], 'id': tokens[3] },
+        request, response)
   }
 
-  function serveJunk(response) {
+  function serveJunk(request, response) {
     // server syntacically incorrect JSON
     response.writeHead(200)
     response.write('{ this will :: not parse')
-    response.end()
+    endResponse(null, request, response)
   }
 
 
-  function serve404(response) {
+  function serve404(request, response) {
     response.writeHead(404)
-    response.write('{"message": "document not found"}')
-    response.end()
+    endResponse({'message': 'document not found'}, request, response)
   }
 
-  function serve501(response, verb) {
+  function serve501(request, response, verb) {
     response.writeHead(501)
-    response.write('{"message": "http method verb ' + verb +
-      ' not supported"}')
+    endResponse({'message': 'http method verb ' + verb + ' not supported'},
+        request, response)
+  }
+
+  function endResponse(content, request, response) {
+    if (content) {
+      content.requestHeaders = request.headers
+      response.write(JSON.stringify(content))
+    }
     response.end()
   }
 }

@@ -123,7 +123,7 @@ describe('The json walker (when tested against a local server)', function() {
         var resultDoc = checkResultDoc()
         resultDoc.some.should.equal('document')
         resultDoc.param.should.equal('foobar')
-        resultDoc.id.should.equal(13)
+        resultDoc.id.should.equal('13')
         done()
       }
     )
