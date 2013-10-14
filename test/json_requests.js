@@ -38,13 +38,15 @@ describe('The JSON client\'s', function() {
   var putUri = rootUri + '/put/something/here'
   var patchUri = rootUri + '/patch/me'
   var deleteUri = rootUri + '/delete/me'
+  var templateUri = rootUri + '/template/{param}'
 
   var rootResponse = mockResponse({
     'get_link': getUri,
     'post_link': postUri,
     'put_link': putUri,
     'patch_link': patchUri,
-    'delete_link': deleteUri
+    'delete_link': deleteUri,
+    'template_link': templateUri
   })
 
   var result = mockResponse({ result: 'success' })
@@ -110,6 +112,22 @@ describe('The JSON client\'s', function() {
         function() { return callback.called },
         function() {
           callback.should.have.been.calledWith(null, getUri)
+          get.callCount.should.equal(1)
+          done()
+        }
+      )
+    })
+
+    it('should yield resolved URI if last URI is a URI template',
+        function(done) {
+      api.walk('template_link')
+        .withTemplateParameters({ param: 'substituted' })
+        .getUri(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          callback.should.have.been.calledWith(null,
+              rootUri + '/template/substituted')
           get.callCount.should.equal(1)
           done()
         }

@@ -17,12 +17,6 @@ TODOs
 * WalkerBuilder#withLastRequestOptions({...}) - use the given options, but only in the last request (the one which get/post/put/getResource control)
 * WalkerBuilder#withFirtRequestOptions({...}) - use the given options, but only in the first request - is there a use case for this?
 * WalkerBuilder#checkHttpStatus(200, 201, ...) - provide http status codes that will be checked only for the last request - needs better name that makes clear that it only relates to the last get()/post()/put()/... call.
-* headers(...) - adds custom headers to all requests
-* accept('application/vnd.custom-api.v3+json') -> adds accept headers to all requests
-* Authentication
-    * basic auth
-    * OAuth
-    * ?
 * Should work in browser (maybe via browserify)
 * application/hal+json:
     * http://stateless.co/hal_specification.html ._ Informal Spec
@@ -48,3 +42,4 @@ TODOs
     * xml?
     * html (jsdom, htmlparser2, cheerio, .... )
     * application/hal+xml? Does anybody use this? There's no RFC for that, but http://stateless.co/hal_specification.html ._ mentions it.
+* Hooks: Set filters/hooks (callbacks) on WalkerBuilder which get called on each hop and can influence what happens

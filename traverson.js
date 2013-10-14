@@ -14,3 +14,13 @@ exports.json = {
     }
   }
 }
+
+exports.jsonHal = {
+  from: function(uri) {
+    return {
+      newRequest: function() {
+        return new WalkerBuilder(mediaTypes.JSON_HAL, uri)
+      }
+    }
+  }
+}
