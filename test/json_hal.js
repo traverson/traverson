@@ -22,8 +22,9 @@ describe('The JSON-HAL walker\'s', function() {
   var rootDoc = {
     '_links': {
       'self': { 'href': '/' },
-      'curies': [{ 'name': 'ea', 'href': 'http://example.com/docs/rels/{rel}',
-          'templated': true }],
+      // re-enable when https://github.com/xcambar/halbert/issues/5 is fixed
+      /*'curies': [{ 'name': 'ea', 'href': 'http://example.com/docs/rels/{rel}',
+          'templated': true }],*/
       'ea:orders': { 'href': '/orders' }
     }
   }
@@ -31,10 +32,13 @@ describe('The JSON-HAL walker\'s', function() {
   var ordersDoc = {
     '_links': {
       'self': { 'href': '/orders' },
-      'curies': [{ 'name': 'ea', 'href': 'http://example.com/docs/rels/{rel}',
-          'templated': true }],
+      // re-enable when https://github.com/xcambar/halbert/issues/5 is fixed
+      /*'curies': [{ 'name': 'ea', 'href': 'http://example.com/docs/rels/{rel}',
+          'templated': true }],*/
       'next': { 'href': '/orders?page=2' },
       'ea:find': { 'href': '/orders{/id}', 'templated': true },
+      // re-enable when https://github.com/xcambar/halbert/issues/5 is fixed
+      /*
       'ea:admin': [{
         'href': '/admins/2',
         'title': 'Fred'
@@ -42,6 +46,7 @@ describe('The JSON-HAL walker\'s', function() {
         'href': '/admins/5',
         'title': 'Kate'
       }]
+      */
     },
     'currentlyProcessing': 14,
     'shippedToday': 20,
@@ -71,8 +76,11 @@ describe('The JSON-HAL walker\'s', function() {
   var singleOrderDoc = {
     '_links': {
       'self': { 'href': '/orders/13' },
+      // re-enable when https://github.com/xcambar/halbert/issues/5 is fixed
+      /*
       'curies': [{ 'name': 'ea', 'href': 'http://example.com/docs/rels/{rel}',
           'templated': true }],
+      */
       'ea:customer': { 'href': '/customers/4711' },
       'ea:basket': { 'href': '/baskets/4712' }
     },
@@ -84,8 +92,11 @@ describe('The JSON-HAL walker\'s', function() {
   var customerDoc = {
     '_links': {
       'self': { 'href': '/customer/4711' },
+      // re-enable when https://github.com/xcambar/halbert/issues/5 is fixed
+      /*
       'curies': [{ 'name': 'ea', 'href': 'http://example.com/docs/rels/{rel}',
           'templated': true }]
+      */
     },
     'first_name': 'Halbert',
     'last_name': 'Halbertson'
@@ -103,7 +114,6 @@ describe('The JSON-HAL walker\'s', function() {
   var client = traverson.jsonHal.from(rootUri)
   var api
 
-
   beforeEach(function() {
     api = client.newRequest()
     callback = sinon.spy()
@@ -116,7 +126,7 @@ describe('The JSON-HAL walker\'s', function() {
     get.withArgs(singleOrderUri, sinon.match.func).callsArgWithAsync(1, null,
         singleOrderResponse)
     get.withArgs(customerUri, sinon.match.func).callsArgWithAsync(1, null,
-        customerUri)
+        customerResponse)
 
     executeRequest = sinon.stub(WalkerBuilder.prototype, 'executeRequest')
   })
@@ -128,7 +138,59 @@ describe('The JSON-HAL walker\'s', function() {
 
   describe('get method', function() {
 
-    it('should walk along the links', function(done) {
+    it('should follow a single link', function(done) {
+      api.walk('ea:orders').get(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          callback.should.have.been.calledWith(null, ordersResponse)
+          done()
+        }
+      )
+    })
+
+    it('should follow multiple links', function(done) {
+      api.walk('ea:orders', 'ea:find', 'ea:customer')
+         .withTemplateParameters({ id: 13 })
+         .get(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          callback.should.have.been.calledWith(null, customerResponse)
+          done()
+        }
+      )
+    })
+
+    it.skip('should walk along embedded documents', function(done) {
+      assert.fail()
+    })
+  })
+
+  describe('getResource method', function() {
+
+    it('should return the resource', function(done) {
+      api.walk('ea:orders', 'ea:find', 'ea:customer')
+         .withTemplateParameters({ id: 13 })
+         .getResource(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          callback.should.have.been.calledWith(null, customerDoc)
+          done()
+        }
+      )
+    })
+
+    it.skip('should return the resource if it is an embedded resource',
+        function(done) {
+      assert.fail()
+    })
+  })
+
+  describe('getUri method', function() {
+
+    it('should return the last URI', function(done) {
       api.walk('ea:orders', 'ea:find')
          .withTemplateParameters({ id: 13 })
          .getUri(callback)
@@ -140,6 +202,13 @@ describe('The JSON-HAL walker\'s', function() {
         }
       )
     })
+
+    // not sure what to do in this case
+    it.skip('yields an error if the last URI is actually an embedded ' +
+        ' resource???', function(done) {
+      assert.fail()
+    })
+
   })
 
 })
