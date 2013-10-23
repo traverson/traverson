@@ -29,6 +29,25 @@ describe('The JSON-HAL walker\'s', function() {
     }
   }
   var ordersUri = rootUri + '/orders'
+  var embeddedOrderDocs = [{
+    '_links': {
+      'self': { 'href': '/orders/123' },
+      'ea:basket': { 'href': '/baskets/987' },
+      'ea:customer': { 'href': '/customers/654' }
+    },
+    'total': 30.00,
+    'currency': 'USD',
+    'status': 'shipped'
+  }, {
+    '_links': {
+      'self': { 'href': '/orders/124' },
+      'ea:basket': { 'href': '/baskets/321' },
+      'ea:customer': { 'href': '/customers/42' }
+    },
+    'total': 20.00,
+    'currency': 'USD',
+    'status': 'processing'
+  }]
   var ordersDoc = {
     '_links': {
       'self': { 'href': '/orders' },
@@ -51,29 +70,11 @@ describe('The JSON-HAL walker\'s', function() {
     'currentlyProcessing': 14,
     'shippedToday': 20,
     '_embedded': {
-      'ea:order': { // {[
-        '_links': {
-          'self': { 'href': '/orders/123' },
-          'ea:basket': { 'href': '/baskets/987' },
-          'ea:customer': { 'href': '/customers/654' }
-        },
-        'total': 30.00,
-        'currency': 'USD',
-        'status': 'shipped'
-      }
-      // re-enable when traverson can cope with arrays of embedded
-      // objects
-      /*, {
-        '_links': {
-          'self': { 'href': '/orders/124' },
-          'ea:basket': { 'href': '/baskets/321' },
-          'ea:customer': { 'href': '/customers/42' }
-        },
-        'total': 20.00,
-        'currency': 'USD',
-        'status': 'processing'
-      }]*/
+      'ea:order': embeddedOrderDocs[0]
     }
+    // re-enable when traverson can cope with arrays of embedded
+    // objects
+    //'ea:order': embeddedOrders
   }
   var singleOrderUri = ordersUri + '/13'
   var singleOrderDoc = {
@@ -91,6 +92,11 @@ describe('The JSON-HAL walker\'s', function() {
     'currency': 'USD',
     'status': 'shipped'
   }
+
+  var embeddedWithoutSelfLink = {
+    '_links': {
+    },
+  }
   var customerUri = rootUri + '/customers/4711'
   var customerDoc = {
     '_links': {
@@ -102,13 +108,20 @@ describe('The JSON-HAL walker\'s', function() {
       */
     },
     'first_name': 'Halbert',
-    'last_name': 'Halbertson'
+    'last_name': 'Halbertson',
+    '_embedded': {
+      'ea:no_self_link': embeddedWithoutSelfLink
+    }
   }
   var basketDoc = { basket: 'empty' }
 
   var rootResponse = mockResponse(rootDoc)
   var ordersResponse = mockResponse(ordersDoc)
   var singleOrderResponse = mockResponse(singleOrderDoc)
+  var embeddedOrderResponses = [
+    mockResponse(embeddedOrderDocs[0]),
+    mockResponse(embeddedOrderDocs[1])
+  ]
   var customerResponse = mockResponse(customerDoc)
   var basketResponse = mockResponse(basketDoc)
 
@@ -167,21 +180,21 @@ describe('The JSON-HAL walker\'s', function() {
       )
     })
 
-    it.skip('should pass an embedded document into the callback',
+    it('should pass an embedded document into the callback',
         function(done) {
-      assert.fail()
-
-      /*
-      api.walk('ea:orders', 'ea:order', 'ea:basket')
+      api.walk('ea:orders', 'ea:order')
          .get(callback)
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, customerResponse)
+          var response = callback.firstCall.args[1]
+          response.should.exist
+          response.body.should.equal(embeddedOrderResponses[0].body)
+          response.statusCode.should.equal(200)
+          response.remark.should.exist
           done()
         }
       )
-      */
     })
 
     it('should walk along embedded documents', function(done) {
@@ -212,9 +225,17 @@ describe('The JSON-HAL walker\'s', function() {
       )
     })
 
-    it.skip('should return the resource if it is an embedded resource',
+    it('should pass an embedded document into the callback',
         function(done) {
-      assert.fail()
+      api.walk('ea:orders', 'ea:order')
+         .getResource(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          callback.should.have.been.calledWith(null, embeddedOrderDocs[0])
+          done()
+        }
+      )
     })
   })
 
@@ -234,9 +255,33 @@ describe('The JSON-HAL walker\'s', function() {
     })
 
     // not sure what to do in this case
-    it.skip('yields an error if the last URI is actually an embedded ' +
-        ' resource???', function(done) {
-      assert.fail()
+    it('returns the self-URI of an embedded document', function(done) {
+      api.walk('ea:orders', 'ea:order')
+         .getUri(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          callback.should.have.been.calledWith(null, ordersUri + '/123')
+          done()
+        }
+      )
+    })
+
+    it('yields an error if the last URI is actually an embedded ' +
+               ' resource but has no self-URI', function(done) {
+      api.walk('ea:orders', 'ea:find', 'ea:customer', 'ea:no_self_link')
+         .withTemplateParameters({ id: 13 })
+         .getUri(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          var error = callback.firstCall.args[0]
+          error.message.should.contain('You requested an URI but the last ' +
+              'resource is an embedded resource and has no URI of its own ' +
+              '(that is, it has no link with rel=\"self\"')
+          done()
+        }
+      )
     })
 
   })
