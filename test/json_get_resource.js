@@ -16,7 +16,6 @@ var JsonWalker = require('../lib/json_walker')
 
 describe('getResource for JSON', function() {
 
-  var request
   var get
   var callback
   var rootUri = 'http://api.io'
@@ -27,15 +26,15 @@ describe('getResource for JSON', function() {
 
   beforeEach(function() {
     api = client.newRequest()
-    get = sinon.stub(JsonWalker.prototype, 'get')
+    get = sinon.stub()
+    api.walker.request = { get: get }
     callback = sinon.spy()
   })
 
-  afterEach(function() {
-    JsonWalker.prototype.get.restore()
-  })
-
   describe('with its basic features', function() {
+    var rootStep = {
+      uri: rootUri
+    }
     var rootResponse = mockResponse({
       irrelevant: { stuff: 'to be ignored' },
       link: rootUri + '/link/to/thing',
@@ -228,12 +227,16 @@ describe('getResource for JSON', function() {
         { we: 'can haz use uri templates for root doc, yo!' })
       var startUriTemplate = rootUri + '/{param}/whatever'
       var startUri = rootUri + '/substituted/whatever'
-      get.withArgs(startUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootUriTemplate)
-      traverson.json
+      var api = traverson
+          .json
           .from(startUriTemplate)
           .newRequest()
-          .walk()
+      get = sinon.stub()
+      api.walker.request = { get: get }
+      get.withArgs(startUri, sinon.match.func).callsArgWithAsync(
+          1, null, rootUriTemplate)
+
+      api.walk()
           .withTemplateParameters({param: 'substituted'})
           .getResource(callback)
       waitFor(

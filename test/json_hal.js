@@ -51,25 +51,28 @@ describe('The JSON-HAL walker\'s', function() {
     'currentlyProcessing': 14,
     'shippedToday': 20,
     '_embedded': {
-      'ea:order': [{
+      'ea:order': { // {[
         '_links': {
           'self': { 'href': '/orders/123' },
-          'ea:basket': { 'href': '/baskets/98712' },
-          'ea:customer': { 'href': '/customers/7809' }
+          'ea:basket': { 'href': '/baskets/987' },
+          'ea:customer': { 'href': '/customers/654' }
         },
         'total': 30.00,
         'currency': 'USD',
         'status': 'shipped'
-      }, {
+      }
+      // re-enable when traverson can cope with arrays of embedded
+      // objects
+      /*, {
         '_links': {
           'self': { 'href': '/orders/124' },
-          'ea:basket': { 'href': '/baskets/97213' },
-          'ea:customer': { 'href': '/customers/12369' }
+          'ea:basket': { 'href': '/baskets/321' },
+          'ea:customer': { 'href': '/customers/42' }
         },
         'total': 20.00,
         'currency': 'USD',
         'status': 'processing'
-      }]
+      }]*/
     }
   }
   var singleOrderUri = ordersUri + '/13'
@@ -92,7 +95,7 @@ describe('The JSON-HAL walker\'s', function() {
   var customerDoc = {
     '_links': {
       'self': { 'href': '/customer/4711' },
-      // re-enable when https://github.com/xcambar/halbert/issues/5 is fixed
+      // re-enable when https://github.com/xcambar/halbert/issues/5 is fixed /*
       /*
       'curies': [{ 'name': 'ea', 'href': 'http://example.com/docs/rels/{rel}',
           'templated': true }]
@@ -101,11 +104,13 @@ describe('The JSON-HAL walker\'s', function() {
     'first_name': 'Halbert',
     'last_name': 'Halbertson'
   }
+  var basketDoc = { basket: 'empty' }
 
   var rootResponse = mockResponse(rootDoc)
   var ordersResponse = mockResponse(ordersDoc)
   var singleOrderResponse = mockResponse(singleOrderDoc)
   var customerResponse = mockResponse(customerDoc)
+  var basketResponse = mockResponse(basketDoc)
 
   var get
   var executeRequest
@@ -116,23 +121,23 @@ describe('The JSON-HAL walker\'s', function() {
 
   beforeEach(function() {
     api = client.newRequest()
-    callback = sinon.spy()
-
-    get = sinon.stub(JsonHalWalker.prototype, 'get')
+    get = sinon.stub()
+    api.walker.request = { get: get }
     get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(1, null,
         rootResponse)
     get.withArgs(ordersUri, sinon.match.func).callsArgWithAsync(1, null,
         ordersResponse)
     get.withArgs(singleOrderUri, sinon.match.func).callsArgWithAsync(1, null,
         singleOrderResponse)
+    get.withArgs(rootUri + '/baskets/987', sinon.match.func).
+        callsArgWithAsync(1, null, basketResponse)
     get.withArgs(customerUri, sinon.match.func).callsArgWithAsync(1, null,
         customerResponse)
-
+    callback = sinon.spy()
     executeRequest = sinon.stub(WalkerBuilder.prototype, 'executeRequest')
   })
 
   afterEach(function() {
-    JsonHalWalker.prototype.get.restore()
     WalkerBuilder.prototype.executeRequest.restore()
   })
 
@@ -162,8 +167,33 @@ describe('The JSON-HAL walker\'s', function() {
       )
     })
 
-    it.skip('should walk along embedded documents', function(done) {
+    it.skip('should pass an embedded document into the callback',
+        function(done) {
       assert.fail()
+
+      /*
+      api.walk('ea:orders', 'ea:order', 'ea:basket')
+         .get(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          callback.should.have.been.calledWith(null, customerResponse)
+          done()
+        }
+      )
+      */
+    })
+
+    it('should walk along embedded documents', function(done) {
+      api.walk('ea:orders', 'ea:order', 'ea:basket')
+         .get(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          callback.should.have.been.calledWith(null, basketResponse)
+          done()
+        }
+      )
     })
   })
 
@@ -211,4 +241,9 @@ describe('The JSON-HAL walker\'s', function() {
 
   })
 
+  describe('post, put, delete and patch methods', function() {
+    it.skip('should behave correctly with hal+json', function(done) {
+      assert.fail()
+    })
+  })
 })

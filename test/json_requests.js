@@ -58,9 +58,10 @@ describe('The JSON client\'s', function() {
 
   beforeEach(function() {
     api = client.newRequest()
+    get = sinon.stub()
+    api.walker.request = { get: get }
     callback = sinon.spy()
 
-    get = sinon.stub(JsonWalker.prototype, 'get')
     get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
         1, null, rootResponse)
     get.withArgs(getUri, sinon.match.func).callsArgWithAsync(1, null, result)
@@ -71,7 +72,6 @@ describe('The JSON client\'s', function() {
   })
 
   afterEach(function() {
-    JsonWalker.prototype.get.restore()
     WalkerBuilder.prototype.executeRequest.restore()
   })
 
@@ -83,6 +83,22 @@ describe('The JSON client\'s', function() {
         function() { return callback.called },
         function() {
           callback.should.have.been.calledWith(null, result)
+          done()
+        }
+      )
+    })
+
+    it('should call callback with err', function(done) {
+      var err = new Error('test error')
+      // Hm, get.reset() should be enough, but isnt?
+      get = sinon.stub()
+      api.walker.request = { get: get }
+      get.callsArgWithAsync(1, err)
+      api.walk().get(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          callback.should.have.been.calledWith(err)
           done()
         }
       )

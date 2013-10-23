@@ -204,7 +204,6 @@ describe('The json walker (when tested against a local server)', function() {
         error.message.should.equal('The document at ' + rootUri + 'junk' +
           ' could not be parsed as JSON: { this will :: not parse')
         error.uri.should.equal(rootUri + 'junk')
-        error.httpStatus.should.equal(200)
         error.body.should.equal('{ this will :: not parse')
 
         var resultDoc = callback.firstCall.args[1]
