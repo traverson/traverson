@@ -125,6 +125,12 @@ describe('The JSON-HAL walker\'s', function() {
   var customerResponse = mockResponse(customerDoc)
   var basketResponse = mockResponse(basketDoc)
 
+  var updateResponse = mockResponse({ result: 'success' }, 200)
+  var payload = {
+    some: 'stuff',
+    data: 4711
+  }
+
   var get
   var executeRequest
 
@@ -286,9 +292,163 @@ describe('The JSON-HAL walker\'s', function() {
 
   })
 
-  describe('post, put, delete and patch methods', function() {
-    it.skip('should behave correctly with hal+json', function(done) {
-      assert.fail()
+  describe('post method', function() {
+
+    it('should follow multiple links and post to the last URI',
+        function(done) {
+      executeRequest.withArgs(customerUri, sinon.match.func, payload,
+          sinon.match.func).callsArgWithAsync(3, null, updateResponse,
+          customerUri)
+      api.walk('ea:orders', 'ea:find', 'ea:customer')
+         .withTemplateParameters({ id: 13 })
+         .post(payload, callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          executeRequest.should.have.been.calledWith(customerUri,
+              sinon.match.func, payload, sinon.match.func)
+          callback.should.have.been.calledWith(null, updateResponse,
+              customerUri)
+          done()
+        }
+      )
+    })
+
+    it('should call callback with err when post fails',
+        function(done) {
+      var err = new Error('test error')
+      executeRequest.withArgs(customerUri, sinon.match.func, payload,
+          sinon.match.func).callsArgWithAsync(3, err)
+      api.walk('ea:orders', 'ea:find', 'ea:customer')
+         .withTemplateParameters({ id: 13 })
+         .post(payload, callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          callback.should.have.been.calledWith(err)
+          done()
+        }
+      )
+    })
+  })
+
+  describe('put method', function() {
+
+    it('should follow multiple links and put to the last URI',
+        function(done) {
+      executeRequest.withArgs(customerUri, sinon.match.func, payload,
+          sinon.match.func).callsArgWithAsync(3, null, updateResponse,
+          customerUri)
+      api.walk('ea:orders', 'ea:find', 'ea:customer')
+         .withTemplateParameters({ id: 13 })
+         .put(payload, callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          executeRequest.should.have.been.calledWith(customerUri,
+              sinon.match.func, payload, sinon.match.func)
+          callback.should.have.been.calledWith(null, updateResponse,
+              customerUri)
+          done()
+        }
+      )
+    })
+
+    it('should call callback with err when put fails',
+        function(done) {
+      var err = new Error('test error')
+      executeRequest.withArgs(customerUri, sinon.match.func, payload,
+          sinon.match.func).callsArgWithAsync(3, err)
+      api.walk('ea:orders', 'ea:find', 'ea:customer')
+         .withTemplateParameters({ id: 13 })
+         .put(payload, callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          callback.should.have.been.calledWith(err)
+          done()
+        }
+      )
+    })
+  })
+
+  describe('patch method', function() {
+
+    it('should follow multiple links and patch the last URI',
+        function(done) {
+      executeRequest.withArgs(customerUri, sinon.match.func, payload,
+          sinon.match.func).callsArgWithAsync(3, null, updateResponse,
+          customerUri)
+      api.walk('ea:orders', 'ea:find', 'ea:customer')
+         .withTemplateParameters({ id: 13 })
+         .patch(payload, callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          executeRequest.should.have.been.calledWith(customerUri,
+              sinon.match.func, payload, sinon.match.func)
+          callback.should.have.been.calledWith(null, updateResponse,
+              customerUri)
+          done()
+        }
+      )
+    })
+
+    it('should call callback with err when patch fails',
+        function(done) {
+      var err = new Error('test error')
+      executeRequest.withArgs(customerUri, sinon.match.func, payload,
+          sinon.match.func).callsArgWithAsync(3, err)
+      api.walk('ea:orders', 'ea:find', 'ea:customer')
+         .withTemplateParameters({ id: 13 })
+         .patch(payload, callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          callback.should.have.been.calledWith(err)
+          done()
+        }
+      )
+    })
+  })
+
+  describe('delete method', function() {
+
+    it('should follow multiple links and delete the last URI',
+        function(done) {
+      executeRequest.withArgs(customerUri, sinon.match.func, null,
+          sinon.match.func).callsArgWithAsync(3, null, updateResponse,
+          customerUri)
+      api.walk('ea:orders', 'ea:find', 'ea:customer')
+         .withTemplateParameters({ id: 13 })
+         .delete(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          executeRequest.should.have.been.calledWith(customerUri,
+              sinon.match.func, null, sinon.match.func)
+          callback.should.have.been.calledWith(null, updateResponse,
+              customerUri)
+          done()
+        }
+      )
+    })
+
+    it('should call callback with err when delete fails',
+        function(done) {
+      var err = new Error('test error')
+      executeRequest.withArgs(customerUri, sinon.match.func, null,
+          sinon.match.func).callsArgWithAsync(3, err)
+      api.walk('ea:orders', 'ea:find', 'ea:customer')
+         .withTemplateParameters({ id: 13 })
+         .delete(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          callback.should.have.been.calledWith(err)
+          done()
+        }
+      )
     })
   })
 })
