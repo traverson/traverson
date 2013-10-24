@@ -14,7 +14,7 @@ var waitFor = require('./util/wait_for')
 
 var traverson = require('../traverson')
 
-describe('The json walker (when tested against a local server)', function() {
+describe('Traverson (when tested against a local server)', function() {
 
   var api
   var testServer
@@ -31,7 +31,15 @@ describe('The json walker (when tested against a local server)', function() {
   })
 
   beforeEach(function() {
-    api = traverson.json.from(rootUri).newRequest()
+    api = traverson
+            .json
+            .from(rootUri)
+            .newRequest()
+            .withRequestOptions({
+      headers: {
+        'accept': 'application/json'
+      }
+    })
     callback = sinon.spy()
   })
 
@@ -82,6 +90,74 @@ describe('The json walker (when tested against a local server)', function() {
         var resultDoc = checkResponseWithBody()
         resultDoc.second.should.exist
         resultDoc.second.should.equal('document')
+        done()
+      }
+    )
+  })
+
+  it('should walk a multi-element path in hal+json', function(done) {
+    api = traverson.jsonHal
+      .from(rootUri)
+      .newRequest()
+      .withRequestOptions(
+    {
+      headers: { 'accept': 'application/hal+json' }
+    }).walk('first', 'second').get(callback)
+    waitFor(
+      function() { return callback.called },
+      function() {
+        var resultDoc = checkResponseWithBody()
+        resultDoc.second.should.exist
+        resultDoc.second.should.equal('document')
+        done()
+      }
+    )
+  })
+
+  it('should walk a multi-element path in hal+json using an embedded ' +
+      'resource along the way', function(done) {
+    api = traverson.jsonHal
+      .from(rootUri)
+      .newRequest()
+      .withRequestOptions(
+    {
+      headers: { 'accept': 'application/hal+json' }
+    }).walk('first',
+            'contained_resource',
+            'embedded_link_to_second')
+      .get(callback)
+    waitFor(
+      function() { return callback.called },
+      function() {
+        var resultDoc = checkResponseWithBody()
+        console.log(resultDoc)
+        resultDoc.second.should.exist
+        resultDoc.second.should.equal('document')
+        done()
+      }
+    )
+  })
+
+  it('should walk a multi-element path in hal+json yielding an embedded ' +
+      'resource to the callback',
+      function(done) {
+    api = traverson.jsonHal
+      .from(rootUri)
+      .newRequest()
+      .withRequestOptions(
+    {
+      headers: { 'accept': 'application/hal+json' }
+    }).walk('first',
+            'second',
+            'inside_second')
+      .get(callback)
+    waitFor(
+      function() { return callback.called },
+      function() {
+        var resultDoc = checkResponseWithBody()
+        console.log(resultDoc)
+        resultDoc.more.should.exist
+        resultDoc.more.should.equal('data')
         done()
       }
     )

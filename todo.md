@@ -14,16 +14,11 @@ Docs
 TODOs
 =====
 
+* use underscore.string everywhere instead of indexOf === 0 etc.
 * WalkerBuilder#withLastRequestOptions({...}) - use the given options, but only in the last request (the one which get/post/put/getResource control)
 * WalkerBuilder#withFirtRequestOptions({...}) - use the given options, but only in the first request - is there a use case for this?
 * WalkerBuilder#checkHttpStatus(200, 201, ...) - provide http status codes that will be checked only for the last request - needs better name that makes clear that it only relates to the last get()/post()/put()/... call.
 * Should work in browser (maybe via browserify)
-* application/hal+json:
-    * http://stateless.co/hal_specification.html ._ Informal Spec
-    * http://tools.ietf.org/html/draft-kelly-json-hal-06 Formal Spec
-    * https://github.com/mikekelly/hal_specification/wiki/APIs ._ Public HAL APIs
-    * http://haltalk.herokuapp.com/explorer/browser.html#/ (showcase in browser + public API)
-    * https://github.com/xcambar/halbert - node hal parser
 * what about accept and content-type headers? API could have some custom
   content type and still be JSON, so we probably can not check that
 * cache final links for path

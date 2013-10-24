@@ -41,30 +41,40 @@ function TraversonTestServer() {
     log.info('Bind address: ' +  bindAddress)
   }
 
-
   function serve(request, response) {
     log.debug('serving request: ')
     log.debug(request.method + ' ' + request.url)
     log.debug('headers: ')
     log.debug(request.headers)
+    var accept = request.headers.accept
+    if (!accept || accept.indexOf('application/json') === 0) {
+      return serverJson(request, response)
+    } else if (accept && accept.indexOf('application/hal+json') === 0) {
+      return serverHalJson(request, response)
+    } else {
+      return serve406(request, response)
+    }
+  }
+
+  function serverJson(request, response) {
     var path = url.parse(request.url).path
     switch (request.method) {
     case 'GET':
-      return handleGet(request, response, path)
+      return handleJsonGet(request, response, path)
     case 'POST':
-      return handlePost(request, response, path)
+      return handleJsonPost(request, response, path)
     case 'PUT':
-      return handlePut(request, response, path)
+      return handleJsonPut(request, response, path)
     case 'PATCH':
-      return handlePatch(request, response, path)
+      return handleJsonPatch(request, response, path)
     case 'DELETE':
-      return handleDelete(request, response, path)
+      return handleJsonDelete(request, response, path)
     default:
       return serve501(request, response, request.method)
     }
   }
 
-  function handleGet(request, response, path) {
+  function handleJsonGet(request, response, path) {
     var host = request.headers.host
     var baseUrl = 'http://' + host
     switch (path) {
@@ -89,7 +99,7 @@ function TraversonTestServer() {
     }
   }
 
-  function handlePost(request, response, path) {
+  function handleJsonPost(request, response, path) {
     readBody(request, function(err, body) {
       switch (path) {
       case '/postings':
@@ -100,7 +110,7 @@ function TraversonTestServer() {
     })
   }
 
-  function handlePut(request, response, path) {
+  function handleJsonPut(request, response, path) {
     readBody(request, function(err, body) {
       switch (path) {
       case '/puttings/42':
@@ -111,7 +121,7 @@ function TraversonTestServer() {
     })
   }
 
-  function handlePatch(request, response, path) {
+  function handleJsonPatch(request, response, path) {
     readBody(request, function(err, body) {
       switch (path) {
       case '/patch/me':
@@ -122,7 +132,7 @@ function TraversonTestServer() {
     })
   }
 
-  function handleDelete(request, response, path) {
+  function handleJsonDelete(request, response, path) {
     switch (path) {
     case '/delete/me':
       return serveDeleteMe(request, response)
@@ -167,7 +177,6 @@ function TraversonTestServer() {
     response.writeHead(200)
     endResponse({'first': 'document'}, request, response)
   }
-
   function serveSecond(request, response, baseUrl) {
     response.writeHead(200)
     endResponse({ 'doc': baseUrl + '/second/document' }, request, response)
@@ -223,10 +232,82 @@ function TraversonTestServer() {
     endResponse(null, request, response)
   }
 
+  function serverHalJson(request, response) {
+    var path = url.parse(request.url).path
+    switch (request.method) {
+    case 'GET':
+      return handleHalJsonGet(request, response, path)
+    default:
+      return serve501(request, response, request.method)
+    }
+  }
+
+  function handleHalJsonGet(request, response, path) {
+    var host = request.headers.host
+    var baseUrl = 'http://' + host
+    switch (path) {
+    case '/':
+      return serveRootHal(request, response, baseUrl)
+    case '/first':
+      return serveFirstHal(request, response)
+    case '/second':
+      return serveSecondHal(request, response, baseUrl)
+    default:
+      return serve404(request, response)
+    }
+  }
+
+  function serveRootHal(request, response, baseUrl) {
+    response.writeHead(200)
+    var content = {
+      '_links': {
+        'self': { 'href': '/' },
+        'first': { 'href': '/first' }
+      },
+      'data': 'much'
+    }
+    endResponse(content, request, response)
+  }
+
+  function serveFirstHal(request, response) {
+    response.writeHead(200)
+    endResponse({
+      '_links': {
+        'self': { 'href': '/first' },
+        'second': { 'href': '/second' }
+      },
+      '_embedded': {
+        'contained_resource': {
+          '_links' : {
+            'self': { 'href': '/first/contained' },
+            'embedded_link_to_second': { 'href': '/second' }
+          },
+          'things': 'a lot of'
+        }
+      },
+      'first': 'document'
+    }, request, response)
+  }
+
+  function serveSecondHal(request, response, baseUrl) {
+    response.writeHead(200)
+    endResponse({
+      '_embedded': {
+        'inside_second': { 'more': 'data' }
+      },
+      'second': 'document'
+    }, request, response)
+  }
 
   function serve404(request, response) {
     response.writeHead(404)
     endResponse({'message': 'document not found'}, request, response)
+  }
+
+  function serve406(request, response) {
+    response.writeHead(406)
+    endResponse({'message': 'can not serve media type ' +
+        request.headers.accept}, request, response)
   }
 
   function serve501(request, response, verb) {

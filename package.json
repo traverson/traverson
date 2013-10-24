@@ -20,6 +20,7 @@
     "JSONPath": "~0.9.1",
     "minilog": "~2.0.2",
     "request": "~2.27.0",
+    "underscore.string": "~2.3.3",
     "uri-template": "~0.4.1"
   },
   "devDependencies": {
