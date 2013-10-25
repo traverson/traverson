@@ -14,6 +14,7 @@ Docs
 TODOs
 =====
 
+* Get listed at https://github.com/mikekelly/hal_specification/wiki/Libraries ._
 * use underscore.string everywhere instead of indexOf === 0 etc.
 * WalkerBuilder#withLastRequestOptions({...}) - use the given options, but only in the last request (the one which get/post/put/getResource control)
 * WalkerBuilder#withFirtRequestOptions({...}) - use the given options, but only in the first request - is there a use case for this?

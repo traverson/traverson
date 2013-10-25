@@ -2,9 +2,10 @@
 
 var chai = require('chai')
 chai.should()
+var should = chai.should()
 var assert = chai.assert
 var expect = chai.expect
-var log = require('minilog')('test');
+var log = require('minilog')('test')
 var sinon = require('sinon')
 var sinonChai = require('sinon-chai')
 chai.use(sinonChai)
@@ -391,6 +392,8 @@ describe('Traverson (when tested against a local server)', function() {
   function checkResponse(httpStatus) {
     httpStatus = httpStatus || 200
     callback.callCount.should.equal(1)
+    var error = callback.firstCall.args[0]
+    should.not.exist(error)
     var response = callback.firstCall.args[1]
     response.should.exist
     response.statusCode.should.exist
@@ -400,6 +403,8 @@ describe('Traverson (when tested against a local server)', function() {
 
   function checkResultDoc() {
     callback.callCount.should.equal(1)
+    var error = callback.firstCall.args[0]
+    should.not.exist(error)
     var resultDoc = callback.firstCall.args[1]
     resultDoc.should.exist
     return resultDoc
