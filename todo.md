@@ -14,7 +14,7 @@ Docs
 TODOs
 =====
 
-* Get listed at https://github.com/mikekelly/hal_specification/wiki/Libraries ._
+* Replace `walk` method with `follow` and, more generally the term walking with following.
 * use underscore.string everywhere instead of indexOf === 0 etc.
 * WalkerBuilder#withLastRequestOptions({...}) - use the given options, but only in the last request (the one which get/post/put/getResource control)
 * WalkerBuilder#withFirtRequestOptions({...}) - use the given options, but only in the first request - is there a use case for this?
@@ -34,7 +34,7 @@ TODOs
   resolving, caching, ...
     * Tests
     * Examples in README.md
-* support more media types in addition to JSON:
+* support more media types in addition to application/json and application/hal+json:
     * xml?
     * html (jsdom, htmlparser2, cheerio, .... )
     * application/hal+xml? Does anybody use this? There's no RFC for that, but http://stateless.co/hal_specification.html ._ mentions it.
