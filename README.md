@@ -29,7 +29,7 @@ Table of Contents
     * [JSONPath](#jsonpath)
     * [URI Templates](#uri-templates)
     * [Headers and Authentication](#headers-http-basicauth-oauth-and-whatnot)
-    * [HAL](#hal-hypermedia-application-language)
+    * [HAL](#hal---hypermedia-application-language)
 * [Features From the Future](#features-from-the-future)
     * [Caching](#caching)
     * [Customizing Traverson](#customizing-traverson)
@@ -318,7 +318,7 @@ This would add the header `x-my-special-header` to all requests issued for this 
 
 ### HAL - hypermedia application language
 
-Traverson supports the JSON dialect of HAL, the [hypermedia application language](http://tools.ietf.org/id/draft-kelly-json-hal-06.txt) via [Halbert](https://github.com/xcambar/halbert). While in theory you could use Traverson even without special support for HAL by specifying each link relation with JSONPath (like `$._links.linkName`) that would be quite cumbersome. Instead, do the following:
+Traverson supports the JSON dialect of [HAL](http://tools.ietf.org/id/draft-kelly-json-hal-06.txt), the hypermedia application language via [Halbert](https://github.com/xcambar/halbert). While in theory you could use Traverson even without special support for HAL by specifying each link relation with JSONPath (like `$._links.linkName`) that would be quite cumbersome. Instead, do the following:
 
     var traverson = require('traverson')
     var api = traverson.jsonHal.from('http://haltalk.herokuapp.com/')
