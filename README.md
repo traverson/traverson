@@ -29,6 +29,7 @@ Table of Contents
     * [JSONPath](#jsonpath)
     * [URI Templates](#uri-templates)
     * [Headers and Authentication](#headers-http-basicauth-oauth-and-whatnot)
+    * [HAL](#hal-hypermedia-application-language)
 * [Features From the Future](#features-from-the-future)
     * [Caching](#caching)
     * [Customizing Traverson](#customizing-traverson)
@@ -46,7 +47,7 @@ This section shows how to use Traverson's features with small examples.
 The most basic thing you can do with traverson is to let it start at the root URI of an API, follow some links and pass the resource that is found at the end of this journey back to you. Here's how:
 
     var traverson = require('traverson')
-    var api = new traverson.json.from('http://api.io')
+    var api = traverson.json.from('http://api.io')
 
     api.newRequest()
        .walk('link_to', 'resource')
@@ -315,6 +316,94 @@ Traverson uses Mikeal Rogers' [request](https://github.com/mikeal/request) modul
 
 This would add the header `x-my-special-header` to all requests issued for this three link walk. Check out the [request docs](https://github.com/mikeal/request#requestoptions-callback) to see which options to use. Among other things, you can set custom headers, do HTTP basic authentication, [OAuth](https://github.com/mikeal/request#oauth-signing) and other cool stuff.
 
+### HAL - hypermedia application language
+
+Traverson supports the JSON dialect of HAL, the [hypermedia application language](http://tools.ietf.org/id/draft-kelly-json-hal-06.txt) via [Halbert](https://github.com/xcambar/halbert). While in theory you could use Traverson even without special support for HAL by specifying each link relation with JSONPath (like `$._links.linkName`) that would be quite cumbersome. Instead, do the following:
+
+    var traverson = require('traverson')
+    var api = traverson.jsonHal.from('http://haltalk.herokuapp.com/')
+
+    api.newRequest()
+       .walk('ht:me', 'ht:posts')
+       .withTemplateParameters({name: 'traverson'})
+       .getResource(function(error, document) {
+      if (error) {
+        console.error('No luck :-)')
+      } else {
+        console.log(JSON.stringify(document))
+      }
+    })
+
+    http://haltalk.herokuapp.com/
+    {
+      "_links": {
+        "self": {
+          "href": "/"
+        },
+        "curies": [ ... ],
+        "ht:users": {
+          "href": "/users"
+        },
+        "ht:me": {
+          "href": "/users/{name}",
+          "templated": true
+        }
+      }
+    }
+
+    http://haltalk.herokuapp.com/users/traverson
+    {
+      "_links": {
+        "self": {
+          "href": "/users/traverson"
+        },
+        "curies": [ ... ],
+        "ht:posts": {
+          "href": "/users/traverson/posts"
+        }
+      },
+      "username": "traverson",
+      "real_name": "Bastian Krol"
+    }
+
+    http://haltalk.herokuapp.com/users/traverson/posts
+    {
+      "_links": {
+        "self": { "href": "/users/traverson/posts" },
+        "curies": [ ... ],
+        "ht:author": { "href": "/users/traverson" }
+      },
+      "_embedded": {
+        "ht:post": [
+          {
+            "_links": { "self": { "href": "/posts/526a56454136280002000015" },
+              "ht:author": { "href": "/users/traverson", "title": "Bastian Krol" }
+            },
+            "content": "Hello! I'm Traverson, the Node.js module to work with hypermedia APIs. ...",
+            "created_at": "2013-10-25T11:30:13+00:00"
+          },
+          {
+            "_links": { "self": { "href": "/posts/526a58034136280002000016" },
+              "ht:author": { "href": "/users/traverson", "title": "Bastian Krol" }
+            },
+            "content": "Hello! I'm Traverson, the Node.js module to work with hypermedia APIs. You can find out more about me at https://github.com/basti1302/traverson. This is just a test post. @mikekelly: Don't worry, this tests will only be run manually a few times here and there, I'll promise to not spam your haltalk server too much :-)",
+            "created_at": "2013-10-25T11:37:39+00:00"
+          },
+          ...
+        ]
+      }
+    }
+
+This will give you all posts that the account `traverson` posted to Mike Kelly's haltalk server. Note that we used `traverson.jsonHal` when creating the `api` object, instead of the usual `traverson.json`. When called in this way, Traverson will assume the resources it receives comply with the HAL specification and looks for links in the `_links` property.
+
+#### Embedded Documents
+
+When working with HAL resources, for each link given to the `walk` method, Traverson checks the `_links` object. If the `_links` object does not have the property in question, Traverson also automatically checks the embedded document (the `_embedded` object). If there is an embedded document with the correct property key, this one will be used instead. If there is both a `_link` and an `_embedded` object with the same name, Traverson will always prefer the link, not the embedded object (reason: the spec says that an embedded resource may "be a full, partial, or inconsistent version of the representation served from the target URI", so to get the complete and up to date document your best bet is to follow the link to the actual resource, if available).
+
+#### HAL and JSONPath
+
+JSONPath is not supported when working with HAL resources. It would also make no sense because in a HAL resource there is only one place in the document that contains all the links.
+
 Features From the Future
 ------------------------
 
@@ -339,5 +428,4 @@ TODO
 
 ### Other Media Types Besides JSON
 
-In the far future, Traverson might also support HTML APIs and/or XML APIs. [HAL](http://stateless.co/hal_specification.html) is also interesting, although you already can use Traverson with `application/hal+json`, but a specialized HalJsonWalker might make better use of the standardized HAL format.
-
+In the far future, Traverson might also support HTML APIs and/or XML APIs.
