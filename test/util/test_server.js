@@ -5,6 +5,7 @@
  */
 var http = require('http')
 var log = require('minilog')('test_server');
+var _s = require('underscore.string')
 var url = require('url')
 
 /* jshint -W074 */
@@ -47,9 +48,9 @@ function TraversonTestServer() {
     log.debug('headers: ')
     log.debug(request.headers)
     var accept = request.headers.accept
-    if (!accept || accept.indexOf('application/json') === 0) {
+    if (!accept || _s.startsWith(accept, 'application/json')) {
       return serverJson(request, response)
-    } else if (accept && accept.indexOf('application/hal+json') === 0) {
+    } else if (accept && _s.startsWith(accept, 'application/hal+json')) {
       return serverHalJson(request, response)
     } else {
       return serve406(request, response)
@@ -92,7 +93,7 @@ function TraversonTestServer() {
       return serveJunk(request, response)
     }
 
-    if (path.indexOf('/fixed/') >= 0) {
+    if (_s.contains(path, '/fixed/')) {
       return serveForUriTemplate(request, response, path)
     } else {
       return serve404(request, response)

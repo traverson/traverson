@@ -131,7 +131,6 @@ describe('Traverson (when tested against a local server)', function() {
       function() { return callback.called },
       function() {
         var resultDoc = checkResponseWithBody()
-        console.log(resultDoc)
         resultDoc.second.should.exist
         resultDoc.second.should.equal('document')
         done()
@@ -156,7 +155,6 @@ describe('Traverson (when tested against a local server)', function() {
       function() { return callback.called },
       function() {
         var resultDoc = checkResponseWithBody()
-        console.log(resultDoc)
         resultDoc.more.should.exist
         resultDoc.more.should.equal('data')
         done()
