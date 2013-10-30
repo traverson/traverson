@@ -15,7 +15,6 @@ exports.json = {
   }
 }
 
-/*
 exports.jsonHal = {
   from: function(uri) {
     return {
@@ -25,5 +24,4 @@ exports.jsonHal = {
     }
   }
 }
-*/
 })

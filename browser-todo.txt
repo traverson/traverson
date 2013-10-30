@@ -1,4 +1,3 @@
-* HAL
 * In-browser tests, preferably the same as in are used for Node.js
 * Shims for browser/node-cross-platform compatibility
   ./deps/
@@ -19,5 +18,7 @@
         require.js
         util.js
 * One codebase for Node.js and browser. See http://www.2ality.com/2011/11/module-gap.html
+* Further reduce file size by excluding underscore and lodash, providing shims
+  for the few functions that are used or detect if they are loaded anyway.
 * Tweet
 * Blog
