@@ -1,0 +1,25 @@
+* JSONPath
+* URI templates
+* HAL
+* In-browser tests, preferably the same as in are used for Node.js
+* Shims for browser/node-cross-platform compatibility
+  ./deps/
+    node/
+      util -> Node core util
+      request -> mikeal's request
+      jsonpath
+      uri-templates
+      ...
+    browser/
+      util -> lib/util
+      request -> superagent
+      jsonpath
+      uri-templates
+      ...
+      lib/
+        superagent.js
+        require.js
+        util.js
+* One codebase for Node.js and browser. See http://www.2ality.com/2011/11/module-gap.html
+* Tweet
+* Blog
