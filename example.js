@@ -8,7 +8,9 @@ require(['traverson', 'lib/log'], function(traverson, log) {
         headers: { 'accept': 'application/json' }
       })
       //.walk('second', 'doc')
-      .walk('$.jsonpath.nested.key')
+      //.walk('$.jsonpath.nested.key')
+      .walk('uri_template')
+      .withTemplateParameters({param: 'foobar', id: 13})
       .getResource(function(err, resource) {
         console.log('request returned')
         if (err) {

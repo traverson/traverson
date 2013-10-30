@@ -1,4 +1,3 @@
-* URI templates
 * HAL
 * In-browser tests, preferably the same as in are used for Node.js
 * Shims for browser/node-cross-platform compatibility
