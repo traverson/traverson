@@ -1,5 +1,7 @@
 'use strict';
 
+define(function(require, exports, module) {
+
 var mediaTypes = require('./lib/media_types')
 var WalkerBuilder = require('./lib/walker_builder')
 
@@ -13,6 +15,7 @@ exports.json = {
   }
 }
 
+/*
 exports.jsonHal = {
   from: function(uri) {
     return {
@@ -22,3 +25,5 @@ exports.jsonHal = {
     }
   }
 }
+*/
+})
