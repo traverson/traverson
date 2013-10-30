@@ -7,7 +7,8 @@ require(['traverson', 'lib/log'], function(traverson, log) {
       .withRequestOptions({
         headers: { 'accept': 'application/json' }
       })
-      .walk('second', 'doc')
+      //.walk('second', 'doc')
+      .walk('$.jsonpath.nested.key')
       .getResource(function(err, resource) {
         console.log('request returned')
         if (err) {
