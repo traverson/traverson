@@ -1,11 +1,14 @@
-'use strict';
+({
+  define: typeof define === 'function'
+    ? define
+    : function(deps, fn) { module.exports = fn.apply(null, deps.map(require)) }
+}).define([ './lib/media_types', './lib/walker_builder' ],
+  function (mediaTypes, WalkerBuilder) {
+  'use strict';
 
-define(function(require, exports, module) {
+return {
 
-var mediaTypes = require('./lib/media_types')
-var WalkerBuilder = require('./lib/walker_builder')
-
-exports.json = {
+json: {
   from: function(uri) {
     return {
       newRequest: function() {
@@ -13,9 +16,9 @@ exports.json = {
       }
     }
   }
-}
+},
 
-exports.jsonHal = {
+jsonHal: {
   from: function(uri) {
     return {
       newRequest: function() {
@@ -24,4 +27,6 @@ exports.jsonHal = {
     }
   }
 }
+}
+
 })
