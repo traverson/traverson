@@ -3,6 +3,7 @@ if (typeof require.config === 'function') {
   require.config({
     paths: {
       JSONPath: 'lib/dependencies/browser/vendor/jsonpath',
+      halbert: 'lib/dependencies/browser/vendor/halbert',
       request: 'lib/dependencies/browser/request',
       'underscore.string': 'lib/dependencies/browser/vendor/underscore.string',
       'uri-template': 'lib/dependencies/browser/vendor/uri-template',
