@@ -1,3 +1,7 @@
+* Use minilog again:
+  define path alias minilog: lib/deps/browser/log and make it return itself
+  on a call with a string argument (to cater for the
+  require('minilog')('traverson')
 * In-browser tests, preferably the same as are used for Node.js
 * Shims for browser/node-cross-platform compatibility
   ./deps/
