@@ -29,13 +29,12 @@ require(['traverson', 'lib/log'], function(traverson, log) {
       })
       .walk('second', 'doc')
       .getResource(function(err, resource) {
-        console.log(err)
         if (err) {
           $('#plain_vanilla_response').html(JSON.stringify(err))
           return
         }
-        console.log(resource)
-        $('#plain_vanilla_response').html(JSON.stringify(resource))
+        delete resource.requestHeaders
+        $('#plain_vanilla_response').html(JSON.stringify(resource, null, 2))
     })
   }
 
@@ -48,13 +47,12 @@ require(['traverson', 'lib/log'], function(traverson, log) {
       })
       .walk('$.jsonpath.nested.key')
       .getResource(function(err, resource) {
-        console.log(err)
         if (err) {
           $('#jsonpath_response').html(JSON.stringify(err))
           return
         }
-        console.log(resource)
-        $('#jsonpath_response').html(JSON.stringify(resource))
+        delete resource.requestHeaders
+        $('#jsonpath_response').html(JSON.stringify(resource, null, 2))
     })
   }
 
@@ -68,13 +66,12 @@ require(['traverson', 'lib/log'], function(traverson, log) {
       .walk('uri_template')
       .withTemplateParameters({param: 'foobar', id: 13})
       .getResource(function(err, resource) {
-        console.log(err)
         if (err) {
           $('#uri_template_response').html(JSON.stringify(err))
           return
         }
-        console.log(resource)
-        $('#uri_template_response').html(JSON.stringify(resource))
+        delete resource.requestHeaders
+        $('#uri_template_response').html(JSON.stringify(resource, null, 2))
     })
   }
 
@@ -91,7 +88,8 @@ require(['traverson', 'lib/log'], function(traverson, log) {
           $('#json_hal_response').html(JSON.stringify(err))
           return
         }
-        $('#json_hal_response').html(JSON.stringify(resource))
+        delete resource.requestHeaders
+        $('#json_hal_response').html(JSON.stringify(resource, null, 2))
     })
   }
 
