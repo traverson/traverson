@@ -1,5 +1,3 @@
-* Use RequireJS config to define aliases so that Node.js and browser requires
-  are the same
 * In-browser tests, preferably the same as are used for Node.js
 * Shims for browser/node-cross-platform compatibility
   ./deps/
@@ -24,7 +22,8 @@
   walker_builder.js could be a problem in Node. Or maybe the fix is alo needed
   there?
 * Replace stupid hand-written test server by an express based test server
-* Further reduce file size by excluding underscore and lodash, providing shims
-  for the few functions that are used or detect if they are loaded anyway.
+* Further reduce file size:
+    * Excluding underscore and lodash, providing shims for the few functions that are used or detect if they are loaded anyway.
+    * Browserified Halbert is 215 KB. That's far too much
 * Tweet
 * Blog

@@ -100,7 +100,7 @@ require(['traverson', 'lib/log'], function(traverson, log) {
     $('#btn-uri-template').on('click', executeUriTemplateRequest)
     $('#btn-hal').on('click', executeHalRequest)
     $('#general').html(
-      'var rootUri = ' + rootUri + '<br/>' +
+      'var rootUri = \'' + rootUri + '\'<br/>' +
       'var jsonApi = traverson.<i>json</i>.from(rootUri)<br/>' +
       'var jsonHalApi = traverson.<i>jsonHal</i>.from(rootUri)<br/>'
     )
