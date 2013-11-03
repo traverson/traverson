@@ -1,6 +1,6 @@
 'use strict';
 
-require(['traverson', 'lib/log'], function(traverson, log) {
+require(['traverson'], function(traverson) {
 
   var rootUri = '/'
 

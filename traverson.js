@@ -4,6 +4,7 @@ if (typeof require.config === 'function') {
     paths: {
       JSONPath: 'lib/dependencies/browser/vendor/jsonpath',
       halbert: 'lib/dependencies/browser/vendor/halbert',
+      minilog: 'lib/dependencies/browser/minilog',
       request: 'lib/dependencies/browser/request',
       'underscore.string': 'lib/dependencies/browser/vendor/underscore.string',
       'uri-template': 'lib/dependencies/browser/vendor/uri-template',
@@ -16,9 +17,19 @@ if (typeof require.config === 'function') {
   define: typeof define === 'function'
     ? define
     : function(deps, fn) { module.exports = fn.apply(null, deps.map(require)) }
-}).define([ './lib/media_types', './lib/walker_builder' ],
-  function (mediaTypes, WalkerBuilder) {
+}).define([
+  'minilog',
+  './lib/media_types',
+  './lib/walker_builder'
+], function (
+  minilog,
+  mediaTypes,
+  WalkerBuilder
+) {
   'use strict';
+
+  // activate this line to enable logging
+  // require('minilog').enable();
 
 return {
 

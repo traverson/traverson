@@ -33,19 +33,10 @@ StaticServlet.MimeMap = {
 StaticServlet.prototype.handleRequest = function(req, res) {
   var self = this;
   var path = url.parse(req.url).path
-  console.log('path: ' + path)
   path = path.replace('static/', '')
   path = ('.' + path).replace('//','/').replace(/%(..)/g, function(match, hex){
     return String.fromCharCode(parseInt(hex, 16));
   });
-  console.log('path (after processing, before split): ' + path)
-  //var parts = path.split('/');
-  //console.log(parts)
-  //console.log(process.cwd())
-  /*
-  if (parts[parts.length-1].charAt(0) === '.')
-    return self.sendForbidden_(req, res, path);
-  */
   fs.stat(path, function(err, stat) {
     if (err) {
       console.log(err)
@@ -120,7 +111,6 @@ StaticServlet.prototype.sendRedirect_ = function(req, res, redirectUrl) {
 };
 
 StaticServlet.prototype.sendFile_ = function(req, res, path) {
-  console.log('SKDJ')
   var self = this;
   var file = fs.createReadStream(path);
   res.writeHead(200, {
