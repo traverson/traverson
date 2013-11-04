@@ -1,5 +1,9 @@
 'use strict';
 
+requirejs.config({
+  baseUrl: '../..',
+})
+
 require(['traverson'], function(traverson) {
 
   var rootUri = '/'

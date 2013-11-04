@@ -2,7 +2,7 @@
   define: typeof define === 'function'
     ? define
     : function(deps, fn) { module.exports = fn.apply(null, deps.map(require)) }
-}).define(['lib/dependencies/browser/vendor/superagent'], function (superagent) {
+}).define(['browser-lib/third-party/superagent'], function (superagent) {
   'use strict';
 
   function Request() {

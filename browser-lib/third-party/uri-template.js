@@ -636,7 +636,7 @@ module.exports = (function(){
       }
 
 
-          var cls = require('lib/dependencies/browser/vendor/lib/classes')
+          var cls = require('browser-lib/third-party/lib/classes')
           var Template = cls.Template
           var expression = cls.expression
 
