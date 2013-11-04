@@ -2,13 +2,16 @@
 if (typeof require.config === 'function') {
   require.config({
     paths: {
+      // shims
+      minilog: 'lib/dependencies/browser/log-shim',
+      request: 'lib/dependencies/browser/request-shim',
+      util: 'lib/dependencies/browser/node-util-shim',
+
+      // third party libs
       JSONPath: 'lib/dependencies/browser/vendor/jsonpath',
       halbert: 'lib/dependencies/browser/vendor/halbert',
-      minilog: 'lib/dependencies/browser/minilog',
-      request: 'lib/dependencies/browser/request',
       'underscore.string': 'lib/dependencies/browser/vendor/underscore.string',
-      'uri-template': 'lib/dependencies/browser/vendor/uri-template',
-      util: 'lib/dependencies/browser/util'
+      'uri-template': 'lib/dependencies/browser/vendor/uri-template'
     }
   })
 }
