@@ -1,31 +1,16 @@
-* Use minilog again:
-  define path alias minilog: lib/deps/browser/log and make it return itself
-  on a call with a string argument (to cater for the
-  require('minilog')('traverson')
 * In-browser tests, preferably the same as are used for Node.js
-* Shims for browser/node-cross-platform compatibility
-  ./deps/
-    node/
-      util -> Node core util
-      request -> mikeal's request
-      jsonpath
-      uri-templates
-      ...
-    browser/
-      util -> lib/util
-      request -> superagent
-      jsonpath
-      uri-templates
-      ...
-      lib/
-        superagent.js
-        require.js
-        util.js
+* Make jslint pass again
 * One codebase for Node.js and browser. Merge again with master branch.
-  Beware: Changes in a0f6f6c65ea7af905e560da5a9fdc1ad61b0f895 in
-  walker_builder.js could be a problem in Node. Or maybe the fix is alo needed
-  there?
+* Add to Grunt build:
+  - create production browser build (RequireJS optimizer, minification)
+  - In-browser tests against development version and production build
 * Replace stupid hand-written test server by an express based test server
+  - clean up test server document and link structure,
+* Polish in-browser example page:
+  - make each step during link following visible
+  - pretty print code snippets, syntax highlighting, etc.
+  - Remove jquery and use something smaller
+  - make it use the production build
 * Further reduce file size:
     * Excluding underscore and lodash, providing shims for the few functions that are used or detect if they are loaded anyway.
     * Browserified Halbert is 215 KB. That's far too much
