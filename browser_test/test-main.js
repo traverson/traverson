@@ -39,6 +39,8 @@ requirejs.config({
 require(['mocha'], function() {
   mocha.setup('bdd')
   require([
+    'test/json_get_resource',
+    'test/json_hal',
     'test/json_requests'
   ], function() {
     mocha.run()
