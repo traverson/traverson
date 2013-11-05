@@ -40,8 +40,9 @@ require(['mocha'], function() {
   mocha.setup('bdd')
   require([
     'test/json_get_resource',
+    'test/json_requests',
     'test/json_hal',
-    'test/json_requests'
+    'test/localhost'
   ], function() {
     mocha.run()
   })

@@ -16,54 +16,60 @@
   }
 
   Request.prototype.get = function(uri, callback) {
-    setHeaders(superagent.get(uri), this.options)
+    setupRequest(superagent.get(uri), this.options)
       .end(function(response) {
-      response.body = response.text
-      callback(null, response)
+      callback(null, map(response))
     })
   }
 
-  Request.prototype.post = function(uri, body, callback) {
-    setHeaders(superagent.put(uri), this.options)
-      .send(body)
+  Request.prototype.post = function(uri, options, callback) {
+    setupRequest(superagent.post(uri), this.options, options)
       .end(function(response) {
-      response.body = response.text
-      callback(null, response)
+      callback(null, map(response))
     })
   }
 
-  Request.prototype.put = function(uri, body, callback) {
-    setHeaders(superagent.put(uri), this.options)
-      .send(body)
+  Request.prototype.put = function(uri, options, callback) {
+    setupRequest(superagent.put(uri), this.options, options)
       .end(function(response) {
-      response.body = response.text
-      callback(null, response)
+      callback(null, map(response))
     })
   }
 
-  Request.prototype.patch = function(uri, body, callback) {
-    setHeaders(superagent.patch(uri), this.options)
-      .send(body)
+  Request.prototype.patch = function(uri, options, callback) {
+    setupRequest(superagent.patch(uri), this.options, options)
       .end(function(response) {
-      response.body = response.text
-      callback(null, response)
+      callback(null, map(response))
     })
   }
 
-  Request.prototype.del = function(uri, callback) {
-    setHeaders(superagent.del(uri), this.options)
+  Request.prototype.del = function(uri, options, callback) {
+    setupRequest(superagent.del(uri), this.options)
       .end(function(response) {
-      response.body = response.text
-      callback(null, response)
+      callback(null, map(response))
     })
   }
 
-  function setHeaders(superagentRequest, options) {
+  function setupRequest(superagentRequest, options, bodyOptions) {
     var headers = options.headers
-    if (headers) {
-      return superagentRequest.set(options.headers)
+    if (headers != null) {
+      superagentRequest = superagentRequest.set(options.headers)
+    }
+    if (bodyOptions != null) {
+      var body = bodyOptions.body
+      if (body != null) {
+        superagentRequest = superagentRequest.send(body)
+      }
     }
     return superagentRequest
+  }
+
+  // map XHR response object properties to Node.js request lib's response object
+  // properties
+  function map(response) {
+    response.body = response.text
+    response.statusCode = response.status
+    return response
   }
 
   return new Request()

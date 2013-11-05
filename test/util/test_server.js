@@ -45,12 +45,6 @@ function TraversonTestServer() {
   }
 
   function serve(request, response) {
-    /*
-    console.log('serving request: ')
-    console.log(request.method + ' ' + request.url)
-    console.log('headers: ')
-    console.log(request.headers)
-    */
     var accept = request.headers.accept
 
     if (request.method === 'OPTIONS') {

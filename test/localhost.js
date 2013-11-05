@@ -1,19 +1,46 @@
-'use strict';
+function isNodeJs() {
+  // can't use strict here
+  if (typeof window !== 'undefined') {
+    return false
+  } else if (typeof process !== 'undefined') {
+    return true
+  } else {
+    throw new Error('Can\'t figure out environment. ' +
+        'Seems it\'s neither Node.js nor a browser.')
+  }
+}
 
-var chai = require('chai')
-chai.should()
-var should = chai.should()
-var assert = chai.assert
-var expect = chai.expect
-var log = require('minilog')('test')
-var sinon = require('sinon')
-var sinonChai = require('sinon-chai')
-chai.use(sinonChai)
+({
+  define: typeof define === 'function'
+    ? define
+    : function(deps, fn) { module.exports = fn.apply(null, deps.map(require)) }
+}).define([
+  'minilog',
+  '../traverson',
+  //'./util/test_server',
+  './util/wait_for',
+  'chai',
+  'sinon',
+  'sinon-chai'
+], function (
+  minilog,
+  traverson,
+  //TestServer,
+  waitFor,
+  chai,
+  maybeSinon,
+  sinonChai
+) {
+  'use strict';
+  var log = minilog('test')
+  // Node.js: sinon is defined by require; Browser: sinon is a global var
+  var localSinon = maybeSinon ? maybeSinon : sinon
 
-var TestServer = require('./util/test_server.js')
-var waitFor = require('./util/wait_for')
-
-var traverson = require('../traverson')
+  chai.should()
+  var assert = chai.assert
+  var expect = chai.expect
+  var should = chai.should()
+  chai.use(sinonChai)
 
 describe('Traverson (when tested against a local server)', function() {
 
@@ -23,12 +50,17 @@ describe('Traverson (when tested against a local server)', function() {
   var rootUri = 'http://127.0.0.1:2808/'
 
   before(function() {
-    testServer = new TestServer()
-    testServer.start()
+    if (isNodeJs()) {
+      var TestServer = require('./util/test_server')
+      testServer = new TestServer()
+      testServer.start()
+    }
   })
 
   after(function() {
-    testServer.stop()
+    if (isNodeJs() && testServer) {
+      testServer.stop()
+    }
   })
 
   beforeEach(function() {
@@ -41,7 +73,7 @@ describe('Traverson (when tested against a local server)', function() {
         'accept': 'application/json'
       }
     })
-    callback = sinon.spy()
+    callback = localSinon.spy()
   })
 
   it('should fetch the root response', function(done) {
@@ -363,7 +395,12 @@ describe('Traverson (when tested against a local server)', function() {
 
   it('should use provided request options', function(done) {
     api.walk()
-      .withRequestOptions({ headers: { 'x-my-special-header': 'foo' } })
+      .withRequestOptions({
+        headers: {
+          'accept': 'application/json',
+          'x-my-special-header': 'foo'
+        }
+      })
       .get(callback)
     waitFor(
       function() { return callback.called },
@@ -407,4 +444,5 @@ describe('Traverson (when tested against a local server)', function() {
     resultDoc.should.exist
     return resultDoc
   }
+})
 })
