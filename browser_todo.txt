@@ -1,4 +1,3 @@
-* Make jshint pass again
 * Add to Grunt build:
   - create production browser build (RequireJS optimizer, minification)
   - In-browser tests against development version and production build
