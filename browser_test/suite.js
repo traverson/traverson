@@ -38,6 +38,8 @@ requirejs.config({
 
 require(['mocha'], function() {
   mocha.setup('bdd')
+  mocha.timeout(3000)
+  mocha.slow(500)
   require([
     'test/json_get_resource',
     'test/json_requests',
