@@ -1,4 +1,4 @@
-// TODO Replace test_server.js and this by express
+// TODO Replace test/util/server.js and this by express
 var util = require('util'),
     http = require('http'),
     fs = require('fs'),

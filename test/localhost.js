@@ -52,7 +52,7 @@ function isNodeJs() {
 
     before(function() {
       if (isNodeJs()) {
-        var TestServer = require('./util/test_server')
+        var TestServer = require('./util/server')
         testServer = new TestServer()
         testServer.start()
       }

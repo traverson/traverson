@@ -1,4 +1,4 @@
-// TODO Replace test_server.js and static.js by express
+// TODO Replace test/util/server.js and test/util/static.js by express
 'use strict';
 
 /*
