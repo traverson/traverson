@@ -35,27 +35,24 @@ if (typeof require.config === 'function') {
   // activate this line to enable logging
   // require('minilog').enable();
 
-return {
-
-json: {
-  from: function(uri) {
-    return {
-      newRequest: function() {
-        return new WalkerBuilder(mediaTypes.JSON, uri)
+  return {
+    json: {
+      from: function(uri) {
+        return {
+          newRequest: function() {
+            return new WalkerBuilder(mediaTypes.JSON, uri)
+          }
+        }
+      }
+    },
+    jsonHal: {
+      from: function(uri) {
+        return {
+          newRequest: function() {
+            return new WalkerBuilder(mediaTypes.JSON_HAL, uri)
+          }
+        }
       }
     }
   }
-},
-
-jsonHal: {
-  from: function(uri) {
-    return {
-      newRequest: function() {
-        return new WalkerBuilder(mediaTypes.JSON_HAL, uri)
-      }
-    }
-  }
-}
-}
-
 })
