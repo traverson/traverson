@@ -1,4 +1,3 @@
-* In-browser tests, preferably the same as are used for Node.js
 * Make jslint pass again
 * One codebase for Node.js and browser. Merge again with master branch.
 * Add to Grunt build:
