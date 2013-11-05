@@ -1,8 +1,9 @@
-* Make jslint pass again
-* One codebase for Node.js and browser. Merge again with master branch.
+* Make jshint pass again
 * Add to Grunt build:
   - create production browser build (RequireJS optimizer, minification)
   - In-browser tests against development version and production build
+    + in-browser cli tests: phantomjs + cli + mocha
+    + testling to test compatibiliy with real browsers
 * Replace stupid hand-written test server by an express based test server
   - clean up test server document and link structure,
 * Polish in-browser example page:

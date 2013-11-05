@@ -7,7 +7,16 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
 
     jshint: {
-      files: ['**/*.js', '.jshintrc', '!node_modules/**/*'],
+      files: [
+        '**/*.js',
+        'Gruntfile.js',
+        '.jshintrc',
+        '!node_modules/**/*',
+        '!test/util/static.js',
+        '!browser_lib/third-party/**/*',
+        '!browser_test/lib/**/*',
+        '!example/browser/jquery*.js'
+      ],
       options: {
         jshintrc: '.jshintrc'
       }
@@ -32,8 +41,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mocha-test')
   grunt.loadNpmTasks('grunt-contrib-watch')
 
-  // don't jshint until merged with master again
-  //grunt.registerTask('default', ['jshint', 'mochaTest'])
-  grunt.registerTask('default', ['mochaTest'])
+  grunt.registerTask('default', ['jshint', 'mochaTest'])
 }
 /* jshint +W106 */

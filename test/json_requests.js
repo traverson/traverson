@@ -1,7 +1,8 @@
+/* jshint -W072 */
 ({
-  define: typeof define === 'function'
-    ? define
-    : function(deps, fn) { module.exports = fn.apply(null, deps.map(require)) }
+  define: typeof define === 'function' ?
+    define :
+    function(deps, fn) { module.exports = fn.apply(null, deps.map(require)) }
 }).define([
   'minilog',
   '../traverson',
@@ -23,7 +24,9 @@
   maybeSinon,
   sinonChai
 ) {
+  /* jshint +W072 */
   'use strict';
+
   var log = minilog('test')
   // Node.js: sinon is defined by require; Browser: sinon is a global var
   var localSinon = maybeSinon ? maybeSinon : sinon
@@ -85,9 +88,10 @@
       get.withArgs(getUri, localSinon.match.func).callsArgWithAsync(1, null,
           result)
       get.withArgs(postUri, localSinon.match.func).callsArgWithAsync(1,
-        new Error('GET is not implemented for this URI, only POST'))
+          new Error('GET is not implemented for this URI, only POST'))
 
-      executeRequest = localSinon.stub(WalkerBuilder.prototype, 'executeRequest')
+      executeRequest = localSinon.stub(WalkerBuilder.prototype,
+          'executeRequest')
     })
 
     afterEach(function() {
@@ -181,7 +185,8 @@
 
       var result = mockResponse({ result: 'success' }, 201)
 
-      it('should walk along the links and post to the last URI', function(done) {
+      it('should walk along the links and post to the last URI',
+          function(done) {
         executeRequest.withArgs(postUri, localSinon.match.func, payload,
             localSinon.match.func).callsArgWithAsync(3, null, result, postUri)
         api.walk('post_link').post(payload, callback)

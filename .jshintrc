@@ -5,6 +5,7 @@
   "camelcase": true,
   "eqeqeq": true,
   "eqnull": true,
+  "evil": true,
   "expr": true,
   "forin": true,
   "immed": true,
@@ -17,19 +18,25 @@
   "maxstatements": 300,
   "newcap": true,
   "noarg": true,
-  "node": true,
   "noempty": true,
   "nonew": true,
   "quotmark": true,
-  "strict": true,
+  "strict": false,
   "trailing": true,
   "undef": true,
+  "node": true,
+  "browser": true,
+  "jquery": true,
   "globals": {
     "after": true,
     "afterEach": true,
     "before": true,
     "beforeEach": true,
     "describe": true,
-    "it": true
+    "define": true,
+    "it": true,
+    "mocha": true,
+    "requirejs": true,
+    "sinon": true
   }
 }

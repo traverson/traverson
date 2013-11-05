@@ -18,9 +18,9 @@ if (typeof require.config === 'function') {
 
 // boilerplate to make it work in Node.js and in the browser via RequireJS
 ({
-  define: typeof define === 'function'
-    ? define
-    : function(deps, fn) { module.exports = fn.apply(null, deps.map(require)) }
+  define: typeof define === 'function' ?
+    define :
+    function(deps, fn) { module.exports = fn.apply(null, deps.map(require)) }
 }).define([
   'minilog',
   './lib/media_types',

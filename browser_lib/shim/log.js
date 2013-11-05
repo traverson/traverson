@@ -1,9 +1,9 @@
 // TODO Replace by a proper logging module, suited for the browser
 
 ({
-  define: typeof define === 'function'
-    ? define
-    : function(deps, fn) { module.exports = fn.apply(null, deps.map(require)) }
+  define: typeof define === 'function' ?
+    define :
+    function(deps, fn) { module.exports = fn.apply(null, deps.map(require)) }
 }).define([], function () {
   'use strict';
 

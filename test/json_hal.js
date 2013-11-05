@@ -1,7 +1,8 @@
+/* jshint -W072 */
 ({
-  define: typeof define === 'function'
-    ? define
-    : function(deps, fn) { module.exports = fn.apply(null, deps.map(require)) }
+  define: typeof define === 'function' ?
+    define :
+    function(deps, fn) { module.exports = fn.apply(null, deps.map(require)) }
 }).define([
   'minilog',
   '../traverson',
@@ -23,7 +24,9 @@
   maybeSinon,
   sinonChai
 ) {
+  /* jshint +W072 */
   'use strict';
+
   var log = minilog('test')
   // Node.js: sinon is defined by require; Browser: sinon is a global var
   var localSinon = maybeSinon ? maybeSinon : sinon
@@ -40,9 +43,8 @@
     var rootDoc = {
       '_links': {
         'self': { 'href': '/' },
-        // re-enable when https://github.com/xcambar/halbert/issues/5 is fixed
-        /*'curies': [{ 'name': 'ea', 'href': 'http://example.com/docs/rels/{rel}',
-            'templated': true }],*/
+        'curies': [{ 'name': 'ea', 'href': 'http://example.com/docs/rels/{rel}',
+            'templated': true }],
         'ea:orders': { 'href': '/orders' }
       }
     }
@@ -69,13 +71,10 @@
     var ordersDoc = {
       '_links': {
         'self': { 'href': '/orders' },
-        // re-enable when https://github.com/xcambar/halbert/issues/5 is fixed
-        /*'curies': [{ 'name': 'ea', 'href': 'http://example.com/docs/rels/{rel}',
-            'templated': true }],*/
+        'curies': [{ 'name': 'ea', 'href': 'http://example.com/docs/rels/{rel}',
+            'templated': true }],
         'next': { 'href': '/orders?page=2' },
         'ea:find': { 'href': '/orders{/id}', 'templated': true },
-        // re-enable when https://github.com/xcambar/halbert/issues/5 is fixed
-        /*
         'ea:admin': [{
           'href': '/admins/2',
           'title': 'Fred'
@@ -83,7 +82,6 @@
           'href': '/admins/5',
           'title': 'Kate'
         }]
-        */
       },
       'currentlyProcessing': 14,
       'shippedToday': 20,
@@ -98,11 +96,8 @@
     var singleOrderDoc = {
       '_links': {
         'self': { 'href': '/orders/13' },
-        // re-enable when https://github.com/xcambar/halbert/issues/5 is fixed
-        /*
         'curies': [{ 'name': 'ea', 'href': 'http://example.com/docs/rels/{rel}',
             'templated': true }],
-        */
         'ea:customer': { 'href': '/customers/4711' },
         'ea:basket': { 'href': '/baskets/4712' }
       },
@@ -119,11 +114,8 @@
     var customerDoc = {
       '_links': {
         'self': { 'href': '/customer/4711' },
-        // re-enable when https://github.com/xcambar/halbert/issues/5 is fixed /*
-        /*
         'curies': [{ 'name': 'ea', 'href': 'http://example.com/docs/rels/{rel}',
             'templated': true }]
-        */
       },
       'first_name': 'Halbert',
       'last_name': 'Halbertson',
@@ -164,14 +156,15 @@
           rootResponse)
       get.withArgs(ordersUri, localSinon.match.func).callsArgWithAsync(1, null,
           ordersResponse)
-      get.withArgs(singleOrderUri, localSinon.match.func).callsArgWithAsync(1, null,
-          singleOrderResponse)
+      get.withArgs(singleOrderUri, localSinon.match.func).callsArgWithAsync(1,
+          null, singleOrderResponse)
       get.withArgs(rootUri + '/baskets/987', localSinon.match.func).
           callsArgWithAsync(1, null, basketResponse)
-      get.withArgs(customerUri, localSinon.match.func).callsArgWithAsync(1, null,
-          customerResponse)
+      get.withArgs(customerUri, localSinon.match.func).callsArgWithAsync(1,
+          null, customerResponse)
       callback = localSinon.spy()
-      executeRequest = localSinon.stub(WalkerBuilder.prototype, 'executeRequest')
+      executeRequest = localSinon.stub(WalkerBuilder.prototype,
+          'executeRequest')
     })
 
     afterEach(function() {

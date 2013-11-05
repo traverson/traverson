@@ -1,3 +1,4 @@
+/* jshint -W072 */
 function isNodeJs() {
   // can't use strict here
   if (typeof window !== 'undefined') {
@@ -11,13 +12,12 @@ function isNodeJs() {
 }
 
 ({
-  define: typeof define === 'function'
-    ? define
-    : function(deps, fn) { module.exports = fn.apply(null, deps.map(require)) }
+  define: typeof define === 'function' ?
+    define :
+    function(deps, fn) { module.exports = fn.apply(null, deps.map(require)) }
 }).define([
   'minilog',
   '../traverson',
-  //'./util/test_server',
   './util/wait_for',
   'chai',
   'sinon',
@@ -25,13 +25,14 @@ function isNodeJs() {
 ], function (
   minilog,
   traverson,
-  //TestServer,
   waitFor,
   chai,
   maybeSinon,
   sinonChai
 ) {
+  /* jshint +W072 */
   'use strict';
+
   var log = minilog('test')
   // Node.js: sinon is defined by require; Browser: sinon is a global var
   var localSinon = maybeSinon ? maybeSinon : sinon
@@ -299,7 +300,8 @@ function isNodeJs() {
       )
     })
 
-    it('should fail gracefully on syntactically incorrect JSON', function(done) {
+    it('should fail gracefully on syntactically incorrect JSON',
+        function(done) {
       api.walk('garbage').getResource(callback)
       waitFor(
         function() { return callback.called },

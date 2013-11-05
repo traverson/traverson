@@ -1,3 +1,4 @@
+// TODO Replace test_server.js and static.js by express
 'use strict';
 
 /*
@@ -54,9 +55,9 @@ function TraversonTestServer() {
     var path = url.parse(request.url).path
     if (path &&
         path.indexOf('/static/') === 0 &&
-        (request.method === 'GET'
-          || request.method === 'HEAD'
-          || request.method === 'OPTIONS')) {
+        (request.method === 'GET' ||
+           request.method === 'HEAD' ||
+           request.method === 'OPTIONS')) {
       return staticServlet.handleRequest(request, response)
     }
 

@@ -27,73 +27,69 @@ require(['traverson'], function(traverson) {
   // plain vanilla link following
   function executePlainVanillaRequest() {
     $('#plain_vanilla_response').html('<img src="spinner.gif"/>')
-    jsonApi.newRequest()
-      .withRequestOptions({
-        headers: { 'accept': 'application/json' }
-      })
-      .walk('second', 'doc')
-      .getResource(function(err, resource) {
-        if (err) {
-          $('#plain_vanilla_response').html(JSON.stringify(err))
-          return
-        }
-        delete resource.requestHeaders
-        $('#plain_vanilla_response').html(JSON.stringify(resource, null, 2))
+    jsonApi
+        .newRequest()
+        .withRequestOptions({ headers: { 'accept': 'application/json' } })
+        .walk('second', 'doc')
+        .getResource(function(err, resource) {
+      if (err) {
+        $('#plain_vanilla_response').html(JSON.stringify(err))
+        return
+      }
+      delete resource.requestHeaders
+      $('#plain_vanilla_response').html(JSON.stringify(resource, null, 2))
     })
   }
 
   // JSONPath
   function executeJsonPathRequest() {
     $('#jsonpath_response').html('<img src="spinner.gif"/>')
-    jsonApi.newRequest()
-      .withRequestOptions({
-        headers: { 'accept': 'application/json' }
-      })
-      .walk('$.jsonpath.nested.key')
-      .getResource(function(err, resource) {
-        if (err) {
-          $('#jsonpath_response').html(JSON.stringify(err))
-          return
-        }
-        delete resource.requestHeaders
-        $('#jsonpath_response').html(JSON.stringify(resource, null, 2))
+    jsonApi
+        .newRequest()
+        .withRequestOptions({ headers: { 'accept': 'application/json' } })
+        .walk('$.jsonpath.nested.key')
+        .getResource(function(err, resource) {
+      if (err) {
+        $('#jsonpath_response').html(JSON.stringify(err))
+        return
+      }
+      delete resource.requestHeaders
+      $('#jsonpath_response').html(JSON.stringify(resource, null, 2))
     })
   }
 
   // URI templates
   function executeUriTemplateRequest() {
     $('#uri_template_response').html('<img src="spinner.gif"/>')
-    jsonApi.newRequest()
-      .withRequestOptions({
-        headers: { 'accept': 'application/json' }
-      })
-      .walk('uri_template')
-      .withTemplateParameters({param: 'foobar', id: 13})
-      .getResource(function(err, resource) {
-        if (err) {
-          $('#uri_template_response').html(JSON.stringify(err))
-          return
-        }
-        delete resource.requestHeaders
-        $('#uri_template_response').html(JSON.stringify(resource, null, 2))
+    jsonApi
+        .newRequest()
+        .withRequestOptions({ headers: { 'accept': 'application/json' } })
+        .walk('uri_template')
+        .withTemplateParameters({param: 'foobar', id: 13})
+        .getResource(function(err, resource) {
+      if (err) {
+        $('#uri_template_response').html(JSON.stringify(err))
+        return
+      }
+      delete resource.requestHeaders
+      $('#uri_template_response').html(JSON.stringify(resource, null, 2))
     })
   }
 
   // HAL
   function executeHalRequest() {
     $('#json_hal_response').html('<img src="spinner.gif"/>')
-    jsonHalApi.newRequest()
-      .withRequestOptions({
-        headers: { 'accept': 'application/hal+json' }
-      })
-      .walk('first', 'second', 'inside_second')
-      .getResource(function(err, resource) {
-        if (err) {
-          $('#json_hal_response').html(JSON.stringify(err))
-          return
-        }
-        delete resource.requestHeaders
-        $('#json_hal_response').html(JSON.stringify(resource, null, 2))
+    jsonHalApi
+        .newRequest()
+        .withRequestOptions({ headers: { 'accept': 'application/hal+json' } })
+        .walk('first', 'second', 'inside_second')
+        .getResource(function(err, resource) {
+      if (err) {
+        $('#json_hal_response').html(JSON.stringify(err))
+        return
+      }
+      delete resource.requestHeaders
+      $('#json_hal_response').html(JSON.stringify(resource, null, 2))
     })
   }
 

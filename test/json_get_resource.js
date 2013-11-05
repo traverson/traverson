@@ -1,7 +1,8 @@
+/* jshint -W072 */
 ({
-  define: typeof define === 'function'
-    ? define
-    : function(deps, fn) { module.exports = fn.apply(null, deps.map(require)) }
+  define: typeof define === 'function' ?
+    define :
+    function(deps, fn) { module.exports = fn.apply(null, deps.map(require)) }
 }).define([
   'minilog',
   '../traverson',
@@ -21,7 +22,9 @@
   maybeSinon,
   sinonChai
 ) {
+  /* jshint +W072 */
   'use strict';
+
   var log = minilog('test')
   // Node.js: sinon is defined by require; Browser: sinon is a global var
   var localSinon = maybeSinon ? maybeSinon : sinon
@@ -126,7 +129,8 @@
           function() { return callback.called },
           function() {
             assert(callback.calledOnce)
-            callback.should.have.been.calledWith(localSinon.match.instanceOf(Error))
+            callback.should.have.been.calledWith(localSinon.match.
+                instanceOf(Error))
             callback.args[0][0].message.should.contain('Could not find ' +
                 'property non-existing-link')
             done()
@@ -138,8 +142,8 @@
         var err = new Error('test error')
         get.withArgs(rootUri, localSinon.match.func).callsArgWithAsync(
             1, null, mockResponse({ firstLink: rootUri + '/first' }))
-        get.withArgs(rootUri + '/first', localSinon.match.func).callsArgWithAsync(
-            1, err)
+        get.withArgs(rootUri + '/first', localSinon.match.func).
+            callsArgWithAsync(1, err)
         api.walk('firstLink').getResource(callback)
         waitFor(
           function() { return callback.called },
@@ -183,7 +187,8 @@
         waitFor(
           function() { return callback.called },
           function() {
-            callback.should.have.been.calledWith(localSinon.match.instanceOf(Error))
+            callback.should.have.been.calledWith(localSinon.match.
+                instanceOf(Error))
             callback.args[0][0].message.should.contain('JSONPath expression ' +
                 '$.deeply.nested.blink returned no match')
             done()
@@ -202,7 +207,8 @@
         waitFor(
           function() { return callback.called },
           function() {
-            callback.should.have.been.calledWith(localSinon.match.instanceOf(Error))
+            callback.should.have.been.calledWith(localSinon.match.
+                instanceOf(Error))
             callback.args[0][0].message.should.contain('JSONPath expression ' +
                 '$.arr[*].foo returned more than one match')
             done()
