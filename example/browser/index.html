@@ -1,0 +1,64 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Traverson in the Browser</title>
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+    <script src="jquery-2.0.2.min.js"></script>
+    <script data-main="traverson-examples"
+            src="../../browser_lib/third-party/require.js">
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="jumbotron">
+        <h1>Traverson in the Browser</h1>
+        <p>Traverson makes it easy to work with hypermedia APIs. It works in Node.js as well as in the browser.</p>
+        <p><a id="btn-all" class="btn btn-primary btn-lg" role="button">Start
+          All Requests At Once</a></p>
+      </div>
+
+      <h2>Setup</h2>
+      <div id="general"><img src="spinner.gif"/></div>
+      <hr>
+
+      <h2>Plain Vanilla Link Following</h2>
+      <div class="row">
+        <div id="plain_vanilla_request" class="col-md-4"><img src="spinner.gif"/></div>
+        <div class="col-md-2">
+          <a id="btn-plain-vanilla" class="btn btn-primary" role="button">Start Request</a>
+        </div>
+        <pre id="plain_vanilla_response" class="col-md-6"></pre>
+      </div>
+      <hr>
+
+      <h2>JSONPath</h3>
+      <div class="row">
+        <div id="jsonpath_request" class="col-md-4"><img src="spinner.gif"/></div>
+        <div class="col-md-2">
+          <a id="btn-jsonpath" class="btn btn-primary" role="button">Start Request</a>
+        </div>
+        <pre id="jsonpath_response" class="col-md-6"></pre>
+      </div>
+      <hr>
+
+      <h2>URI Templates</h2>
+      <div class="row">
+        <div id="uri_template_request" class="col-md-4"><img src="spinner.gif"/></div>
+        <div class="col-md-2">
+          <a id="btn-uri-template" class="btn btn-primary" role="button">Start Request</a>
+        </div>
+        <pre id="uri_template_response" class="col-md-6"></pre>
+      </div>
+      <hr>
+
+      <h2>HAL</h2>
+      <div class="row">
+        <div id="json_hal_request" class="col-md-4"><img src="spinner.gif"/></div>
+        <div class="col-md-2">
+          <a id="btn-hal" class="btn btn-primary" role="button">Start Request</a>
+        </div>
+        <pre id="json_hal_response" class="col-md-6"></pre>
+      </div>
+    </div>
+  </body>
+</html>

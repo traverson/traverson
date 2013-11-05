@@ -4,9 +4,11 @@
  * Starts a http server for testing purposes.
  */
 var http = require('http')
-var log = require('minilog')('test_server');
 var _s = require('underscore.string')
 var url = require('url')
+
+var StaticServlet = require('./static')
+var staticServlet = new StaticServlet()
 
 /* jshint -W074 */
 function TraversonTestServer() {
@@ -22,7 +24,7 @@ function TraversonTestServer() {
 
   this.stop = function() {
     server.close(function() {
-      log.info('Traverson test server stopped')
+      console.log('Traverson test server stopped')
     })
   }
 
@@ -37,17 +39,28 @@ function TraversonTestServer() {
   }
 
   function printWelcomeMessage(startTime) {
-    log.info('Traverson test server started')
-    log.info('Listening on port: ' + port)
-    log.info('Bind address: ' +  bindAddress)
+    console.log('Traverson test server started')
+    console.log('Listening on port: ' + port)
+    console.log('Bind address: ' +  bindAddress)
   }
 
   function serve(request, response) {
-    log.debug('serving request: ')
-    log.debug(request.method + ' ' + request.url)
-    log.debug('headers: ')
-    log.debug(request.headers)
     var accept = request.headers.accept
+
+    if (request.method === 'OPTIONS') {
+      return serveCors(request, response)
+    }
+
+    var path = url.parse(request.url).path
+    if (path &&
+        path.indexOf('/static/') === 0 &&
+        (request.method === 'GET'
+          || request.method === 'HEAD'
+          || request.method === 'OPTIONS')) {
+      return staticServlet.handleRequest(request, response)
+    }
+
+
     if (!accept || _s.startsWith(accept, 'application/json')) {
       return serverJson(request, response)
     } else if (accept && _s.startsWith(accept, 'application/hal+json')) {
@@ -298,6 +311,19 @@ function TraversonTestServer() {
       },
       'second': 'document'
     }, request, response)
+  }
+
+  function serveCors(request, response) {
+    response.writeHead(200, {
+      'access-control-allow-origin': '*',
+      'access-control-allow-headers':
+          'X-Requested-With, Access-Control-Allow-Origin, ' +
+          'X-HTTP-Method-Override, Content-Type, Authorization, Accept',
+      'access-control-allow-methods': 'POST, GET, PUT, DELETE, OPTIONS',
+      'access-control-allow-credentials': true,
+      'access-control-max-age': '86400' // 24 hours
+    })
+    endResponse(null, request, response)
   }
 
   function serve404(request, response) {

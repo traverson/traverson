@@ -4,8 +4,13 @@
     : function(deps, fn) { module.exports = fn.apply(null, deps.map(require)) }
 }).define([], function () {
   'use strict';
+
   return {
-    JSON: 'application/json',
-    JSON_HAL: 'application/hal+json'
+    isArray: function(o) {
+      if (o == null) {
+        return false
+      }
+      return Object.prototype.toString.call(o) === '[object Array]'
+    }
   }
 })
