@@ -46,6 +46,10 @@ require(['mocha'], function() {
     'test/json_hal',
     'test/localhost'
   ], function() {
-    mocha.run()
+    if (window.mochaPhantomJS) {
+      window.mochaPhantomJS.run()
+    } else {
+      mocha.run()
+    }
   })
 })

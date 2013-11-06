@@ -208,21 +208,30 @@ function TraversonTestServer() {
   }
 
   function servePostings(request, response, body) {
-    var parsedBody = JSON.parse(body)
+    var parsedBody = parse(body)
+    if (parsedBody === null) {
+      return serve400(request, response)
+    }
     response.writeHead(201)
     endResponse({ 'document': 'created', 'received': parsedBody }, request,
         response)
   }
 
   function servePuttings(request, response, body) {
-    var parsedBody = JSON.parse(body)
+    var parsedBody = parse(body)
+    if (parsedBody === null) {
+      return serve400(request, response)
+    }
     response.writeHead(200)
     endResponse({ 'document': 'updated', 'received': parsedBody }, request,
         response)
   }
 
   function servePatchMe(request, response, body) {
-    var parsedBody = JSON.parse(body)
+    var parsedBody = parse(body)
+    if (parsedBody === null) {
+      return serve400(request, response)
+    }
     response.writeHead(200)
     endResponse({ 'document': 'patched', 'received': parsedBody }, request,
         response)
@@ -327,6 +336,11 @@ function TraversonTestServer() {
     endResponse(null, request, response)
   }
 
+  function serve400(request, response) {
+    response.writeHead(400)
+    endResponse({'message': 'bad request - no body?'}, request, response)
+  }
+
   function serve404(request, response) {
     response.writeHead(404)
     endResponse({'message': 'document not found'}, request, response)
@@ -342,6 +356,15 @@ function TraversonTestServer() {
     response.writeHead(501)
     endResponse({'message': 'http method verb ' + verb + ' not supported'},
         request, response)
+  }
+
+  function parse(body) {
+    try {
+      return JSON.parse(body)
+    } catch (e) {
+      console.error(e)
+      return null
+    }
   }
 
   function endResponse(content, request, response) {

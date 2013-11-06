@@ -11,6 +11,10 @@ function isNodeJs() {
   }
 }
 
+function isPhantomJs() {
+  return typeof window !== 'undefined' && window.mochaPhantomJS
+}
+
 ({
   define: typeof define === 'function' ?
     define :
@@ -369,6 +373,20 @@ function isNodeJs() {
     })
 
     it('should patch', function(done) {
+      // This test will not work via mocha-phantomjs since PhantomJS currently
+      // sends an empty body with a PATCH request, see
+      // https://github.com/ariya/phantomjs/issues/11384
+      // Skip this test if we are running in mocha-phantomjs
+      // Also, currently it's not possible to skip a test from inside the test,
+      // see
+      // https://github.com/visionmedia/mocha/issues/332 and
+      // https://github.com/visionmedia/mocha/pull/946
+      // so we just mark the test as passed. Sigh.
+      if (isPhantomJs()) {
+        console.log('skipping test localhost.js#should patch in PhantomJS')
+        return done()
+      }
+
       var payload = {'patched': 'document'}
       api.walk('patch_link').patch(payload, callback)
       waitFor(
