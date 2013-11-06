@@ -11,6 +11,25 @@ Docs
     * accept - sets accept header for requests
     * checkHttpStatus - sets up a check so that callback is only called with result, if the last request hat one of the given http status, otherwise callback is called with error.
 
+Regarding The Browser Build
+===========================
+
+* Add to Grunt build:
+    * create production browser build (RequireJS optimizer, minification)
+    * Use testling to test compatibiliy with real browsers
+* Replace stupid hand-written test server by an express based test server
+    * clean up test server document and link structure
+* Polish in-browser example page:
+    * make each step during link following visible
+    * pretty print code snippets, syntax highlighting, etc.
+    * Remove jquery and use something smaller
+    * make it use the production build
+* Further reduce file size:
+    * Excluding underscore and lodash, providing shims for the few functions that are used or detect if they are loaded anyway.
+    * Browserified Halbert is 215 KB. That's far too much
+* Tweet
+* Blog
+
 TODOs
 =====
 
@@ -40,20 +59,4 @@ TODOs
     * application/hal+xml? Does anybody use this? There's no RFC for that, but http://stateless.co/hal_specification.html ._ mentions it.
 * Hooks: Set filters/hooks (callbacks) on WalkerBuilder which get called on each hop and can influence what happens
 
-* Add to Grunt build:
-  - create production browser build (RequireJS optimizer, minification)
-  - In-browser tests against development version and production build
-    + in-browser cli tests: phantomjs + cli + mocha
-    + testling to test compatibiliy with real browsers
-* Replace stupid hand-written test server by an express based test server
-  - clean up test server document and link structure,
-* Polish in-browser example page:
-  - make each step during link following visible
-  - pretty print code snippets, syntax highlighting, etc.
-  - Remove jquery and use something smaller
-  - make it use the production build
-* Further reduce file size:
-    * Excluding underscore and lodash, providing shims for the few functions that are used or detect if they are loaded anyway.
-    * Browserified Halbert is 215 KB. That's far too much
-* Tweet
-* Blog
+
