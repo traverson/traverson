@@ -1,21 +1,21 @@
 'use strict';
 
 requirejs.config({
-  baseUrl: '..',
+  baseUrl: '../..',
   paths: {
     // TODO Remove code duplication - same set up as in traverson.js
     // except for test libs
 
     // shims
-    minilog: 'browser_lib/shim/log',
-    request: 'browser_lib/shim/request',
-    util: 'browser_lib/shim/node-util',
+    minilog: 'browser/lib/shim/log',
+    request: 'browser/lib/shim/request',
+    util: 'browser/lib/shim/node-util',
 
     // third party libs
-    JSONPath: 'browser_lib/third-party/jsonpath',
-    halbert: 'browser_lib/third-party/halbert',
-    'underscore.string': 'browser_lib/third-party/underscore.string',
-    'uri-template': 'browser_lib/third-party/uri-template',
+    JSONPath: 'browser/lib/third-party/jsonpath',
+    halbert: 'browser/lib/third-party/halbert',
+    'underscore.string': 'browser/lib/third-party/underscore.string',
+    'uri-template': 'browser/lib/third-party/uri-template',
 
     // test libs
     // we use most test libs directly out of the node_modules folder, even when
@@ -23,7 +23,7 @@ requirejs.config({
     // does not work in the browser.
     mocha: 'node_modules/mocha/mocha',
     chai: 'node_modules/chai/chai',
-    sinon: 'browser_test/lib/sinon',
+    sinon: 'browser/test/lib/sinon',
     'sinon-chai': 'node_modules/sinon-chai/lib/sinon-chai'
   }
 })

@@ -1,3 +1,9 @@
+/*
+ * This test suite runs Traverson against the haltalk server at
+ * http://haltalk.herokuapp.com. It is excuded by default in test/mocha.opts and
+ * in the Gruntfile. Use bin/haltalk_test.sh to run it.
+ */
+
 'use strict';
 
 var chai = require('chai')

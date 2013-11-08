@@ -137,6 +137,7 @@ require(['traverson'], function(traverson) {
     '&nbsp;&nbsp;headers: { \'accept\': \'application/json\' }<br/>' +
     '})<br/>' +
     '.walk(\'uri_template\')<br/>' +
+    '.withTemplateParameters({param: \'foobar\', id: 13})<br/>' +
     '.getResource(function(err, resource) {<br/>' +
     '&nbsp;&nbsp;// do something with the resource...<br/>' +
     '})<br/>'

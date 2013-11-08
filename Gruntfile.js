@@ -4,7 +4,7 @@ var request = require('request')
 
 var testServerRootUri = 'http://127.0.0.1:2808'
 var mochaPhantomJsTestRunner = testServerRootUri +
-    '/static/browser_test/index.html'
+    '/static/browser/test/index.html'
 
 
 
@@ -21,8 +21,8 @@ module.exports = function(grunt) {
         '.jshintrc',
         '!node_modules/**/*',
         '!test/util/static.js',
-        '!browser_lib/third-party/**/*',
-        '!browser_test/lib/**/*',
+        '!browser/lib/third-party/**/*',
+        '!browser/test/lib/**/*',
         '!example/browser/jquery*.js'
       ],
       options: {
@@ -34,9 +34,9 @@ module.exports = function(grunt) {
         options: {
           reporter: 'spec',
           slow: 300,
-          timeout: 1000
+          timeout: 100
         },
-        src: ['test/**/*.js']
+        src: ['test/**/*.js', '!test/haltalk.js']
       }
     },
     'mocha_phantomjs': {

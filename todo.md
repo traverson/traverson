@@ -1,8 +1,6 @@
 Docs
 ====
 
-* Mention Browser use in README.md
-
 * Write a more formal API doc in addition to the documentation by example in README.md. Notes:
     * `from` - returns a new walker with initialised startUri each time
     * `walk` - takes a list or an array, each element either a plain property key or a JSONPath expression, returns itself, with link array set
@@ -16,7 +14,6 @@ Docs
 Regarding The Browser Build
 ===========================
 
-* Mention Browser use in README.md
 * Add to Grunt build:
     * create production browser build (RequireJS optimizer, minification)
     * Use testling to test compatibiliy with real browsers
@@ -28,6 +25,7 @@ Regarding The Browser Build
 * Further reduce file size:
     * Excluding underscore and lodash, providing shims for the few functions that are used or detect if they are loaded anyway.
     * Browserified Halbert is 215 KB. That's far too much
+* Um, maybe try browserify again - while excluding request, underscore, lodash etc.
 * Tweet
 * Blog
 
