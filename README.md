@@ -1,5 +1,5 @@
-Traverson - Hypermedia API Consumer for Node.js and Browsers
-============================================================
+Traverson - Hypermedia API Consumer for Node.js and Browser
+===========================================================
 [![Build Status](https://travis-ci.org/basti1302/traverson.png?branch=master)](https://travis-ci.org/basti1302/traverson)
 [![Dependency Status](https://david-dm.org/basti1302/traverson.png)](https://david-dm.org/basti1302/traverson)
 
