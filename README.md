@@ -20,6 +20,9 @@ Traverson works in Node.js and in the browser (the browser lib currently in an e
 Table of Contents
 -----------------
 
+* [Installation](#installation)
+    * [Node.js](#node-js)
+    * [Browser](#browser)
 * [Documentation by Example](#documentation-by-example)
     * [Walking Along Links](#walking-along-links)
     * [Get Full HTTP Response](#more-control-receive-the-full-http-response)
@@ -36,6 +39,19 @@ Table of Contents
         * [Enabling/Disabling Features](#enablingdisabling-features)
         * [Overriding](#overriding-parts-of-traversons-walk-behaviour)
     * [Other Media Types](#other-media-types-besides-json)
+
+Installation
+------------
+
+### Node.js
+
+    npm install traverson --save
+
+### Browser
+
+    git clone https://github.com/basti1302/traverson.git
+
+After cloning the repository. See folder `example/browser` for an example how to use Traverson in the browser. There will be an optimized browser build that you can include as a single lib file soon.
 
 Documentation by Example
 ------------------------
