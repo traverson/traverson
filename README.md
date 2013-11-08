@@ -51,7 +51,7 @@ Installation
 
     git clone https://github.com/basti1302/traverson.git
 
-After cloning the repository, see folder `example/browser` for an example how to use Traverson in the browser. There will be an optimized browser build that you can include as a single lib file soon.
+After cloning the repository, see folder `browser/example` for an example how to use Traverson in the browser. There will be an optimized browser build that you can include as a single lib file soon.
 
 Documentation by Example
 ------------------------
