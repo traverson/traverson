@@ -1,6 +1,8 @@
 Docs
 ====
 
+* Mention Browser use in README.md
+
 * Write a more formal API doc in addition to the documentation by example in README.md. Notes:
     * `from` - returns a new walker with initialised startUri each time
     * `walk` - takes a list or an array, each element either a plain property key or a JSONPath expression, returns itself, with link array set
@@ -14,11 +16,10 @@ Docs
 Regarding The Browser Build
 ===========================
 
+* Mention Browser use in README.md
 * Add to Grunt build:
     * create production browser build (RequireJS optimizer, minification)
     * Use testling to test compatibiliy with real browsers
-* Replace stupid hand-written test server by an express based test server
-    * clean up test server document and link structure
 * Polish in-browser example page:
     * make each step during link following visible
     * pretty print code snippets, syntax highlighting, etc.
@@ -34,6 +35,7 @@ TODOs
 =====
 
 * Replace `walk` method with `follow` and, more generally the term walking with following.
+* clean up test server document and link structure
 * use underscore.string everywhere instead of indexOf === 0 etc.
 * WalkerBuilder#withLastRequestOptions({...}) - use the given options, but only in the last request (the one which get/post/put/getResource control)
 * WalkerBuilder#withFirtRequestOptions({...}) - use the given options, but only in the first request - is there a use case for this?

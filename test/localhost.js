@@ -49,15 +49,15 @@ function isPhantomJs() {
 
   describe('Traverson (when tested against a local server)', function() {
 
-    var api
+    var jsonApi
+    var jsonHalApi
     var testServer
     var callback
     var rootUri = 'http://127.0.0.1:2808/'
 
     before(function() {
       if (isNodeJs()) {
-        var TestServer = require('./util/server')
-        testServer = new TestServer()
+        testServer = require('../server/app')
         testServer.start()
       }
     })
@@ -69,20 +69,30 @@ function isPhantomJs() {
     })
 
     beforeEach(function() {
-      api = traverson
-              .json
-              .from(rootUri)
-              .newRequest()
-              .withRequestOptions({
+      jsonApi = traverson
+        .json
+        .from(rootUri)
+        .newRequest()
+        .withRequestOptions({
         headers: {
-          'accept': 'application/json'
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+      jsonHalApi = traverson.jsonHal
+        .from(rootUri)
+        .newRequest()
+        .withRequestOptions({
+        headers: {
+          'Accept': 'application/hal+json',
+          'Content-Type': 'application/json'
         }
       })
       callback = localSinon.spy()
     })
 
     it('should fetch the root response', function(done) {
-      api.walk().get(callback)
+      jsonApi.walk().get(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -95,7 +105,7 @@ function isPhantomJs() {
     })
 
     it('should fetch the root document', function(done) {
-      api.walk().getResource(callback)
+      jsonApi.walk().getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -108,7 +118,7 @@ function isPhantomJs() {
     })
 
     it('should walk a single element path', function(done) {
-      api.walk('first').getResource(callback)
+      jsonApi.walk('first').getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -121,7 +131,7 @@ function isPhantomJs() {
     })
 
     it('should walk a multi-element path', function(done) {
-      api.walk('second', 'doc').get(callback)
+      jsonApi.walk('second', 'doc').get(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -134,13 +144,7 @@ function isPhantomJs() {
     })
 
     it('should walk a multi-element path in hal+json', function(done) {
-      api = traverson.jsonHal
-        .from(rootUri)
-        .newRequest()
-        .withRequestOptions(
-      {
-        headers: { 'accept': 'application/hal+json' }
-      }).walk('first', 'second').get(callback)
+      jsonHalApi.walk('first', 'second').get(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -154,15 +158,9 @@ function isPhantomJs() {
 
     it('should walk a multi-element path in hal+json using an embedded ' +
         'resource along the way', function(done) {
-      api = traverson.jsonHal
-        .from(rootUri)
-        .newRequest()
-        .withRequestOptions(
-      {
-        headers: { 'accept': 'application/hal+json' }
-      }).walk('first',
-              'contained_resource',
-              'embedded_link_to_second')
+      jsonHalApi.walk('first',
+          'contained_resource',
+          'embedded_link_to_second')
         .get(callback)
       waitFor(
         function() { return callback.called },
@@ -178,15 +176,9 @@ function isPhantomJs() {
     it('should walk a multi-element path in hal+json yielding an embedded ' +
         'resource to the callback',
         function(done) {
-      api = traverson.jsonHal
-        .from(rootUri)
-        .newRequest()
-        .withRequestOptions(
-      {
-        headers: { 'accept': 'application/hal+json' }
-      }).walk('first',
-              'second',
-              'inside_second')
+      jsonHalApi.walk('first',
+          'second',
+          'inside_second')
         .get(callback)
       waitFor(
         function() { return callback.called },
@@ -200,7 +192,7 @@ function isPhantomJs() {
     })
 
     it('should walk a multi-element path to a resource', function(done) {
-      api.walk('second', 'doc').getResource(callback)
+      jsonApi.walk('second', 'doc').getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -213,7 +205,7 @@ function isPhantomJs() {
     })
 
     it('should leverage JSONPath', function(done) {
-      api.walk('$.jsonpath.nested.key').getResource(callback)
+      jsonApi.walk('$.jsonpath.nested.key').getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -226,7 +218,7 @@ function isPhantomJs() {
     })
 
     it('should leverage URI templates', function(done) {
-      api.walk('uri_template')
+      jsonApi.walk('uri_template')
          .withTemplateParameters({param: 'foobar', id: 13})
          .getResource(callback)
       waitFor(
@@ -242,7 +234,7 @@ function isPhantomJs() {
     })
 
     it('should fail gracefully on 404 with get()', function(done) {
-      api.walk('blind_alley', 'more', 'links').get(callback)
+      jsonApi.walk('blind_alley', 'more', 'links').get(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -261,7 +253,7 @@ function isPhantomJs() {
           body.should.exist
           var resultDoc = JSON.parse(body)
           resultDoc.message.should.exist
-          resultDoc.message.should.equal('document not found')
+          resultDoc.message.should.equal('resource not found')
           done()
         }
       )
@@ -269,20 +261,21 @@ function isPhantomJs() {
 
     it('should just deliver the last response of get(), even when it\'s 404',
         function(done) {
-      api.walk('blind_alley').get(callback)
+      jsonApi.walk('blind_alley').get(callback)
       waitFor(
         function() { return callback.called },
         function() {
           var resultDoc = checkResponseWithBody(404)
+          resultDoc.should.exist
           resultDoc.message.should.exist
-          resultDoc.message.should.equal('document not found')
+          resultDoc.message.should.equal('resource not found')
           done()
         }
       )
     })
 
     it('should fail gracefully on 404 with getResource()', function(done) {
-      api.walk('blind_alley').getResource(callback)
+      jsonApi.walk('blind_alley').getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -298,7 +291,7 @@ function isPhantomJs() {
           var resultDoc = callback.firstCall.args[1]
           resultDoc.should.exist
           resultDoc.message.should.exist
-          resultDoc.message.should.equal('document not found')
+          resultDoc.message.should.equal('resource not found')
           done()
         }
       )
@@ -306,7 +299,7 @@ function isPhantomJs() {
 
     it('should fail gracefully on syntactically incorrect JSON',
         function(done) {
-      api.walk('garbage').getResource(callback)
+      jsonApi.walk('garbage').getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -327,7 +320,7 @@ function isPhantomJs() {
     })
 
     it('should yield the last URI', function(done) {
-      api.walk('second', 'doc').getUri(callback)
+      jsonApi.walk('second', 'doc').getUri(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -342,7 +335,7 @@ function isPhantomJs() {
 
     it('should post', function(done) {
       var payload = {'new': 'document'}
-      api.walk('post_link').post(payload, callback)
+      jsonApi.walk('post_link').post(payload, callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -358,13 +351,13 @@ function isPhantomJs() {
 
     it('should put', function(done) {
       var payload = {'updated': 'document'}
-      api.walk('put_link').put(payload, callback)
+      jsonApi.walk('put_link').put(payload, callback)
       waitFor(
         function() { return callback.called },
         function() {
           var resultDoc = checkResponseWithBody()
           resultDoc.document.should.exist
-          resultDoc.document.should.equal('updated')
+          resultDoc.document.should.equal('overwritten')
           resultDoc.received.should.exist
           resultDoc.received.should.deep.equal(payload)
           done()
@@ -388,7 +381,7 @@ function isPhantomJs() {
       }
 
       var payload = {'patched': 'document'}
-      api.walk('patch_link').patch(payload, callback)
+      jsonApi.walk('patch_link').patch(payload, callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -403,7 +396,7 @@ function isPhantomJs() {
     })
 
     it('should delete', function(done) {
-      api.walk('delete_link').delete(callback)
+      jsonApi.walk('delete_link').delete(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -414,23 +407,21 @@ function isPhantomJs() {
     })
 
     it('should use provided request options', function(done) {
-      api.walk()
-        .withRequestOptions({
-          headers: {
-            'accept': 'application/json',
-            'x-my-special-header': 'foo'
-          }
-        })
-        .get(callback)
+      jsonApi.walk('echo-headers').withRequestOptions({
+        headers: {
+          'Accept': 'application/json',
+          'X-Traverson-Test-Header': 'Traverson rocks!'
+        }
+      }).getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
-          var resultDoc = checkResponseWithBody()
-          var headers = resultDoc.requestHeaders
-          headers.should.exist
-          var mySpecialHeader = headers['x-my-special-header']
-          mySpecialHeader.should.exist
-          mySpecialHeader.should.equal('foo')
+          var resultDoc = checkResultDoc()
+          var testResponseHeader =
+              resultDoc['X-Traverson-Test-Header'] ||
+              resultDoc['x-traverson-test-header']
+          testResponseHeader.should.exist
+          testResponseHeader.should.equal('Traverson rocks!')
           done()
         }
       )
