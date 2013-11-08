@@ -76,6 +76,7 @@ module.exports = function(grunt) {
       })
     }
 
+    grunt.log.writeln('Starting test server from grunt.')
     pingTestServer(function(error) {
       // Only start a test server instance if none is running. Rationale:
       // If an instance is running via supervisor while watching changed files,
@@ -96,11 +97,34 @@ module.exports = function(grunt) {
     })
   })
 
+  grunt.registerTask('stop-test-server', 'Stops the test server.',
+      function() {
+    var done = this.async()
+    grunt.log.writeln('Stopping test server from grunt.')
+    request.get(testServerRootUri + '/quit', function(error, response) {
+      if (error) {
+        if (error.message !== 'connect ECONNREFUSED') {
+          grunt.log.writeln('(Message from stop request was: ' + error.message +
+              ')')
+        }
+        grunt.log.writeln('It seems the test server is not running at all, ' +
+            'doing nothing')
+        done()
+      } else {
+        grunt.log.writeln('Poison pill request has been send to test server, ' +
+            'test server should have been shut down.')
+        grunt.log.writeln('')
+        done()
+      }
+    })
+  })
+
   grunt.registerTask('default', [
     'jshint',
     'mochaTest',
     'start-test-server',
-    'mocha_phantomjs'
+    'mocha_phantomjs',
+    'stop-test-server'
   ])
 }
 /* jshint +W106 */

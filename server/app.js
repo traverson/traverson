@@ -64,10 +64,16 @@ exports.start = function() {
   app.get('/echo/headers', json.echoHeaders.get)
   app.get('/does/not/exist', json['404'])
 
+  app.get('/quit', function(req, res) {
+    res.status(204).end()
+    console.log('Received request to /quit, shutting down.')
+    exports.stop()
+  })
+
   global.port = app.get('port')
 
   server = http.createServer(app)
-  server.listen(app.get('port'), function(){
+  server.listen(app.get('port'), function() {
     console.log('Traverson test server listening on port ' + app.get('port'))
   })
 }
