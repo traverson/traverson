@@ -1,5 +1,5 @@
-Traverson - Hypermedia API Consumer
-===================================
+Traverson - Hypermedia API Consumer for Node.js and Browsers
+============================================================
 [![Build Status](https://travis-ci.org/basti1302/traverson.png?branch=master)](https://travis-ci.org/basti1302/traverson)
 [![Dependency Status](https://david-dm.org/basti1302/traverson.png)](https://david-dm.org/basti1302/traverson)
 
@@ -15,7 +15,7 @@ To follow a path of links you typically start at one URI (most often the root UR
 
 Traverson does that for you. You just need to tell Traverson where it can find the link to follow in each consecutive document and Traverson will happily execute the hops from document to document for you and when it's done, hand you the final http response or document, the one you really wanted to have in the first place.
 
-Currently only JSON APIs are supported.
+Traverson works in Node.js and in the browser (the browser lib currently in an experimental state and not yet production ready.) For now, Traverson only supports JSON APIs (including JSON-HAL).
 
 Table of Contents
 -----------------
