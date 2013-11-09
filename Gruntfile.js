@@ -23,7 +23,7 @@ module.exports = function(grunt) {
         '!test/util/static.js',
         '!browser/lib/third-party/**/*',
         '!browser/test/lib/**/*',
-        '!example/browser/jquery*.js'
+        '!browser/example/jquery*.js'
       ],
       options: {
         jshintrc: '.jshintrc'
