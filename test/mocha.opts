@@ -2,5 +2,3 @@
 --reporter spec
 --slow 300
 --timeout 1000
---grep haltalk*
---invert

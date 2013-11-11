@@ -1,4 +1,3 @@
-define(function(require, exports, module) {
 module.exports = function pctEncode(regexp) {
   return function encode(string) {
     string = String(string);
@@ -21,4 +20,3 @@ module.exports = function pctEncode(regexp) {
     })
   }
 }
-});

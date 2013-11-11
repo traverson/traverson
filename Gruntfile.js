@@ -23,7 +23,8 @@ module.exports = function(grunt) {
         '!test/util/static.js',
         '!browser/lib/third-party/**/*',
         '!browser/test/lib/**/*',
-        '!browser/example/jquery*.js'
+        '!browser/example/jquery*.js',
+        '!browser/dist/**/*'
       ],
       options: {
         jshintrc: '.jshintrc'
@@ -36,7 +37,7 @@ module.exports = function(grunt) {
           slow: 300,
           timeout: 100
         },
-        src: ['test/**/*.js', '!test/haltalk.js']
+        src: ['test/**/*.js']
       }
     },
     'mocha_phantomjs': {

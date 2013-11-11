@@ -5,11 +5,41 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="mocha.css" />
-    <script data-main="suite"
-            src="../lib/third-party/require.js">
-    </script>
- </head>
+    <script src="../dist/traverson.js"></script>
+    <!--script src="../lib/shim/log.js"></script-->
+
+    <script src="../../node_modules/mocha/mocha.js"></script>
+    <script src="../../node_modules/chai/chai.js"></script>
+    <script src="lib/sinon.js"></script>
+    <script src="../../node_modules/sinon-chai/lib/sinon-chai.js"></script>
+
+    <script src="../../test/util/mock_response.js"></script>
+    <script src="../../test/util/wait_for.js"></script>
+  </head>
   <body>
     <div id="mocha"></div>
+
+
+
+
+
+    <!-- set up and start mocha -->
+    <script>
+      'use strict';
+      mocha.setup('bdd')
+      mocha.timeout(3000)
+      mocha.slow(500)
+    </script>
+
+    <!-- define test suite -->
+    <script src="../../test/json_get_resource.js"></script>
+
+    <script>
+      if (window.mochaPhantomJS) {
+        window.mochaPhantomJS.run()
+      } else {
+        mocha.run()
+      }
+    </script>
   </body>
 </html>

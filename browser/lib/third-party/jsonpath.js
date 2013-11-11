@@ -1,3 +1,6 @@
+// Downloaded from http://code.google.com/p/jsonpath/downloads/list
+// as jsonpath-0.8.0.js.txt
+
 /* JSONPath 0.8.0 - XPath for JSON
  *
  * Copyright (c) 2007 Stefan Goessner (goessner.net)
@@ -86,9 +89,6 @@ function jsonPath(obj, expr, arg) {
    }
 }
 
-// Above: Downloaded from http://code.google.com/p/jsonpath/downloads/list
-// as jsonpath-0.8.0.js.txt
-// Below: Added by BK to be make it RequireJS compatible
-define(function() {
-  return {eval: jsonPath}
-});
+// TODO BK Only added to make it commonJS/browserify compatible, but I think
+// there are better options with browserify
+module.exports = jsonPath

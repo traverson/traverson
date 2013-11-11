@@ -1,11 +1,6 @@
 'use strict';
 
-requirejs.config({
-  baseUrl: '../..',
-})
-
-require(['traverson'], function(traverson) {
-
+(function() {
   var rootUri = '/'
 
   var jsonApi = traverson.json.from(rootUri)
@@ -104,54 +99,54 @@ require(['traverson'], function(traverson) {
       'var jsonApi = traverson.<i>json</i>.from(rootUri)<br/>' +
       'var jsonHalApi = traverson.<i>jsonHal</i>.from(rootUri)<br/>'
     )
+
+    // plain vanilla link following
+    $('#plain_vanilla_request').html(
+      'jsonApi.newRequest()<br/>' +
+      '.withRequestOptions({<br/>' +
+      '&nbsp;&nbsp;headers: { \'accept\': \'application/json\' }<br/>' +
+      '})<br/>' +
+      '.walk(\'second\', \'doc\')<br/>' +
+      '.getResource(function(err, resource) {<br/>' +
+      '&nbsp;&nbsp;// do something with the resource...<br/>' +
+      '})<br/>'
+    )
+
+    // JSONPath
+    $('#jsonpath_request').html(
+      'jsonApi.newRequest()<br/>' +
+      '.withRequestOptions({<br/>' +
+      '&nbsp;&nbsp;headers: { \'accept\': \'application/json\' }<br/>' +
+      '})<br/>' +
+      '.walk(\'$.jsonpath.nested.key\')<br/>' +
+      '.getResource(function(err, resource) {<br/>' +
+      '&nbsp;&nbsp;// do something with the resource...<br/>' +
+      '})<br/>'
+    )
+
+    // URI templates
+    $('#uri_template_request').html(
+      'jsonApi.newRequest()<br/>' +
+      '.withRequestOptions({<br/>' +
+      '&nbsp;&nbsp;headers: { \'accept\': \'application/json\' }<br/>' +
+      '})<br/>' +
+      '.walk(\'uri_template\')<br/>' +
+      '.withTemplateParameters({param: \'foobar\', id: 13})<br/>' +
+      '.getResource(function(err, resource) {<br/>' +
+      '&nbsp;&nbsp;// do something with the resource...<br/>' +
+      '})<br/>'
+    )
+
+    // HAL
+    $('#json_hal_request').html(
+      'jsonHalApi.newRequest()<br/>' +
+      '.withRequestOptions({<br/>' +
+      '&nbsp;&nbsp;headers: { \'accept\': \'application/hal+json\' }<br/>' +
+      '})<br/>' +
+      '.walk(\'first\', \'second\', \'inside_second\')<br/>' +
+      '.getResource(function(err, resource) {<br/>' +
+      '&nbsp;&nbsp;// do something with the resource...<br/>' +
+      '})<br/>'
+    )
   })
-
-  // plain vanilla link following
-  $('#plain_vanilla_request').html(
-    'jsonApi.newRequest()<br/>' +
-    '.withRequestOptions({<br/>' +
-    '&nbsp;&nbsp;headers: { \'accept\': \'application/json\' }<br/>' +
-    '})<br/>' +
-    '.walk(\'second\', \'doc\')<br/>' +
-    '.getResource(function(err, resource) {<br/>' +
-    '&nbsp;&nbsp;// do something with the resource...<br/>' +
-    '})<br/>'
-  )
-
-  // JSONPath
-  $('#jsonpath_request').html(
-    'jsonApi.newRequest()<br/>' +
-    '.withRequestOptions({<br/>' +
-    '&nbsp;&nbsp;headers: { \'accept\': \'application/json\' }<br/>' +
-    '})<br/>' +
-    '.walk(\'$.jsonpath.nested.key\')<br/>' +
-    '.getResource(function(err, resource) {<br/>' +
-    '&nbsp;&nbsp;// do something with the resource...<br/>' +
-    '})<br/>'
-  )
-
-  // URI templates
-  $('#uri_template_request').html(
-    'jsonApi.newRequest()<br/>' +
-    '.withRequestOptions({<br/>' +
-    '&nbsp;&nbsp;headers: { \'accept\': \'application/json\' }<br/>' +
-    '})<br/>' +
-    '.walk(\'uri_template\')<br/>' +
-    '.withTemplateParameters({param: \'foobar\', id: 13})<br/>' +
-    '.getResource(function(err, resource) {<br/>' +
-    '&nbsp;&nbsp;// do something with the resource...<br/>' +
-    '})<br/>'
-  )
-
-  // HAL
-  $('#json_hal_request').html(
-    'jsonHalApi.newRequest()<br/>' +
-    '.withRequestOptions({<br/>' +
-    '&nbsp;&nbsp;headers: { \'accept\': \'application/hal+json\' }<br/>' +
-    '})<br/>' +
-    '.walk(\'first\', \'second\', \'inside_second\')<br/>' +
-    '.getResource(function(err, resource) {<br/>' +
-    '&nbsp;&nbsp;// do something with the resource...<br/>' +
-    '})<br/>'
-  )
-})
+})();

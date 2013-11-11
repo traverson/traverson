@@ -8,13 +8,13 @@
   "scripts": {
     "test": "grunt"
   },
+  "main": "./traverson",
   "keywords": [
     "JSON",
     "hypermedia",
     "REST",
     "API"
   ],
-  "main": "./traverson",
   "dependencies": {
     "halbert": "https://github.com/basti1302/halbert/tarball/master",
     "JSONPath": "~0.9.1",
@@ -34,7 +34,19 @@
     "mocha": "~1.12.1",
     "sinon-chai": "~2.4.0"
   },
-  "engines": {
+  "browser": {
+    "JSONPath": "./browser/lib/third-party/jsonpath.js",
+    "minilog": "./browser/lib/shim/log.js",
+    "request": "./browser/lib/shim/request.js",
+    "underscore.string": "./browser/lib/third-party/underscore.string.js",
+    "uri-template": "./browser/lib/third-party/uri-template.js",
+    "util": "./browser/lib/shim/node-util.js",
+    "indexof": false,
+    "emitter": false,
+    "reduce": false,
+    "superagent": false
+  },
+   "engines": {
     "node": ">= 0.10.x"
   }
 }
