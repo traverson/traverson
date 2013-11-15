@@ -15,19 +15,14 @@ Regarding The Browser Build
 ===========================
 
 * Add to Grunt build:
-    * create production browser build (RequireJS optimizer, minification)
     * Use testling to test compatibiliy with real browsers
 * Polish in-browser example page:
     * make each step during link following visible
     * pretty print code snippets, syntax highlighting, etc.
     * Remove jquery and use something smaller
-    * make it use the production build
 * Further reduce file size:
     * Excluding underscore and lodash, providing shims for the few functions that are used or detect if they are loaded anyway.
     * Browserified Halbert is 215 KB. That's far too much
-* Um, maybe try browserify again - while excluding request, underscore, lodash etc.
-* Tweet
-* Blog
 
 TODOs
 =====
