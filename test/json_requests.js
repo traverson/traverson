@@ -7,7 +7,6 @@ var chai = require('chai')
 var sinon = require('sinon')
 var sinonChai = require('sinon-chai')
 
-chai.should()
 var assert = chai.assert
 var expect = chai.expect
 chai.use(sinonChai)
@@ -82,7 +81,7 @@ describe('The JSON client\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, result)
+          expect(callback).to.have.been.calledWith(null, result)
           done()
         }
       )
@@ -99,7 +98,7 @@ describe('The JSON client\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(err)
+          expect(callback).to.have.been.calledWith(err)
           done()
         }
       )
@@ -119,7 +118,7 @@ describe('The JSON client\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(err)
+          expect(callback).to.have.been.calledWith(err)
           done()
         }
       )
@@ -133,8 +132,8 @@ describe('The JSON client\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, getUri)
-          get.callCount.should.equal(1)
+          expect(callback).to.have.been.calledWith(null, getUri)
+          expect(get.callCount).to.equal(1)
           done()
         }
       )
@@ -148,9 +147,9 @@ describe('The JSON client\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null,
+          expect(callback).to.have.been.calledWith(null,
               rootUri + '/template/substituted')
-          get.callCount.should.equal(1)
+          expect(get.callCount).to.equal(1)
           done()
         }
       )
@@ -170,9 +169,9 @@ describe('The JSON client\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          executeRequest.should.have.been.calledWith(postUri,
+          expect(executeRequest).to.have.been.calledWith(postUri,
               sinon.match.func, payload, sinon.match.func)
-          callback.should.have.been.calledWith(null, result, postUri)
+          expect(callback).to.have.been.calledWith(null, result, postUri)
           done()
         }
       )
@@ -187,7 +186,7 @@ describe('The JSON client\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(err)
+          expect(callback).to.have.been.calledWith(err)
           done()
         }
       )
@@ -207,9 +206,9 @@ describe('The JSON client\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          executeRequest.should.have.been.calledWith(putUri,
+          expect(executeRequest).to.have.been.calledWith(putUri,
               sinon.match.func, payload, sinon.match.func)
-          callback.should.have.been.calledWith(null, result, putUri)
+          expect(callback).to.have.been.calledWith(null, result, putUri)
           done()
         }
       )
@@ -224,7 +223,7 @@ describe('The JSON client\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(err)
+          expect(callback).to.have.been.calledWith(err)
           done()
         }
       )
@@ -243,9 +242,9 @@ describe('The JSON client\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          executeRequest.should.have.been.calledWith(patchUri,
+          expect(executeRequest).to.have.been.calledWith(patchUri,
               sinon.match.func, payload, sinon.match.func)
-          callback.should.have.been.calledWith(null, result, patchUri)
+          expect(callback).to.have.been.calledWith(null, result, patchUri)
           done()
         }
       )
@@ -260,7 +259,7 @@ describe('The JSON client\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(err)
+          expect(callback).to.have.been.calledWith(err)
           done()
         }
       )
@@ -279,9 +278,9 @@ describe('The JSON client\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          executeRequest.should.have.been.calledWith(deleteUri,
+          expect(executeRequest).to.have.been.calledWith(deleteUri,
               sinon.match.func, null, sinon.match.func)
-          callback.should.have.been.calledWith(null, result, deleteUri)
+          expect(callback).to.have.been.calledWith(null, result, deleteUri)
           done()
         }
       )
@@ -296,7 +295,7 @@ describe('The JSON client\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(err)
+          expect(callback).to.have.been.calledWith(err)
           done()
         }
       )

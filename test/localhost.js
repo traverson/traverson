@@ -6,10 +6,8 @@ var chai = require('chai')
 var sinon = require('sinon')
 var sinonChai = require('sinon-chai')
 
-chai.should()
 var assert = chai.assert
 var expect = chai.expect
-var should = chai.should()
 chai.use(sinonChai)
 
 describe('Traverson (when tested against a local server)', function() {
@@ -62,8 +60,8 @@ describe('Traverson (when tested against a local server)', function() {
       function() { return callback.called },
       function() {
         var resultDoc = checkResponseWithBody()
-        resultDoc.first.should.exist
-        resultDoc.first.should.equal(rootUri + 'first')
+        expect(resultDoc.first).to.exist
+        expect(resultDoc.first).to.equal(rootUri + 'first')
         done()
       }
     )
@@ -75,8 +73,8 @@ describe('Traverson (when tested against a local server)', function() {
       function() { return callback.called },
       function() {
         var resultDoc = checkResultDoc()
-        resultDoc.first.should.exist
-        resultDoc.first.should.equal(rootUri + 'first')
+        expect(resultDoc.first).to.exist
+        expect(resultDoc.first).to.equal(rootUri + 'first')
         done()
       }
     )
@@ -88,8 +86,8 @@ describe('Traverson (when tested against a local server)', function() {
       function() { return callback.called },
       function() {
         var resultDoc = checkResultDoc()
-        resultDoc.first.should.exist
-        resultDoc.first.should.equal('document')
+        expect(resultDoc.first).to.exist
+        expect(resultDoc.first).to.equal('document')
         done()
       }
     )
@@ -101,8 +99,8 @@ describe('Traverson (when tested against a local server)', function() {
       function() { return callback.called },
       function() {
         var resultDoc = checkResponseWithBody()
-        resultDoc.second.should.exist
-        resultDoc.second.should.equal('document')
+        expect(resultDoc.second).to.exist
+        expect(resultDoc.second).to.equal('document')
         done()
       }
     )
@@ -114,8 +112,8 @@ describe('Traverson (when tested against a local server)', function() {
       function() { return callback.called },
       function() {
         var resultDoc = checkResponseWithBody()
-        resultDoc.second.should.exist
-        resultDoc.second.should.equal('document')
+        expect(resultDoc.second).to.exist
+        expect(resultDoc.second).to.equal('document')
         done()
       }
     )
@@ -131,8 +129,8 @@ describe('Traverson (when tested against a local server)', function() {
       function() { return callback.called },
       function() {
         var resultDoc = checkResponseWithBody()
-        resultDoc.second.should.exist
-        resultDoc.second.should.equal('document')
+        expect(resultDoc.second).to.exist
+        expect(resultDoc.second).to.equal('document')
         done()
       }
     )
@@ -149,8 +147,8 @@ describe('Traverson (when tested against a local server)', function() {
       function() { return callback.called },
       function() {
         var resultDoc = checkResponseWithBody()
-        resultDoc.more.should.exist
-        resultDoc.more.should.equal('data')
+        expect(resultDoc.more).to.exist
+        expect(resultDoc.more).to.equal('data')
         done()
       }
     )
@@ -162,8 +160,8 @@ describe('Traverson (when tested against a local server)', function() {
       function() { return callback.called },
       function() {
         var resultDoc = checkResultDoc()
-        resultDoc.second.should.exist
-        resultDoc.second.should.equal('document')
+        expect(resultDoc.second).to.exist
+        expect(resultDoc.second).to.equal('document')
         done()
       }
     )
@@ -175,8 +173,8 @@ describe('Traverson (when tested against a local server)', function() {
       function() { return callback.called },
       function() {
         var resultDoc = checkResultDoc()
-        resultDoc.third.should.exist
-        resultDoc.third.should.equal('document')
+        expect(resultDoc.third).to.exist
+        expect(resultDoc.third).to.equal('document')
         done()
       }
     )
@@ -190,9 +188,9 @@ describe('Traverson (when tested against a local server)', function() {
       function() { return callback.called },
       function() {
         var resultDoc = checkResultDoc()
-        resultDoc.some.should.equal('document')
-        resultDoc.param.should.equal('foobar')
-        resultDoc.id.should.equal('13')
+        expect(resultDoc.some).to.equal('document')
+        expect(resultDoc.param).to.equal('foobar')
+        expect(resultDoc.id).to.equal('13')
         done()
       }
     )
@@ -203,22 +201,22 @@ describe('Traverson (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        callback.callCount.should.equal(1)
+        expect(callback.callCount).to.equal(1)
         var error = callback.firstCall.args[0]
-        error.should.exist
-        error.name.should.equal('HTTPError')
-        error.message.should.equal('HTTP GET for ' + rootUri +
+        expect(error).to.exist
+        expect(error.name).to.equal('HTTPError')
+        expect(error.message).to.equal('HTTP GET for ' + rootUri +
             'does/not/exist' + ' resulted in HTTP status code 404.')
-        error.uri.should.equal(rootUri + 'does/not/exist')
-        error.httpStatus.should.equal(404)
+        expect(error.uri).to.equal(rootUri + 'does/not/exist')
+        expect(error.httpStatus).to.equal(404)
 
         var response = callback.firstCall.args[1]
-        response.should.exist
+        expect(response).to.exist
         var body = response.body
-        body.should.exist
+        expect(body).to.exist
         var resultDoc = JSON.parse(body)
-        resultDoc.message.should.exist
-        resultDoc.message.should.equal('resource not found')
+        expect(resultDoc.message).to.exist
+        expect(resultDoc.message).to.equal('resource not found')
         done()
       }
     )
@@ -231,9 +229,9 @@ describe('Traverson (when tested against a local server)', function() {
       function() { return callback.called },
       function() {
         var resultDoc = checkResponseWithBody(404)
-        resultDoc.should.exist
-        resultDoc.message.should.exist
-        resultDoc.message.should.equal('resource not found')
+        expect(resultDoc).to.exist
+        expect(resultDoc.message).to.exist
+        expect(resultDoc.message).to.equal('resource not found')
         done()
       }
     )
@@ -244,19 +242,19 @@ describe('Traverson (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        callback.callCount.should.equal(1)
+        expect(callback.callCount).to.equal(1)
         var error = callback.firstCall.args[0]
-        error.should.exist
-        error.name.should.equal('HTTPError')
-        error.message.should.equal('HTTP GET for ' + rootUri +
+        expect(error).to.exist
+        expect(error.name).to.equal('HTTPError')
+        expect(error.message).to.equal('HTTP GET for ' + rootUri +
             'does/not/exist' + ' resulted in HTTP status code 404.')
-        error.uri.should.equal(rootUri + 'does/not/exist')
-        error.httpStatus.should.equal(404)
+        expect(error.uri).to.equal(rootUri + 'does/not/exist')
+        expect(error.httpStatus).to.equal(404)
 
         var resultDoc = callback.firstCall.args[1]
-        resultDoc.should.exist
-        resultDoc.message.should.exist
-        resultDoc.message.should.equal('resource not found')
+        expect(resultDoc).to.exist
+        expect(resultDoc.message).to.exist
+        expect(resultDoc.message).to.equal('resource not found')
         done()
       }
     )
@@ -268,14 +266,14 @@ describe('Traverson (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        callback.callCount.should.equal(1)
+        expect(callback.callCount).to.equal(1)
         var error = callback.firstCall.args[0]
-        error.should.exist
-        error.name.should.equal('JSONError')
-        error.message.should.equal('The document at ' + rootUri + 'junk' +
+        expect(error).to.exist
+        expect(error.name).to.equal('JSONError')
+        expect(error.message).to.equal('The document at ' + rootUri + 'junk' +
           ' could not be parsed as JSON: { this will :: not parse')
-        error.uri.should.equal(rootUri + 'junk')
-        error.body.should.equal('{ this will :: not parse')
+        expect(error.uri).to.equal(rootUri + 'junk')
+        expect(error.body).to.equal('{ this will :: not parse')
 
         var resultDoc = callback.firstCall.args[1]
         expect(resultDoc).to.not.exist
@@ -289,10 +287,10 @@ describe('Traverson (when tested against a local server)', function() {
     waitFor(
       function() { return callback.called },
       function() {
-        callback.callCount.should.equal(1)
+        expect(callback.callCount).to.equal(1)
         var result = callback.firstCall.args[1]
-        result.should.exist
-        result.should.equal(rootUri + 'second/document')
+        expect(result).to.exist
+        expect(result).to.equal(rootUri + 'second/document')
         done()
       }
     )
@@ -305,10 +303,10 @@ describe('Traverson (when tested against a local server)', function() {
       function() { return callback.called },
       function() {
         var resultDoc = checkResponseWithBody(201)
-        resultDoc.document.should.exist
-        resultDoc.document.should.equal('created')
-        resultDoc.received.should.exist
-        resultDoc.received.should.deep.equal(payload)
+        expect(resultDoc.document).to.exist
+        expect(resultDoc.document).to.equal('created')
+        expect(resultDoc.received).to.exist
+        expect(resultDoc.received).to.deep.equal(payload)
         done()
       }
     )
@@ -321,10 +319,10 @@ describe('Traverson (when tested against a local server)', function() {
       function() { return callback.called },
       function() {
         var resultDoc = checkResponseWithBody()
-        resultDoc.document.should.exist
-        resultDoc.document.should.equal('overwritten')
-        resultDoc.received.should.exist
-        resultDoc.received.should.deep.equal(payload)
+        expect(resultDoc.document).to.exist
+        expect(resultDoc.document).to.equal('overwritten')
+        expect(resultDoc.received).to.exist
+        expect(resultDoc.received).to.deep.equal(payload)
         done()
       }
     )
@@ -351,10 +349,10 @@ describe('Traverson (when tested against a local server)', function() {
       function() { return callback.called },
       function() {
         var resultDoc = checkResponseWithBody()
-        resultDoc.document.should.exist
-        resultDoc.document.should.equal('patched')
-        resultDoc.received.should.exist
-        resultDoc.received.should.deep.equal(payload)
+        expect(resultDoc.document).to.exist
+        expect(resultDoc.document).to.equal('patched')
+        expect(resultDoc.received).to.exist
+        expect(resultDoc.received).to.deep.equal(payload)
         done()
       }
     )
@@ -385,8 +383,8 @@ describe('Traverson (when tested against a local server)', function() {
         var testResponseHeader =
             resultDoc['X-Traverson-Test-Header'] ||
             resultDoc['x-traverson-test-header']
-        testResponseHeader.should.exist
-        testResponseHeader.should.equal('Traverson rocks!')
+        expect(testResponseHeader).to.exist
+        expect(testResponseHeader).to.equal('Traverson rocks!')
         done()
       }
     )
@@ -411,29 +409,29 @@ describe('Traverson (when tested against a local server)', function() {
   function checkResponseWithBody(httpStatus) {
     var response = checkResponse(httpStatus)
     var body = response.body
-    body.should.exist
+    expect(body).to.exist
     var resultDoc = JSON.parse(body)
     return resultDoc
   }
 
   function checkResponse(httpStatus) {
     httpStatus = httpStatus || 200
-    callback.callCount.should.equal(1)
+    expect(callback.callCount).to.equal(1)
     var error = callback.firstCall.args[0]
-    should.not.exist(error)
+    expect(error).to.not.exist
     var response = callback.firstCall.args[1]
-    response.should.exist
-    response.statusCode.should.exist
-    response.statusCode.should.equal(httpStatus)
+    expect(response).to.exist
+    expect(response.statusCode).to.exist
+    expect(response.statusCode).to.equal(httpStatus)
     return response
   }
 
   function checkResultDoc() {
-    callback.callCount.should.equal(1)
+    expect(callback.callCount).to.equal(1)
     var error = callback.firstCall.args[0]
-    should.not.exist(error)
+    expect(error).to.not.exist
     var resultDoc = callback.firstCall.args[1]
-    resultDoc.should.exist
+    expect(resultDoc).to.exist
     return resultDoc
   }
 })

@@ -7,7 +7,6 @@ var chai = require('chai')
 var sinon = require('sinon')
 var sinonChai = require('sinon-chai')
 
-chai.should()
 var assert = chai.assert
 var expect = chai.expect
 chai.use(sinonChai)
@@ -154,7 +153,7 @@ describe('The JSON-HAL walker\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, ordersResponse)
+          expect(callback).to.have.been.calledWith(null, ordersResponse)
           done()
         }
       )
@@ -167,7 +166,7 @@ describe('The JSON-HAL walker\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, customerResponse)
+          expect(callback).to.have.been.calledWith(null, customerResponse)
           done()
         }
       )
@@ -181,10 +180,10 @@ describe('The JSON-HAL walker\'s', function() {
         function() { return callback.called },
         function() {
           var response = callback.firstCall.args[1]
-          response.should.exist
-          response.body.should.equal(embeddedOrderResponses[0].body)
-          response.statusCode.should.equal(200)
-          response.remark.should.exist
+          expect(response).to.exist
+          expect(response.body).to.equal(embeddedOrderResponses[0].body)
+          expect(response.statusCode).to.equal(200)
+          expect(response.remark).to.exist
           done()
         }
       )
@@ -196,7 +195,7 @@ describe('The JSON-HAL walker\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, basketResponse)
+          expect(callback).to.have.been.calledWith(null, basketResponse)
           done()
         }
       )
@@ -212,7 +211,7 @@ describe('The JSON-HAL walker\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, customerDoc)
+          expect(callback).to.have.been.calledWith(null, customerDoc)
           done()
         }
       )
@@ -225,7 +224,7 @@ describe('The JSON-HAL walker\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, embeddedOrderDocs[0])
+          expect(callback).to.have.been.calledWith(null, embeddedOrderDocs[0])
           done()
         }
       )
@@ -241,7 +240,7 @@ describe('The JSON-HAL walker\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, singleOrderUri)
+          expect(callback).to.have.been.calledWith(null, singleOrderUri)
           done()
         }
       )
@@ -254,7 +253,7 @@ describe('The JSON-HAL walker\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, ordersUri + '/123')
+          expect(callback).to.have.been.calledWith(null, ordersUri + '/123')
           done()
         }
       )
@@ -269,9 +268,9 @@ describe('The JSON-HAL walker\'s', function() {
         function() { return callback.called },
         function() {
           var error = callback.firstCall.args[0]
-          error.message.should.contain('You requested an URI but the last ' +
-              'resource is an embedded resource and has no URI of its own ' +
-              '(that is, it has no link with rel=\"self\"')
+          expect(error.message).to.contain('You requested an URI but the ' +
+              'last resource is an embedded resource and has no URI of its ' +
+              'own (that is, it has no link with rel=\"self\"')
           done()
         }
       )
@@ -292,9 +291,9 @@ describe('The JSON-HAL walker\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          executeRequest.should.have.been.calledWith(customerUri,
+          expect(executeRequest).to.have.been.calledWith(customerUri,
               sinon.match.func, payload, sinon.match.func)
-          callback.should.have.been.calledWith(null, updateResponse,
+          expect(callback).to.have.been.calledWith(null, updateResponse,
               customerUri)
           done()
         }
@@ -312,7 +311,7 @@ describe('The JSON-HAL walker\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(err)
+          expect(callback).to.have.been.calledWith(err)
           done()
         }
       )
@@ -332,9 +331,9 @@ describe('The JSON-HAL walker\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          executeRequest.should.have.been.calledWith(customerUri,
+          expect(executeRequest).to.have.been.calledWith(customerUri,
               sinon.match.func, payload, sinon.match.func)
-          callback.should.have.been.calledWith(null, updateResponse,
+          expect(callback).to.have.been.calledWith(null, updateResponse,
               customerUri)
           done()
         }
@@ -352,7 +351,7 @@ describe('The JSON-HAL walker\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(err)
+          expect(callback).to.have.been.calledWith(err)
           done()
         }
       )
@@ -372,9 +371,9 @@ describe('The JSON-HAL walker\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          executeRequest.should.have.been.calledWith(customerUri,
+          expect(executeRequest).to.have.been.calledWith(customerUri,
               sinon.match.func, payload, sinon.match.func)
-          callback.should.have.been.calledWith(null, updateResponse,
+          expect(callback).to.have.been.calledWith(null, updateResponse,
               customerUri)
           done()
         }
@@ -392,7 +391,7 @@ describe('The JSON-HAL walker\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(err)
+          expect(callback).to.have.been.calledWith(err)
           done()
         }
       )
@@ -412,9 +411,9 @@ describe('The JSON-HAL walker\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          executeRequest.should.have.been.calledWith(customerUri,
+          expect(executeRequest).to.have.been.calledWith(customerUri,
               sinon.match.func, null, sinon.match.func)
-          callback.should.have.been.calledWith(null, updateResponse,
+          expect(callback).to.have.been.calledWith(null, updateResponse,
               customerUri)
           done()
         }
@@ -432,7 +431,7 @@ describe('The JSON-HAL walker\'s', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(err)
+          expect(callback).to.have.been.calledWith(err)
           done()
         }
       )

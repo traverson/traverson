@@ -7,7 +7,6 @@ var chai = require('chai')
 var sinon = require('sinon')
 var sinonChai = require('sinon-chai')
 
-chai.should()
 var assert = chai.assert
 var expect = chai.expect
 chai.use(sinonChai)
@@ -41,7 +40,7 @@ describe('getResource for JSON', function() {
 
     it('should access the root URI', function() {
       api.walk().getResource(callback)
-      get.should.have.been.calledWith(rootUri, sinon.match.func)
+      expect(get).to.have.been.calledWith(rootUri, sinon.match.func)
     })
 
     it('should call callback with the root doc', function(done) {
@@ -50,7 +49,7 @@ describe('getResource for JSON', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, rootResponse.doc)
+          expect(callback).to.have.been.calledWith(null, rootResponse.doc)
           done()
         }
       )
@@ -63,7 +62,7 @@ describe('getResource for JSON', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(err)
+          expect(callback).to.have.been.calledWith(err)
           done()
         }
       )
@@ -78,7 +77,7 @@ describe('getResource for JSON', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, result.doc)
+          expect(callback).to.have.been.calledWith(null, result.doc)
           done()
         }
       )
@@ -93,7 +92,7 @@ describe('getResource for JSON', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, result.doc)
+          expect(callback).to.have.been.calledWith(null, result.doc)
           done()
         }
       )
@@ -107,9 +106,9 @@ describe('getResource for JSON', function() {
         function() { return callback.called },
         function() {
           assert(callback.calledOnce)
-          callback.should.have.been.calledWith(sinon.match.
+          expect(callback).to.have.been.calledWith(sinon.match.
               instanceOf(Error))
-          callback.args[0][0].message.should.contain('Could not find ' +
+          expect(callback.args[0][0].message).to.contain('Could not find ' +
               'property non-existing-link')
           done()
         }
@@ -126,7 +125,7 @@ describe('getResource for JSON', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(err)
+          expect(callback).to.have.been.calledWith(err)
           done()
         }
       )
@@ -151,7 +150,7 @@ describe('getResource for JSON', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, result.doc)
+          expect(callback).to.have.been.calledWith(null, result.doc)
           done()
         }
       )
@@ -165,10 +164,10 @@ describe('getResource for JSON', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(sinon.match.
+          expect(callback).to.have.been.calledWith(sinon.match.
               instanceOf(Error))
-          callback.args[0][0].message.should.contain('JSONPath expression ' +
-              '$.deeply.nested.blink returned no match')
+          expect(callback.args[0][0].message).to.contain('JSONPath ' +
+              'expression $.deeply.nested.blink returned no match')
           done()
         }
       )
@@ -185,10 +184,10 @@ describe('getResource for JSON', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(sinon.match.
+          expect(callback).to.have.been.calledWith(sinon.match.
               instanceOf(Error))
-          callback.args[0][0].message.should.contain('JSONPath expression ' +
-              '$.arr[*].foo returned more than one match')
+          expect(callback.args[0][0].message).to.contain('JSONPath ' +
+              'expression $.arr[*].foo returned more than one match')
           done()
         }
       )
@@ -217,7 +216,7 @@ describe('getResource for JSON', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, result.doc)
+          expect(callback).to.have.been.calledWith(null, result.doc)
           done()
         }
       )
@@ -243,7 +242,7 @@ describe('getResource for JSON', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, rootUriTemplate.doc)
+          expect(callback).to.have.been.calledWith(null, rootUriTemplate.doc)
           done()
         }
       )
@@ -271,7 +270,7 @@ describe('getResource for JSON', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, result.doc)
+          expect(callback).to.have.been.calledWith(null, result.doc)
           done()
         }
       )
@@ -316,7 +315,7 @@ describe('getResource for JSON', function() {
       waitFor(
         function() { return callback.called },
         function() {
-          callback.should.have.been.calledWith(null, result.doc)
+          expect(callback).to.have.been.calledWith(null, result.doc)
           done()
         }
       )
