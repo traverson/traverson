@@ -1,16 +1,16 @@
 'use strict';
 
-if ('undefined' !== typeof require) {
-  var traverson = require('../traverson')
-  var mockResponse = require('./util/mock_response')
-  var waitFor = require('./util/wait_for')
-  var chai = require('chai')
-  var sinon = require('sinon')
-}
+var traverson = require('../traverson')
+var mockResponse = require('./util/mock_response')
+var waitFor = require('./util/wait_for')
+var chai = require('chai')
+var sinon = require('sinon')
+var sinonChai = require('sinon-chai')
 
 chai.should()
 var assert = chai.assert
 var expect = chai.expect
+chai.use(sinonChai)
 
 describe('getResource for JSON', function() {
 

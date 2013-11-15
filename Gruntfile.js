@@ -3,10 +3,11 @@
 var request = require('request')
 
 var testServerRootUri = 'http://127.0.0.1:2808'
+var testServerStatusUri = testServerRootUri + '/status'
+var testServerKillUri = testServerRootUri + '/quit'
 var mochaPhantomJsTestRunner = testServerRootUri +
     '/static/browser/test/index.html'
-
-
+var serverWasAlreadyRunning = false
 
 /* jshint -W106 */
 module.exports = function(grunt) {
@@ -20,26 +21,83 @@ module.exports = function(grunt) {
         'Gruntfile.js',
         '.jshintrc',
         '!node_modules/**/*',
-        '!test/util/static.js',
         '!browser/lib/third-party/**/*',
         '!browser/test/lib/**/*',
-        '!browser/example/jquery*.js',
+        '!browser/test/browserified_tests.js',
+        '!browser/example/assets/**/*',
         '!browser/dist/**/*'
       ],
       options: {
         jshintrc: '.jshintrc'
       }
     },
+
+    // run the mocha tests via Node.js
     mochaTest: {
       test: {
         options: {
           reporter: 'spec',
           slow: 300,
-          timeout: 100
+          timeout: 1000
         },
         src: ['test/**/*.js']
       }
     },
+
+    // remove all previous browserified builds
+    clean: {
+      dist: ['./browser/dist/**/*.js'],
+      tests: ['./browser/test/browserified_tests.js']
+    },
+
+    // browserify everything
+    browserify: {
+      // This browserify build be used by users of the module. It contains a
+      // UMD (universal module definition) and can be used via an AMD module
+      // loader like RequireJS or by simply placing a script tag in the page,
+      // which registers mymodule as a global var. Look at the example in
+      // in browser/example/index.html.
+      standalone: {
+        src: [ '<%= pkg.name %>.js' ],
+        dest: './browser/dist/<%= pkg.name %>.js',
+        options: {
+          standalone: '<%= pkg.name %>'
+        }
+      },
+      // With this browserify build, Traverson can be required by other
+      // browserify modules that have been created with an --external parameter.
+      // See browser/test/index.html for an example.
+      external: {
+        src: [ '<%= pkg.name %>.js' ],
+        dest: './browser/dist/<%= pkg.name %>.external.js',
+        options: {
+          alias: [ './<%= pkg.name %>.js:' ]
+        }
+      },
+      // Browserify the tests
+      tests: {
+        src: [ 'browser/test/suite.js' ],
+        dest: './browser/test/browserified_tests.js',
+        options: {
+          external: [ './<%= pkg.name %>.js' ],
+          // Embed source map for tests
+          debug: true
+        }
+      }
+    },
+
+    // Uglify browser libs
+    uglify: {
+      dist: {
+        files: {
+          'browser/dist/<%= pkg.name %>.min.js':
+              ['<%= browserify.standalone.dest %>'],
+          'browser/dist/<%= pkg.name %>.external.min.js':
+              ['<%= browserify.external.dest %>']
+        }
+      }
+    },
+
     'mocha_phantomjs': {
       all: {
         options: {
@@ -49,14 +107,18 @@ module.exports = function(grunt) {
         }
       }
     },
+
     watch: {
       files: ['<%= jshint.files %>'],
       tasks: ['default']
     },
   })
 
+  grunt.loadNpmTasks('grunt-contrib-clean')
   grunt.loadNpmTasks('grunt-contrib-jshint')
   grunt.loadNpmTasks('grunt-mocha-test')
+  grunt.loadNpmTasks('grunt-browserify')
+  grunt.loadNpmTasks('grunt-contrib-uglify')
   grunt.loadNpmTasks('grunt-mocha-phantomjs')
   grunt.loadNpmTasks('grunt-contrib-watch')
 
@@ -92,6 +154,7 @@ module.exports = function(grunt) {
         require('./bin/start-test-server')
         done()
       } else {
+        serverWasAlreadyRunning = true
         grunt.log.writeln('Test server is already running.')
         done()
       }
@@ -101,8 +164,14 @@ module.exports = function(grunt) {
   grunt.registerTask('stop-test-server', 'Stops the test server.',
       function() {
     var done = this.async()
-    grunt.log.writeln('Stopping test server from grunt.')
-    request.get(testServerRootUri + '/quit', function(error, response) {
+    if (serverWasAlreadyRunning) {
+      grunt.log.writeln('Server was already running when Grunt build started,' +
+          ' thus it will not be shut down now from Grunt.')
+      return done()
+    } else {
+      grunt.log.writeln('Stopping test server from grunt.')
+    }
+    request.get(testServerKillUri, function(error, response) {
       if (error) {
         if (error.message !== 'connect ECONNREFUSED') {
           grunt.log.writeln('(Message from stop request was: ' + error.message +
@@ -110,12 +179,12 @@ module.exports = function(grunt) {
         }
         grunt.log.writeln('It seems the test server is not running at all, ' +
             'doing nothing')
-        done()
+        return done()
       } else {
         grunt.log.writeln('Poison pill request has been send to test server, ' +
             'test server should have been shut down.')
         grunt.log.writeln('')
-        done()
+        return done()
       }
     })
   })
@@ -123,6 +192,9 @@ module.exports = function(grunt) {
   grunt.registerTask('default', [
     'jshint',
     'mochaTest',
+    'clean',
+    'browserify',
+    'uglify',
     'start-test-server',
     'mocha_phantomjs',
     'stop-test-server'

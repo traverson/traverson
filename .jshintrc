@@ -36,7 +36,7 @@
     "define": true,
     "it": true,
     "mocha": true,
-    "requirejs": true,
-    "sinon": true
+    "sinon": true,
+    "traverson": true
   }
 }

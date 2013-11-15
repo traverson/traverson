@@ -11,7 +11,7 @@
      '#jsonpath_response',
      '#uri_template_response',
      '#json_hal_response'].forEach(function(div) {
-      $(div).html('<img src="spinner.gif"/>')
+      $(div).html('<img src="assets/spinner.gif"/>')
     })
     executePlainVanillaRequest()
     executeJsonPathRequest()
@@ -21,7 +21,7 @@
 
   // plain vanilla link following
   function executePlainVanillaRequest() {
-    $('#plain_vanilla_response').html('<img src="spinner.gif"/>')
+    $('#plain_vanilla_response').html('<img src="assets/spinner.gif"/>')
     jsonApi
         .newRequest()
         .withRequestOptions({ headers: { 'accept': 'application/json' } })
@@ -31,14 +31,13 @@
         $('#plain_vanilla_response').html(JSON.stringify(err))
         return
       }
-      delete resource.requestHeaders
       $('#plain_vanilla_response').html(JSON.stringify(resource, null, 2))
     })
   }
 
   // JSONPath
   function executeJsonPathRequest() {
-    $('#jsonpath_response').html('<img src="spinner.gif"/>')
+    $('#jsonpath_response').html('<img src="assets/spinner.gif"/>')
     jsonApi
         .newRequest()
         .withRequestOptions({ headers: { 'accept': 'application/json' } })
@@ -48,14 +47,13 @@
         $('#jsonpath_response').html(JSON.stringify(err))
         return
       }
-      delete resource.requestHeaders
       $('#jsonpath_response').html(JSON.stringify(resource, null, 2))
     })
   }
 
   // URI templates
   function executeUriTemplateRequest() {
-    $('#uri_template_response').html('<img src="spinner.gif"/>')
+    $('#uri_template_response').html('<img src="assets/spinner.gif"/>')
     jsonApi
         .newRequest()
         .withRequestOptions({ headers: { 'accept': 'application/json' } })
@@ -66,14 +64,13 @@
         $('#uri_template_response').html(JSON.stringify(err))
         return
       }
-      delete resource.requestHeaders
       $('#uri_template_response').html(JSON.stringify(resource, null, 2))
     })
   }
 
   // HAL
   function executeHalRequest() {
-    $('#json_hal_response').html('<img src="spinner.gif"/>')
+    $('#json_hal_response').html('<img src="assets/spinner.gif"/>')
     jsonHalApi
         .newRequest()
         .withRequestOptions({ headers: { 'accept': 'application/hal+json' } })
@@ -83,7 +80,6 @@
         $('#json_hal_response').html(JSON.stringify(err))
         return
       }
-      delete resource.requestHeaders
       $('#json_hal_response').html(JSON.stringify(resource, null, 2))
     })
   }
