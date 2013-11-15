@@ -17,7 +17,7 @@ To follow a path of links you typically start at one URI (most often the root UR
 
 Traverson does that for you. You just need to tell Traverson where it can find the link to follow in each consecutive document and Traverson will happily execute the hops from document to document for you and when it's done, hand you the final http response or document, the one you really wanted to have in the first place.
 
-Traverson works in Node.js and in the browser (the browser lib is currently in an experimental state and not yet production ready.) For now, Traverson only supports JSON APIs (including JSON-HAL).
+Traverson works in Node.js and in the browser. For now, Traverson only supports JSON APIs (including JSON-HAL).
 
 Table of Contents
 -----------------
