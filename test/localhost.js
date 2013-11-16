@@ -55,7 +55,7 @@ describe('Traverson (when tested against a local server)', function() {
   })
 
   it('should fetch the root response', function(done) {
-    jsonApi.walk().get(callback)
+    jsonApi.follow().get(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -68,7 +68,7 @@ describe('Traverson (when tested against a local server)', function() {
   })
 
   it('should fetch the root document', function(done) {
-    jsonApi.walk().getResource(callback)
+    jsonApi.follow().getResource(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -80,8 +80,8 @@ describe('Traverson (when tested against a local server)', function() {
     )
   })
 
-  it('should walk a single element path', function(done) {
-    jsonApi.walk('first').getResource(callback)
+  it('should follow a single element path', function(done) {
+    jsonApi.follow('first').getResource(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -93,8 +93,8 @@ describe('Traverson (when tested against a local server)', function() {
     )
   })
 
-  it('should walk a multi-element path', function(done) {
-    jsonApi.walk('second', 'doc').get(callback)
+  it('should follow a multi-element path', function(done) {
+    jsonApi.follow('second', 'doc').get(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -106,8 +106,8 @@ describe('Traverson (when tested against a local server)', function() {
     )
   })
 
-  it('should walk a multi-element path in hal+json', function(done) {
-    jsonHalApi.walk('first', 'second').get(callback)
+  it('should follow a multi-element path in hal+json', function(done) {
+    jsonHalApi.follow('first', 'second').get(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -119,9 +119,9 @@ describe('Traverson (when tested against a local server)', function() {
     )
   })
 
-  it('should walk a multi-element path in hal+json using an embedded ' +
+  it('should follow a multi-element path in hal+json using an embedded ' +
       'resource along the way', function(done) {
-    jsonHalApi.walk('first',
+    jsonHalApi.follow('first',
         'contained_resource',
         'embedded_link_to_second')
       .get(callback)
@@ -136,10 +136,10 @@ describe('Traverson (when tested against a local server)', function() {
     )
   })
 
-  it('should walk a multi-element path in hal+json yielding an embedded ' +
+  it('should follow a multi-element path in hal+json yielding an embedded ' +
       'resource to the callback',
       function(done) {
-    jsonHalApi.walk('first',
+    jsonHalApi.follow('first',
         'second',
         'inside_second')
       .get(callback)
@@ -154,8 +154,8 @@ describe('Traverson (when tested against a local server)', function() {
     )
   })
 
-  it('should walk a multi-element path to a resource', function(done) {
-    jsonApi.walk('second', 'doc').getResource(callback)
+  it('should follow a multi-element path to a resource', function(done) {
+    jsonApi.follow('second', 'doc').getResource(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -168,7 +168,7 @@ describe('Traverson (when tested against a local server)', function() {
   })
 
   it('should leverage JSONPath', function(done) {
-    jsonApi.walk('$.jsonpath.nested.key').getResource(callback)
+    jsonApi.follow('$.jsonpath.nested.key').getResource(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -181,7 +181,7 @@ describe('Traverson (when tested against a local server)', function() {
   })
 
   it('should leverage URI templates', function(done) {
-    jsonApi.walk('uri_template')
+    jsonApi.follow('uri_template')
        .withTemplateParameters({param: 'foobar', id: 13})
        .getResource(callback)
     waitFor(
@@ -197,7 +197,7 @@ describe('Traverson (when tested against a local server)', function() {
   })
 
   it('should fail gracefully on 404 with get()', function(done) {
-    jsonApi.walk('blind_alley', 'more', 'links').get(callback)
+    jsonApi.follow('blind_alley', 'more', 'links').get(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -224,7 +224,7 @@ describe('Traverson (when tested against a local server)', function() {
 
   it('should just deliver the last response of get(), even when it\'s 404',
       function(done) {
-    jsonApi.walk('blind_alley').get(callback)
+    jsonApi.follow('blind_alley').get(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -238,7 +238,7 @@ describe('Traverson (when tested against a local server)', function() {
   })
 
   it('should fail gracefully on 404 with getResource()', function(done) {
-    jsonApi.walk('blind_alley').getResource(callback)
+    jsonApi.follow('blind_alley').getResource(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -262,7 +262,7 @@ describe('Traverson (when tested against a local server)', function() {
 
   it('should fail gracefully on syntactically incorrect JSON',
       function(done) {
-    jsonApi.walk('garbage').getResource(callback)
+    jsonApi.follow('garbage').getResource(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -283,7 +283,7 @@ describe('Traverson (when tested against a local server)', function() {
   })
 
   it('should yield the last URI', function(done) {
-    jsonApi.walk('second', 'doc').getUri(callback)
+    jsonApi.follow('second', 'doc').getUri(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -298,7 +298,7 @@ describe('Traverson (when tested against a local server)', function() {
 
   it('should post', function(done) {
     var payload = {'new': 'document'}
-    jsonApi.walk('post_link').post(payload, callback)
+    jsonApi.follow('post_link').post(payload, callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -314,7 +314,7 @@ describe('Traverson (when tested against a local server)', function() {
 
   it('should put', function(done) {
     var payload = {'updated': 'document'}
-    jsonApi.walk('put_link').put(payload, callback)
+    jsonApi.follow('put_link').put(payload, callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -344,7 +344,7 @@ describe('Traverson (when tested against a local server)', function() {
     }
 
     var payload = {'patched': 'document'}
-    jsonApi.walk('patch_link').patch(payload, callback)
+    jsonApi.follow('patch_link').patch(payload, callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -359,7 +359,7 @@ describe('Traverson (when tested against a local server)', function() {
   })
 
   it('should delete', function(done) {
-    jsonApi.walk('delete_link').delete(callback)
+    jsonApi.follow('delete_link').delete(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -370,7 +370,7 @@ describe('Traverson (when tested against a local server)', function() {
   })
 
   it('should use provided request options', function(done) {
-    jsonApi.walk('echo-headers').withRequestOptions({
+    jsonApi.follow('echo-headers').withRequestOptions({
       headers: {
         'Accept': 'application/json',
         'X-Traverson-Test-Header': 'Traverson rocks!'

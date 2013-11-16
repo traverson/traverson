@@ -27,12 +27,11 @@ Regarding The Browser Build
 TODOs
 =====
 
-* Replace `walk` method with `follow` and, more generally the term walking with following.
 * clean up test server document and link structure
 * use underscore.string everywhere instead of indexOf === 0 etc.
-* WalkerBuilder#withLastRequestOptions({...}) - use the given options, but only in the last request (the one which get/post/put/getResource control)
-* WalkerBuilder#withFirtRequestOptions({...}) - use the given options, but only in the first request - is there a use case for this?
-* WalkerBuilder#checkHttpStatus(200, 201, ...) - provide http status codes that will be checked only for the last request - needs better name that makes clear that it only relates to the last get()/post()/put()/... call.
+* Builder#withLastRequestOptions({...}) - use the given options, but only in the last request (the one which get/post/put/getResource control)
+* Builder#withFirtRequestOptions({...}) - use the given options, but only in the first request - is there a use case for this?
+* Builder#checkHttpStatus(200, 201, ...) - provide http status codes that will be checked only for the last request - needs better name that makes clear that it only relates to the last get()/post()/put()/... call.
 * Should work in browser (maybe via browserify) - see also http://www.2ality.com/2011/11/module-gap.html
 * what about accept and content-type headers? API could have some custom
   content type and still be JSON, so we probably can not check that
@@ -52,6 +51,6 @@ TODOs
     * xml?
     * html (jsdom, htmlparser2, cheerio, .... )
     * application/hal+xml? Does anybody use this? There's no RFC for that, but http://stateless.co/hal_specification.html ._ mentions it.
-* Hooks: Set filters/hooks (callbacks) on WalkerBuilder which get called on each hop and can influence what happens
+* Hooks: Set filters/hooks (callbacks) on Builder which get called on each hop and can influence what happens
 
 

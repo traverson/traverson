@@ -76,8 +76,8 @@ describe('The JSON client\'s', function() {
 
   describe('get method', function() {
 
-    it('should walk along the links', function(done) {
-      api.walk('get_link').get(callback)
+    it('should follow the links', function(done) {
+      api.follow('get_link').get(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -94,7 +94,7 @@ describe('The JSON client\'s', function() {
       get = sinon.stub()
       api.walker.request = { get: get }
       get.callsArgWithAsync(1, err)
-      api.walk().get(callback)
+      api.follow().get(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -114,7 +114,7 @@ describe('The JSON client\'s', function() {
       get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
           1, null, rootResponse)
       get.withArgs(getUri, sinon.match.func).callsArgWithAsync(1, err)
-      api.walk('get_link', 'another_link').get(callback)
+      api.follow('get_link', 'another_link').get(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -127,8 +127,8 @@ describe('The JSON client\'s', function() {
   })
 
   describe('getUri method', function() {
-    it('should walk along the links and yield the last URI', function(done) {
-      api.walk('get_link').getUri(callback)
+    it('should follow the links and yield the last URI', function(done) {
+      api.follow('get_link').getUri(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -141,7 +141,7 @@ describe('The JSON client\'s', function() {
 
     it('should yield resolved URI if last URI is a URI template',
         function(done) {
-      api.walk('template_link')
+      api.follow('template_link')
         .withTemplateParameters({ param: 'substituted' })
         .getUri(callback)
       waitFor(
@@ -161,11 +161,11 @@ describe('The JSON client\'s', function() {
 
     var result = mockResponse({ result: 'success' }, 201)
 
-    it('should walk along the links and post to the last URI',
+    it('should follow the links and post to the last URI',
         function(done) {
       executeRequest.withArgs(postUri, sinon.match.func, payload,
           sinon.match.func).callsArgWithAsync(3, null, result, postUri)
-      api.walk('post_link').post(payload, callback)
+      api.follow('post_link').post(payload, callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -182,7 +182,7 @@ describe('The JSON client\'s', function() {
       var err = new Error('test error')
       executeRequest.withArgs(postUri, sinon.match.func, payload,
           sinon.match.func).callsArgWithAsync(3, err)
-      api.walk('post_link').post(payload, callback)
+      api.follow('post_link').post(payload, callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -198,11 +198,11 @@ describe('The JSON client\'s', function() {
 
     var result = mockResponse({ result: 'success' }, 200)
 
-    it('should walk along the links and put to the last URI',
+    it('should follow the links and put to the last URI',
         function(done) {
       executeRequest.withArgs(putUri, sinon.match.func, payload,
           sinon.match.func).callsArgWithAsync(3, null, result, putUri)
-      api.walk('put_link').put(payload, callback)
+      api.follow('put_link').put(payload, callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -219,7 +219,7 @@ describe('The JSON client\'s', function() {
       var err = new Error('test error')
       executeRequest.withArgs(putUri, sinon.match.func, payload,
           sinon.match.func).callsArgWithAsync(3, err)
-      api.walk('put_link').put(payload, callback)
+      api.follow('put_link').put(payload, callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -234,11 +234,11 @@ describe('The JSON client\'s', function() {
 
     var result = mockResponse({ result: 'success' }, 200)
 
-    it('should walk along the links and patch the last URI',
+    it('should follow the links and patch the last URI',
         function(done) {
       executeRequest.withArgs(patchUri, sinon.match.func, payload,
           sinon.match.func).callsArgWithAsync(3, null, result, patchUri)
-      api.walk('patch_link').patch(payload, callback)
+      api.follow('patch_link').patch(payload, callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -255,7 +255,7 @@ describe('The JSON client\'s', function() {
       var err = new Error('test error')
       executeRequest.withArgs(patchUri, sinon.match.func, payload,
           sinon.match.func).callsArgWithAsync(3, err, null)
-      api.walk('patch_link').patch(payload, callback)
+      api.follow('patch_link').patch(payload, callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -270,11 +270,11 @@ describe('The JSON client\'s', function() {
 
     var result = mockResponse(null, 204)
 
-    it('should walk along the links and delete the last URI',
+    it('should follow the links and delete the last URI',
         function(done) {
       executeRequest.withArgs(deleteUri, sinon.match.func, null,
           sinon.match.func).callsArgWithAsync(3, null, result, deleteUri)
-      api.walk('delete_link').delete(callback)
+      api.follow('delete_link').delete(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -291,7 +291,7 @@ describe('The JSON client\'s', function() {
       var err = new Error('test error')
       executeRequest.withArgs(deleteUri, sinon.match.func, null,
           sinon.match.func).callsArgWithAsync(3, err)
-      api.walk('delete_link').delete(callback)
+      api.follow('delete_link').delete(callback)
       waitFor(
         function() { return callback.called },
         function() {

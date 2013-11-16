@@ -26,20 +26,19 @@ Table of Contents
     * [Node.js](#nodejs)
     * [Browser](#browser)
 * [Documentation by Example](#documentation-by-example)
-    * [Walking Along Links](#walking-along-links)
+    * [Following Links](#following-links)
     * [Get Full HTTP Response](#more-control-receive-the-full-http-response)
     * [Pass Links as Array](#pass-a-link-array)
     * [POST, PUT, DELETE and PATCH](#post-put-delete-and-patch)
     * [Error Handling](#error-handling)
     * [JSONPath](#jsonpath)
     * [URI Templates](#uri-templates)
-    * [Headers and Authentication](#headers-http-basicauth-oauth-and-whatnot)
+    * [Headers and Authentication](#headers-http-basic-auth-oauth-and-whatnot)
     * [HAL](#hal---hypermedia-application-language)
 * [Features From the Future](#features-from-the-future)
     * [Caching](#caching)
     * [Customizing Traverson](#customizing-traverson)
         * [Enabling/Disabling Features](#enablingdisabling-features)
-        * [Overriding](#overriding-parts-of-traversons-walk-behaviour)
     * [Other Media Types](#other-media-types-besides-json)
 
 Installation
@@ -66,7 +65,7 @@ Documentation by Example
 
 This section shows how to use Traverson's features with small examples.
 
-### Walking Along Links
+### Following Links
 
 The most basic thing you can do with traverson is to let it start at the root URI of an API, follow some links and pass the resource that is found at the end of this journey back to you. Here's how:
 
@@ -74,12 +73,12 @@ The most basic thing you can do with traverson is to let it start at the root UR
     var api = traverson.json.from('http://api.io')
 
     api.newRequest()
-       .walk('link_to', 'resource')
+       .follow('link_to', 'resource')
        .getResource(function(error, document) {
       if (error) {
         console.error('No luck :-)')
       } else {
-        console.log('We have walked the path and reached our destination.')
+        console.log('We have followed the path and reached our destination.')
         console.log(JSON.stringify(document))
       }
     })
@@ -95,7 +94,7 @@ Given this call, Traverson first fetches `http://api.io` (because that's what we
 
 (To make the examples easier to read, we note the URI corresponding to the document above each document. The URI is of course not part of the JSON response body.)
 
-After receiving the document from the start URI, Traverson starts to follow the provided via the `walk` method. Since the first link is `link_to`, it looks for a property with this name in the JSON response. In this case, this yields the next URI to access: `http://api.io/follow/me`. Traverson will fetch the document from there now. Let's assume this document looks like to this:
+After receiving the document from the start URI, Traverson starts to follow the links provided via the `follow` method. Since the first link is `link_to`, it looks for a property with this name in the JSON response. In this case, this yields the next URI to access: `http://api.io/follow/me`. Traverson will fetch the document from there now. Let's assume this document looks like to this:
 
     https://api.io/follow/me
     {
@@ -104,7 +103,7 @@ After receiving the document from the start URI, Traverson starts to follow the 
       "resource": "http://api.io/follow/me/to/the/stars"
     }
 
-Now, since the next link given to `walk` is `resource`, Traverson will look for the property `resource`. Finding that, Traverson will finally fetch the JSON document from `http://api.io/follow/me/to/the/stars`:
+Now, since the next link given to `follow` is `resource`, Traverson will look for the property `resource`. Finding that, Traverson will finally fetch the JSON document from `http://api.io/follow/me/to/the/stars`:
 
     http://api.io/follow/me/to/the/stars
     {
@@ -113,22 +112,22 @@ Now, since the next link given to `walk` is `resource`, Traverson will look for 
       ...
     }
 
-Because the list of links given to `walk` is exhausted now (`resource` was the last element), this document will be passed into to the callback you provided when calling the `getResource` method. Coming back to the example from the top, the output would be
+Because the list of links given to `follow` is exhausted now (`resource` was the last element), this document will be passed into to the callback you provided when calling the `getResource` method. Coming back to the example from the top, the output would be
 
-    We have walked the path and reached the final resource.
+    We have followed the path and reached the final resource.
     { "the_document": "that we really wanted to have", "with": "lots of interesting and valuable content", ...  }
 
 ### More Control: Receive the Full HTTP Response
 
-The example above chained the `getResource` method to the `walk` method. For this method, Traverson will parse the JSON from the last HTTP response and pass the resulting JavaScript object to your callback. In certain situations you might want more control and would like to receive the full HTTP response object instead of the body, already parsed to an object. This is what the `get` method is for:
+The example above chained the `getResource` method to the `follow` method. For this method, Traverson will parse the JSON from the last HTTP response and pass the resulting JavaScript object to your callback. In certain situations you might want more control and would like to receive the full HTTP response object instead of the body, already parsed to an object. This is what the `get` method is for:
 
     api.newRequest()
-       .walk('link_to', 'resource')
+       .follow('link_to', 'resource')
        .get(function(error, response) {
       if (error) {
         console.error('No luck :-)')
       } else {
-        console.log('We have walked the path and reached our destination.')
+        console.log('We have followed the path and reached our destination.')
         console.log('HTTP status code: ' + response.statusCode)
         console.log('Response Body: ' + response.body)
       }
@@ -136,19 +135,19 @@ The example above chained the `getResource` method to the `walk` method. For thi
 
 ### Pass a Link Array
 
-You can also pass an array of strings to the walk method. Makes no difference.
+You can also pass an array of strings to the follow method. Makes no difference.
 
     api.newRequest()
-       .walk('first_link', 'second_link', 'third_link')
+       .follow('first_link', 'second_link', 'third_link')
        .getResource(callback)
 
 is equivalent to
 
     api.newRequest()
-       .walk(['first_link', 'second_link', 'third_link'])
+       .follow(['first_link', 'second_link', 'third_link'])
        .getResource(callback)
 
-If the first argument to `walk` is an array, all remaining arguments will be ignored, though.
+If the first argument to `follow` is an array, all remaining arguments will be ignored, though.
 
 ### POST, PUT, DELETE and PATCH
 
@@ -157,7 +156,7 @@ So far we only have concerned ourselves with fetching information from a REST AP
 This looks very similar to using the `get` method:
 
     api.newRequest()
-       .walk('link_to', 'resource')
+       .follow('link_to', 'resource')
        .post({'some': 'data'}, function(error, response) {
       if (error) {
         console.error('No luck :-)')
@@ -170,19 +169,19 @@ This looks very similar to using the `get` method:
 All methods except `getResource` (that is `get`, `post`, `put`, `delete` and `patch` pass the full http response into the provided callback, so the callback's method signature always looks like `function(error, response)`. `post`, `put` and `patch` obviously have a body argument, `delete` doesn't. Some more examples, just for completenss' sake:
 
     api.newRequest()
-       .walk('link_to', 'resource')
+       .follow('link_to', 'resource')
        .put({'some': 'data'}, function(error, response) {
        ...
     })
 
     api.newRequest()
-       .walk('link_to', 'resource')
+       .follow('link_to', 'resource')
        .patch({'some': 'data'}, function(error, response) {
        ...
     })
 
     api.newRequest()
-       .walk('link_to', 'resource')
+       .follow('link_to', 'resource')
        .delete(function(error, response) {
        ...
     })
@@ -207,7 +206,7 @@ Reasons for failure could be:
 Traverson supports [JSONPath](http://goessner.net/articles/JsonPath/) expressions in the path array. This will come in handy if the link you want to follow from a given document is not a direct property of that document. Consider the following example:
 
     api.newRequest()
-       .walk('$.deeply.nested.link')
+       .follow('$.deeply.nested.link')
        .getResource(function(error, document) {
        ...
     })
@@ -228,7 +227,7 @@ where the document at the root URI is
       "the_document": "we wanted to have"
     }
 
-Upon loading the document from the start URI `http://api.io`, Traverson will recognize that the first (and only) link to walk is a JSONPath expression and evaluate it against the given document, which results in the URI `http://api.io/congrats/you/have/found/me`. Of course you can also use path arrays with more than one element with JSONPath and you can freely mix JSONPath expressions with plain vanilla properties.
+Upon loading the document from the start URI `http://api.io`, Traverson will recognize that the first (and only) link to `follow` is a JSONPath expression and evaluate it against the given document, which results in the URI `http://api.io/congrats/you/have/found/me`. Of course you can also use path arrays with more than one element with JSONPath and you can freely mix JSONPath expressions with plain vanilla properties.
 
 Any element of the path array that begins with `$.` or `$[` is assumed to be a JSONPath expression, otherwise the element is interpreted as a plain object property.
 
@@ -240,7 +239,7 @@ If a JSONPath expressions yields no match or more than one match, an error will 
 
 Traverson supports URI templates ([RFC 6570](http://tools.ietf.org/html/rfc6570)). Let's modify our inital example to make use of this feature:
 
-    api.walk('user_thing_lookup')
+    api.follow('user_thing_lookup')
         .withTemplateParameters({ user_name: 'basti1302', thing_id: 4711 })
         .getResource(function(error, document) {
       ...
@@ -266,7 +265,7 @@ Of course, URI templating also works if the path from the start URI to the final
 
 Let's assume the following call
 
-    api.walk('user_lookup', 'thing_lookup')
+    api.follow('user_lookup', 'thing_lookup')
         .withTemplateParameters({ user_name: 'basti1302', thing_id: 4711 })
         .getResource(function(error, document) {
       ...
@@ -295,7 +294,7 @@ Instead of using a single object to provide the template parameters for each ste
 
 Let's look at an example
 
-    api.walk('user_lookup', 'things', 'thing_lookup')
+    api.follow('user_lookup', 'things', 'thing_lookup')
         .withTemplateParameters([null, {id: "basti1302"}, null, {id: 4711} ])
         .getResource(function(error, document) {
       ...
@@ -332,7 +331,7 @@ templates.
 
 Traverson uses Mikeal Rogers' [request](https://github.com/mikeal/request) module for all HTTP requests. You can use all options that `request` provides with Traverson by passing an options object into the `withRequestOptions` method, like this:
 
-    api.walk('link_one', 'link_two', 'link_three')
+    api.follow('link_one', 'link_two', 'link_three')
       .withRequestOptions({ headers: { 'x-my-special-header': 'foo' } })
       .getResource(function(error, document) {
         ...
@@ -348,7 +347,7 @@ Traverson supports the JSON dialect of [HAL](http://tools.ietf.org/id/draft-kell
     var api = traverson.jsonHal.from('http://haltalk.herokuapp.com/')
 
     api.newRequest()
-       .walk('ht:me', 'ht:posts')
+       .follow('ht:me', 'ht:posts')
        .withTemplateParameters({name: 'traverson'})
        .getResource(function(error, document) {
       if (error) {
@@ -422,7 +421,7 @@ This will give you all posts that the account `traverson` posted to Mike Kelly's
 
 #### Embedded Documents
 
-When working with HAL resources, for each link given to the `walk` method, Traverson checks the `_links` object. If the `_links` object does not have the property in question, Traverson also automatically checks the embedded document (the `_embedded` object). If there is an embedded document with the correct property key, this one will be used instead. If there is both a `_link` and an `_embedded` object with the same name, Traverson will always prefer the link, not the embedded object (reason: the spec says that an embedded resource may "be a full, partial, or inconsistent version of the representation served from the target URI", so to get the complete and up to date document your best bet is to follow the link to the actual resource, if available).
+When working with HAL resources, for each link given to the `follow` method, Traverson checks the `_links` object. If the `_links` object does not have the property in question, Traverson also automatically checks the embedded document (the `_embedded` object). If there is an embedded document with the correct property key, this one will be used instead. If there is both a `_link` and an `_embedded` object with the same name, Traverson will always prefer the link, not the embedded object (reason: the spec says that an embedded resource may "be a full, partial, or inconsistent version of the representation served from the target URI", so to get the complete and up to date document your best bet is to follow the link to the actual resource, if available).
 
 #### HAL and JSONPath
 
@@ -445,10 +444,6 @@ There will be some simple on/off toggles for certain parts of Traverson behaviou
 * disable URI templates,
 * disable JSONPath,
 * disable caching (a feature yet to be implemented in the first place)
-
-#### Overriding Parts of Traverson's `walk` Behaviour
-
-TODO
 
 ### Other Media Types Besides JSON
 

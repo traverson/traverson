@@ -25,7 +25,7 @@
     jsonApi
         .newRequest()
         .withRequestOptions({ headers: { 'accept': 'application/json' } })
-        .walk('second', 'doc')
+        .follow('second', 'doc')
         .getResource(function(err, resource) {
       if (err) {
         $('#plain_vanilla_response').html(JSON.stringify(err))
@@ -41,7 +41,7 @@
     jsonApi
         .newRequest()
         .withRequestOptions({ headers: { 'accept': 'application/json' } })
-        .walk('$.jsonpath.nested.key')
+        .follow('$.jsonpath.nested.key')
         .getResource(function(err, resource) {
       if (err) {
         $('#jsonpath_response').html(JSON.stringify(err))
@@ -57,7 +57,7 @@
     jsonApi
         .newRequest()
         .withRequestOptions({ headers: { 'accept': 'application/json' } })
-        .walk('uri_template')
+        .follow('uri_template')
         .withTemplateParameters({param: 'foobar', id: 13})
         .getResource(function(err, resource) {
       if (err) {
@@ -74,7 +74,7 @@
     jsonHalApi
         .newRequest()
         .withRequestOptions({ headers: { 'accept': 'application/hal+json' } })
-        .walk('first', 'second', 'inside_second')
+        .follow('first', 'second', 'inside_second')
         .getResource(function(err, resource) {
       if (err) {
         $('#json_hal_response').html(JSON.stringify(err))
@@ -102,7 +102,7 @@
       '.withRequestOptions({<br/>' +
       '&nbsp;&nbsp;headers: { \'accept\': \'application/json\' }<br/>' +
       '})<br/>' +
-      '.walk(\'second\', \'doc\')<br/>' +
+      '.follow(\'second\', \'doc\')<br/>' +
       '.getResource(function(err, resource) {<br/>' +
       '&nbsp;&nbsp;// do something with the resource...<br/>' +
       '})<br/>'
@@ -114,7 +114,7 @@
       '.withRequestOptions({<br/>' +
       '&nbsp;&nbsp;headers: { \'accept\': \'application/json\' }<br/>' +
       '})<br/>' +
-      '.walk(\'$.jsonpath.nested.key\')<br/>' +
+      '.follow(\'$.jsonpath.nested.key\')<br/>' +
       '.getResource(function(err, resource) {<br/>' +
       '&nbsp;&nbsp;// do something with the resource...<br/>' +
       '})<br/>'
@@ -126,7 +126,7 @@
       '.withRequestOptions({<br/>' +
       '&nbsp;&nbsp;headers: { \'accept\': \'application/json\' }<br/>' +
       '})<br/>' +
-      '.walk(\'uri_template\')<br/>' +
+      '.follow(\'uri_template\')<br/>' +
       '.withTemplateParameters({param: \'foobar\', id: 13})<br/>' +
       '.getResource(function(err, resource) {<br/>' +
       '&nbsp;&nbsp;// do something with the resource...<br/>' +
@@ -139,7 +139,7 @@
       '.withRequestOptions({<br/>' +
       '&nbsp;&nbsp;headers: { \'accept\': \'application/hal+json\' }<br/>' +
       '})<br/>' +
-      '.walk(\'first\', \'second\', \'inside_second\')<br/>' +
+      '.follow(\'first\', \'second\', \'inside_second\')<br/>' +
       '.getResource(function(err, resource) {<br/>' +
       '&nbsp;&nbsp;// do something with the resource...<br/>' +
       '})<br/>'

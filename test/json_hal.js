@@ -149,7 +149,7 @@ describe('The JSON-HAL walker\'s', function() {
   describe('get method', function() {
 
     it('should follow a single link', function(done) {
-      api.walk('ea:orders').get(callback)
+      api.follow('ea:orders').get(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -160,7 +160,7 @@ describe('The JSON-HAL walker\'s', function() {
     })
 
     it('should follow multiple links', function(done) {
-      api.walk('ea:orders', 'ea:find', 'ea:customer')
+      api.follow('ea:orders', 'ea:find', 'ea:customer')
          .withTemplateParameters({ id: 13 })
          .get(callback)
       waitFor(
@@ -174,7 +174,7 @@ describe('The JSON-HAL walker\'s', function() {
 
     it('should pass an embedded document into the callback',
         function(done) {
-      api.walk('ea:orders', 'ea:order')
+      api.follow('ea:orders', 'ea:order')
          .get(callback)
       waitFor(
         function() { return callback.called },
@@ -189,8 +189,8 @@ describe('The JSON-HAL walker\'s', function() {
       )
     })
 
-    it('should walk along embedded documents', function(done) {
-      api.walk('ea:orders', 'ea:order', 'ea:basket')
+    it('should follow embedded documents', function(done) {
+      api.follow('ea:orders', 'ea:order', 'ea:basket')
          .get(callback)
       waitFor(
         function() { return callback.called },
@@ -205,7 +205,7 @@ describe('The JSON-HAL walker\'s', function() {
   describe('getResource method', function() {
 
     it('should return the resource', function(done) {
-      api.walk('ea:orders', 'ea:find', 'ea:customer')
+      api.follow('ea:orders', 'ea:find', 'ea:customer')
          .withTemplateParameters({ id: 13 })
          .getResource(callback)
       waitFor(
@@ -219,7 +219,7 @@ describe('The JSON-HAL walker\'s', function() {
 
     it('should pass an embedded document into the callback',
         function(done) {
-      api.walk('ea:orders', 'ea:order')
+      api.follow('ea:orders', 'ea:order')
          .getResource(callback)
       waitFor(
         function() { return callback.called },
@@ -234,7 +234,7 @@ describe('The JSON-HAL walker\'s', function() {
   describe('getUri method', function() {
 
     it('should return the last URI', function(done) {
-      api.walk('ea:orders', 'ea:find')
+      api.follow('ea:orders', 'ea:find')
          .withTemplateParameters({ id: 13 })
          .getUri(callback)
       waitFor(
@@ -248,7 +248,7 @@ describe('The JSON-HAL walker\'s', function() {
 
     // not sure what to do in this case
     it('returns the self-URI of an embedded document', function(done) {
-      api.walk('ea:orders', 'ea:order')
+      api.follow('ea:orders', 'ea:order')
          .getUri(callback)
       waitFor(
         function() { return callback.called },
@@ -261,7 +261,7 @@ describe('The JSON-HAL walker\'s', function() {
 
     it('yields an error if the last URI is actually an embedded ' +
                ' resource but has no self-URI', function(done) {
-      api.walk('ea:orders', 'ea:find', 'ea:customer', 'ea:no_self_link')
+      api.follow('ea:orders', 'ea:find', 'ea:customer', 'ea:no_self_link')
          .withTemplateParameters({ id: 13 })
          .getUri(callback)
       waitFor(
@@ -285,7 +285,7 @@ describe('The JSON-HAL walker\'s', function() {
       executeRequest.withArgs(customerUri, sinon.match.func, payload,
           sinon.match.func).callsArgWithAsync(3, null, updateResponse,
           customerUri)
-      api.walk('ea:orders', 'ea:find', 'ea:customer')
+      api.follow('ea:orders', 'ea:find', 'ea:customer')
          .withTemplateParameters({ id: 13 })
          .post(payload, callback)
       waitFor(
@@ -305,7 +305,7 @@ describe('The JSON-HAL walker\'s', function() {
       var err = new Error('test error')
       executeRequest.withArgs(customerUri, sinon.match.func, payload,
           sinon.match.func).callsArgWithAsync(3, err)
-      api.walk('ea:orders', 'ea:find', 'ea:customer')
+      api.follow('ea:orders', 'ea:find', 'ea:customer')
          .withTemplateParameters({ id: 13 })
          .post(payload, callback)
       waitFor(
@@ -325,7 +325,7 @@ describe('The JSON-HAL walker\'s', function() {
       executeRequest.withArgs(customerUri, sinon.match.func, payload,
           sinon.match.func).callsArgWithAsync(3, null, updateResponse,
           customerUri)
-      api.walk('ea:orders', 'ea:find', 'ea:customer')
+      api.follow('ea:orders', 'ea:find', 'ea:customer')
          .withTemplateParameters({ id: 13 })
          .put(payload, callback)
       waitFor(
@@ -345,7 +345,7 @@ describe('The JSON-HAL walker\'s', function() {
       var err = new Error('test error')
       executeRequest.withArgs(customerUri, sinon.match.func, payload,
           sinon.match.func).callsArgWithAsync(3, err)
-      api.walk('ea:orders', 'ea:find', 'ea:customer')
+      api.follow('ea:orders', 'ea:find', 'ea:customer')
          .withTemplateParameters({ id: 13 })
          .put(payload, callback)
       waitFor(
@@ -365,7 +365,7 @@ describe('The JSON-HAL walker\'s', function() {
       executeRequest.withArgs(customerUri, sinon.match.func, payload,
           sinon.match.func).callsArgWithAsync(3, null, updateResponse,
           customerUri)
-      api.walk('ea:orders', 'ea:find', 'ea:customer')
+      api.follow('ea:orders', 'ea:find', 'ea:customer')
          .withTemplateParameters({ id: 13 })
          .patch(payload, callback)
       waitFor(
@@ -385,7 +385,7 @@ describe('The JSON-HAL walker\'s', function() {
       var err = new Error('test error')
       executeRequest.withArgs(customerUri, sinon.match.func, payload,
           sinon.match.func).callsArgWithAsync(3, err)
-      api.walk('ea:orders', 'ea:find', 'ea:customer')
+      api.follow('ea:orders', 'ea:find', 'ea:customer')
          .withTemplateParameters({ id: 13 })
          .patch(payload, callback)
       waitFor(
@@ -405,7 +405,7 @@ describe('The JSON-HAL walker\'s', function() {
       executeRequest.withArgs(customerUri, sinon.match.func, null,
           sinon.match.func).callsArgWithAsync(3, null, updateResponse,
           customerUri)
-      api.walk('ea:orders', 'ea:find', 'ea:customer')
+      api.follow('ea:orders', 'ea:find', 'ea:customer')
          .withTemplateParameters({ id: 13 })
          .delete(callback)
       waitFor(
@@ -425,7 +425,7 @@ describe('The JSON-HAL walker\'s', function() {
       var err = new Error('test error')
       executeRequest.withArgs(customerUri, sinon.match.func, null,
           sinon.match.func).callsArgWithAsync(3, err)
-      api.walk('ea:orders', 'ea:find', 'ea:customer')
+      api.follow('ea:orders', 'ea:find', 'ea:customer')
          .withTemplateParameters({ id: 13 })
          .delete(callback)
       waitFor(

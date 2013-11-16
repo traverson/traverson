@@ -2,7 +2,7 @@
 
 var minilog = require('minilog')
 var mediaTypes = require('./lib/media_types')
-var WalkerBuilder = require('./lib/walker_builder')
+var Builder = require('./lib/builder')
 
 // activate this line to enable logging
 // require('minilog').enable();
@@ -12,7 +12,7 @@ module.exports = {
     from: function(uri) {
       return {
         newRequest: function() {
-          return new WalkerBuilder(mediaTypes.JSON, uri)
+          return new Builder(mediaTypes.JSON, uri)
         }
       }
     }
@@ -21,7 +21,7 @@ module.exports = {
     from: function(uri) {
       return {
         newRequest: function() {
-          return new WalkerBuilder(mediaTypes.JSON_HAL, uri)
+          return new Builder(mediaTypes.JSON_HAL, uri)
         }
       }
     }

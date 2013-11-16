@@ -1523,6 +1523,190 @@ if (typeof exports == "object") {
 },{"emitter":13,"indexof":13,"reduce":13,"superagent":13}],5:[function(require,module,exports){
 'use strict';
 
+var standardRequest = require('request')
+var util = require('util')
+var JsonWalker = require('./json_walker')
+var JsonHalWalker = require('./json_hal_walker')
+var minilog = require('minilog')
+var mediaTypes = require('./media_types')
+
+var log = minilog('traverson')
+
+function Builder(mediaType, startUri) {
+  this.walker = this.createWalker(mediaType)
+  this.walker.startUri = startUri
+  this.walker.request = this.request = standardRequest
+}
+
+Builder.prototype.createWalker = function(mediaType) {
+  switch (mediaType) {
+  case mediaTypes.JSON:
+    log.debug('creating new JsonWalker')
+    return new JsonWalker()
+  case mediaTypes.JSON_HAL:
+    log.debug('creating new JsonHalWalker')
+    return new JsonHalWalker()
+  default:
+    throw new Error('Unknown or unsupported media type: ' + mediaType)
+  }
+}
+
+Builder.prototype.follow = function() {
+  if (arguments.length === 1 && util.isArray(arguments[0])) {
+    this.walker.links = arguments[0]
+  } else {
+    this.walker.links = Array.prototype.slice.apply(arguments)
+  }
+  return this
+}
+
+Builder.prototype.walk = Builder.prototype.follow
+
+Builder.prototype.withTemplateParameters = function(parameters) {
+  this.walker.templateParameters = parameters
+  return this
+}
+
+Builder.prototype.withRequestOptions = function(options) {
+  this.walker.request = this.request = standardRequest.defaults(options)
+  return this
+}
+
+Builder.prototype.get = function(callback) {
+  var self = this
+  this.walker.walk(function(err, nextStep, lastStep) {
+    log.debug('walker.walk returned')
+    if (err) { return callback(err, lastStep.response, lastStep.uri) }
+    log.debug('next step: ' + JSON.stringify(nextStep))
+    self.walker.process(nextStep, function(err, step) {
+      log.debug('walker.process returned')
+      if (err) { return callback(err, step.response, step.uri) }
+      if (!step.response && step.doc) {
+        log.debug('faking HTTP response for embedded resource')
+        step.response = {
+          statusCode: 200,
+          body: JSON.stringify(step.doc),
+          remark: 'This is not an actual HTTP response. The resource you ' +
+            'requested was an embedded resource, so no HTTP request was ' +
+            'made to acquire it.'
+        }
+      }
+      // log.debug('returning response')
+      callback(null, step.response)
+    })
+  })
+}
+
+/*
+ * Special variant of get() that does not yield the full http response to the
+ * callback but instead the already parsed JSON as an object.
+ */
+Builder.prototype.getResource = function(callback) {
+  var self = this
+  this.walker.walk(function(err, nextStep, lastStep) {
+    // TODO Remove duplication: This duplicates the get/checkHttpStatus/parse
+    // sequence from the Walker's walk method.
+    log.debug('walker.walk returned')
+    if (err) { return callback(err, lastStep.response, lastStep.uri) }
+    log.debug('next step: ' + JSON.stringify(nextStep))
+    self.walker.process(nextStep, function(err, step) {
+      log.debug('walker.process returned')
+      if (err) { return callback(err, step.response, step.uri) }
+      log.debug('resulting step: ' + step.uri)
+      // log.debug('resulting step: ' + JSON.stringify(step))
+
+      if (step.doc) {
+        // return an embedded doc immediately
+        return callback(null, step.doc)
+      }
+
+      var resource
+      try {
+        self.walker.checkHttpStatus(step)
+        resource = self.walker.parse(step)
+        return callback(null, resource)
+      } catch (e) {
+        return callback(e, e.doc)
+      }
+    })
+  })
+}
+
+/*
+ * Special variant of get() that does not execute the last request but instead
+ * yields the last URI to the callback.
+ */
+
+Builder.prototype.getUri = function(callback) {
+  var self = this
+  this.walker.walk(function(err, nextStep, lastStep) {
+    log.debug('walker.walk returned')
+    if (err) { return callback(err, lastStep.response, lastStep.uri) }
+    log.debug('returning uri')
+    if (nextStep.uri) {
+      return callback(null, nextStep.uri)
+    } else if (nextStep.doc &&
+      nextStep.doc._links &&
+      nextStep.doc._links.self &&
+      nextStep.doc._links.self.href) {
+      return callback(null, self.walker.startUri +
+          nextStep.doc._links.self.href)
+    } else {
+      return callback(new Error('You requested an URI but the last ' +
+          'resource is an embedded resource and has no URI of its own ' +
+          '(that is, it has no link with rel=\"self\"'))
+    }
+  })
+}
+
+Builder.prototype.post = function(body, callback) {
+  this.walkAndExecute(body, this.request.post, callback)
+}
+
+Builder.prototype.put = function(body, callback) {
+  this.walkAndExecute(body, this.request.put, callback)
+}
+
+Builder.prototype.patch = function(body, callback) {
+  this.walkAndExecute(body, this.request.patch, callback)
+}
+
+Builder.prototype.delete = function(callback) {
+  this.walkAndExecute(null, this.request.del, callback)
+}
+
+Builder.prototype.walkAndExecute = function(body, method, callback) {
+  var self = this
+  this.walker.walk(function(err, nextStep, lastStep) {
+    log.debug('walker.walk returned')
+    if (err) { return callback(err, lastStep.response, lastStep.uri) }
+    log.debug('executing final request with step: ' +
+        JSON.stringify(nextStep))
+    self.executeRequest(nextStep.uri, method, body, callback)
+  })
+}
+
+Builder.prototype.executeRequest = function(uri, method, body,
+    callback) {
+  var options
+  if (body) {
+    options = { body: JSON.stringify(body) }
+  } else {
+    options = {}
+  }
+  log.debug('request to ' + uri + ' with options ' + JSON.stringify(options))
+  method.call(this.request, uri, options, function(err, response) {
+    log.debug('request to ' + uri + ' succeeded')
+    if (err) { return callback(err, response, uri) }
+    return callback(null, response, uri)
+  })
+}
+
+module.exports = Builder
+
+},{"./json_hal_walker":6,"./json_walker":7,"./media_types":8,"minilog":1,"request":3,"util":2}],6:[function(require,module,exports){
+'use strict';
+
 var halbert = require('halbert')
 var minilog = require('minilog')
 var _s = require('underscore.string')
@@ -1575,7 +1759,7 @@ JsonHalWalker.prototype.findEmbedded = function(halResource, link) {
 
 module.exports = JsonHalWalker
 
-},{"./walker":8,"halbert":14,"minilog":1,"underscore.string":20}],6:[function(require,module,exports){
+},{"./walker":9,"halbert":14,"minilog":1,"underscore.string":20}],7:[function(require,module,exports){
 'use strict';
 
 var Walker = require('./walker')
@@ -1586,7 +1770,7 @@ JsonWalker.prototype = new Walker()
 
 module.exports = JsonWalker
 
-},{"./walker":8}],7:[function(require,module,exports){
+},{"./walker":9}],8:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -1594,7 +1778,7 @@ module.exports = {
   JSON_HAL: 'application/hal+json'
 }
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 var jsonpathLib = require('JSONPath')
@@ -1614,36 +1798,9 @@ function Walker() {
 }
 
 /*
- * Fetches the document from this.startUri and then, starting with the first
- * element from the array this.links:
- * 1) uses the next element from this.links as the property key.
- *    If the next element starts with $. or $[ it is assumed that it is a
- *    JSONPath expression, otherwise it is assumed to be a simple property
- *    key.
- * 2) Looks for the property key in the fetched document or evaluates the
- *    JSONPath expression. In the latter case, there must be exactly one
- *    non-ambigious match, otherwise an error is passed to the callback.
- * 3) If the result of step 2 is an URI template, it is evaluated with
- *    this.templateParameters, otherwise it is interpreted as an URI as is.
- * 4) Passes the resulting URI to this.get to acquire the next document.
- * 5) Goes back to step 1) with the next element from the this.links, if any.
- *
- * When the this.links has been consumed completely by the above procedure),
- * the given callback is called with a result object, containing three
- * properties:
- *    - nextUri: the nextUri to access (depending on which method has been
- *      called on WalkerBuilder, this will be a get/post/put/... request),
- *    - lastUri: the last URI that the walker has accessed,
- *    - lastResponse: the HTTP response from accessing lastUri
- *
- * This method uses the following properties of the this-context, which need
- * to be set by the caller in advance:
- * - this.startUri is the first URI to get (usually the root URI of the API)
- * - this.links is an array of property keys/JSONPath expressions.
- * - this.templateParameters is an object or an array of objects, containaing
- *   the template parameters for each element in this.links. Can be null.
- *   Also, individual elements can be null.
- * - this.request is the request API object to use
+ * Walks from resource to resource along the path given by the link relations
+ * from this.links until it has reached the last URI. On reaching this, it calls
+ * the given callback with the last resulting step.
  */
 Walker.prototype.walk = function(callback) {
 
@@ -1656,8 +1813,8 @@ Walker.prototype.walk = function(callback) {
   var finalStep = nextStep
 
   log.debug('starting to follow links')
-  ;
-  (function executeNextRequest() {
+
+  function executeNextStep() {
     if (index < self.links.length) {
 
       // Trigger execution of next step. In most cases that is an HTTP get to
@@ -1713,7 +1870,7 @@ Walker.prototype.walk = function(callback) {
         }
 
         // follow next link
-        executeNextRequest()
+        executeNextStep()
       })
     } else {
       // link array is exhausted, we are done and return the last response
@@ -1721,7 +1878,8 @@ Walker.prototype.walk = function(callback) {
       log.debug('link array exhausted, calling callback')
       return callback(null, nextStep, finalStep)
     }
-  })()
+  }
+  executeNextStep()
 }
 
 Walker.prototype.process = function(step, callback) {
@@ -1875,189 +2033,7 @@ function jsonError(uri, body) {
 
 module.exports = Walker
 
-},{"JSONPath":10,"minilog":1,"underscore.string":20,"uri-template":21,"util":2}],9:[function(require,module,exports){
-'use strict';
-
-var standardRequest = require('request')
-var util = require('util')
-var JsonWalker = require('./json_walker')
-var JsonHalWalker = require('./json_hal_walker')
-var minilog = require('minilog')
-var mediaTypes = require('./media_types')
-
-var log = minilog('traverson')
-
-function WalkerBuilder(mediaType, startUri) {
-  this.walker = this.createWalker(mediaType)
-  this.walker.startUri = startUri
-  this.walker.request = this.request = standardRequest
-}
-
-WalkerBuilder.prototype.createWalker = function(mediaType) {
-  switch (mediaType) {
-  case mediaTypes.JSON:
-    log.debug('creating new JsonWalker')
-    return new JsonWalker()
-  case mediaTypes.JSON_HAL:
-    log.debug('creating new JsonHalWalker')
-    return new JsonHalWalker()
-  default:
-    throw new Error('Unknown or unsupported media type: ' + mediaType)
-  }
-}
-
-WalkerBuilder.prototype.walk = function() {
-  if (arguments.length === 1 && util.isArray(arguments[0])) {
-    this.walker.links = arguments[0]
-  } else {
-    this.walker.links = Array.prototype.slice.apply(arguments)
-  }
-  return this
-}
-
-WalkerBuilder.prototype.withTemplateParameters = function(parameters) {
-  this.walker.templateParameters = parameters
-  return this
-}
-
-WalkerBuilder.prototype.withRequestOptions = function(options) {
-  this.walker.request = this.request = standardRequest.defaults(options)
-  return this
-}
-
-WalkerBuilder.prototype.get = function(callback) {
-  var self = this
-  this.walker.walk(function(err, nextStep, lastStep) {
-    log.debug('walker.walk returned')
-    if (err) { return callback(err, lastStep.response, lastStep.uri) }
-    log.debug('next step: ' + JSON.stringify(nextStep))
-    self.walker.process(nextStep, function(err, step) {
-      log.debug('walker.process returned')
-      if (err) { return callback(err, step.response, step.uri) }
-      if (!step.response && step.doc) {
-        log.debug('faking HTTP response for embedded resource')
-        step.response = {
-          statusCode: 200,
-          body: JSON.stringify(step.doc),
-          remark: 'This is not an actual HTTP response. The resource you ' +
-            'requested was an embedded resource, so no HTTP request was ' +
-            'made to acquire it.'
-        }
-      }
-      // log.debug('returning response')
-      callback(null, step.response)
-    })
-  })
-}
-
-/*
- * Special variant of get() that does not yield the full http response to the
- * callback but instead the already parsed JSON as an object.
- */
-WalkerBuilder.prototype.getResource = function(callback) {
-  var self = this
-  this.walker.walk(function(err, nextStep, lastStep) {
-    // TODO Remove duplication: This duplicates the get/checkHttpStatus/parse
-    // sequence from the Walker's walk method.
-    log.debug('walker.walk returned')
-    if (err) { return callback(err, lastStep.response, lastStep.uri) }
-    log.debug('next step: ' + JSON.stringify(nextStep))
-    self.walker.process(nextStep, function(err, step) {
-      log.debug('walker.process returned')
-      if (err) { return callback(err, step.response, step.uri) }
-      log.debug('resulting step: ' + step.uri)
-      // log.debug('resulting step: ' + JSON.stringify(step))
-
-      if (step.doc) {
-        // return an embedded doc immediately
-        return callback(null, step.doc)
-      }
-
-      var resource
-      try {
-        self.walker.checkHttpStatus(step)
-        resource = self.walker.parse(step)
-        return callback(null, resource)
-      } catch (e) {
-        return callback(e, e.doc)
-      }
-    })
-  })
-}
-
-/*
- * Special variant of get() that does not execute the last request but instead
- * yields the last URI to the callback.
- */
-
-WalkerBuilder.prototype.getUri = function(callback) {
-  var self = this
-  this.walker.walk(function(err, nextStep, lastStep) {
-    log.debug('walker.walk returned')
-    if (err) { return callback(err, lastStep.response, lastStep.uri) }
-    log.debug('returning uri')
-    if (nextStep.uri) {
-      return callback(null, nextStep.uri)
-    } else if (nextStep.doc &&
-      nextStep.doc._links &&
-      nextStep.doc._links.self &&
-      nextStep.doc._links.self.href) {
-      return callback(null, self.walker.startUri +
-          nextStep.doc._links.self.href)
-    } else {
-      return callback(new Error('You requested an URI but the last ' +
-          'resource is an embedded resource and has no URI of its own ' +
-          '(that is, it has no link with rel=\"self\"'))
-    }
-  })
-}
-
-WalkerBuilder.prototype.post = function(body, callback) {
-  this.walkAndExecute(body, this.request.post, callback)
-}
-
-WalkerBuilder.prototype.put = function(body, callback) {
-  this.walkAndExecute(body, this.request.put, callback)
-}
-
-WalkerBuilder.prototype.patch = function(body, callback) {
-  this.walkAndExecute(body, this.request.patch, callback)
-}
-
-WalkerBuilder.prototype.delete = function(callback) {
-  this.walkAndExecute(null, this.request.del, callback)
-}
-
-WalkerBuilder.prototype.walkAndExecute = function(body, method, callback) {
-  var self = this
-  this.walker.walk(function(err, nextStep, lastStep) {
-    log.debug('walker.walk returned')
-    if (err) { return callback(err, lastStep.response, lastStep.uri) }
-    log.debug('executing final request with step: ' +
-        JSON.stringify(nextStep))
-    self.executeRequest(nextStep.uri, method, body, callback)
-  })
-}
-
-WalkerBuilder.prototype.executeRequest = function(uri, method, body,
-    callback) {
-  var options
-  if (body) {
-    options = { body: JSON.stringify(body) }
-  } else {
-    options = {}
-  }
-  log.debug('request to ' + uri + ' with options ' + JSON.stringify(options))
-  method.call(this.request, uri, options, function(err, response) {
-    log.debug('request to ' + uri + ' succeeded')
-    if (err) { return callback(err, response, uri) }
-    return callback(null, response, uri)
-  })
-}
-
-module.exports = WalkerBuilder
-
-},{"./json_hal_walker":5,"./json_walker":6,"./media_types":7,"minilog":1,"request":3,"util":2}],10:[function(require,module,exports){
+},{"JSONPath":10,"minilog":1,"underscore.string":20,"uri-template":21,"util":2}],10:[function(require,module,exports){
 /* JSONPath 0.8.0 - XPath for JSON
  *
  * Copyright (c) 2007 Stefan Goessner (goessner.net)
@@ -11742,7 +11718,7 @@ module.exports=require('5u5bvt');
 
 var minilog = require('minilog')
 var mediaTypes = require('./lib/media_types')
-var WalkerBuilder = require('./lib/walker_builder')
+var Builder = require('./lib/builder')
 
 // activate this line to enable logging
 // require('minilog').enable();
@@ -11752,7 +11728,7 @@ module.exports = {
     from: function(uri) {
       return {
         newRequest: function() {
-          return new WalkerBuilder(mediaTypes.JSON, uri)
+          return new Builder(mediaTypes.JSON, uri)
         }
       }
     }
@@ -11761,12 +11737,12 @@ module.exports = {
     from: function(uri) {
       return {
         newRequest: function() {
-          return new WalkerBuilder(mediaTypes.JSON_HAL, uri)
+          return new Builder(mediaTypes.JSON_HAL, uri)
         }
       }
     }
   }
 }
 
-},{"./lib/media_types":7,"./lib/walker_builder":9,"minilog":1}]},{},["5u5bvt"])
+},{"./lib/builder":5,"./lib/media_types":8,"minilog":1}]},{},["5u5bvt"])
 ;

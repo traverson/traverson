@@ -39,13 +39,13 @@ describe('getResource for JSON', function() {
     })
 
     it('should access the root URI', function() {
-      api.walk().getResource(callback)
+      api.follow().getResource(callback)
       expect(get).to.have.been.calledWith(rootUri, sinon.match.func)
     })
 
     it('should call callback with the root doc', function(done) {
       get.callsArgWithAsync(1, null, rootResponse)
-      api.walk().getResource(callback)
+      api.follow().getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -58,7 +58,7 @@ describe('getResource for JSON', function() {
     it('should call callback with err', function(done) {
       var err = new Error('test error')
       get.callsArgWithAsync(1, err)
-      api.walk().getResource(callback)
+      api.follow().getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -68,12 +68,12 @@ describe('getResource for JSON', function() {
       )
     })
 
-    it('should walk a single element path', function(done) {
+    it('should follow a single element path', function(done) {
       get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
           1, null, rootResponse)
       get.withArgs(rootUri + '/link/to/thing',
           sinon.match.func).callsArgWithAsync(1, null, result)
-      api.walk('link').getResource(callback)
+      api.follow('link').getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -83,12 +83,12 @@ describe('getResource for JSON', function() {
       )
     })
 
-    it('should walk a single element path as array', function(done) {
+    it('should follow a single element path as array', function(done) {
       get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
           1, null, rootResponse)
       get.withArgs(rootUri + '/link/to/thing',
           sinon.match.func).callsArgWithAsync(1, null, result)
-      api.walk(['link']).getResource(callback)
+      api.follow(['link']).getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -101,7 +101,7 @@ describe('getResource for JSON', function() {
     it('should call callback with err if link is not found', function(done) {
       get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
           1, null, rootResponse)
-      api.walk('non-existing-link').getResource(callback)
+      api.follow('non-existing-link').getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -121,7 +121,7 @@ describe('getResource for JSON', function() {
           1, null, mockResponse({ firstLink: rootUri + '/first' }))
       get.withArgs(rootUri + '/first', sinon.match.func).
           callsArgWithAsync(1, err)
-      api.walk('firstLink').getResource(callback)
+      api.follow('firstLink').getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -141,12 +141,12 @@ describe('getResource for JSON', function() {
 
     var result = mockResponse({ the: 'result' })
 
-    it('should walk to a link via JSONPath expression', function(done) {
+    it('should follow to a link via JSONPath expression', function(done) {
       get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
           1, null, rootResponse)
       get.withArgs(uri, sinon.match.func).callsArgWithAsync(1, null,
           result)
-      api.walk('$.deeply.nested.link').getResource(callback)
+      api.follow('$.deeply.nested.link').getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -160,7 +160,7 @@ describe('getResource for JSON', function() {
         function(done) {
       get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
           1, null, rootResponse)
-      api.walk('$.deeply.nested.blink').getResource(callback)
+      api.follow('$.deeply.nested.blink').getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -180,7 +180,7 @@ describe('getResource for JSON', function() {
       })
       get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
           1, null, rootResponseMulti)
-      api.walk('$.arr[*].foo').getResource(callback)
+      api.follow('$.arr[*].foo').getResource(callback)
       waitFor(
         function() { return callback.called },
         function() {
@@ -210,7 +210,7 @@ describe('getResource for JSON', function() {
           sinon.match.func).callsArgWithAsync(1, null, next)
       get.withArgs(rootUri + '/another/42',
           sinon.match.func).callsArgWithAsync(1, null, result)
-      api.walk('firstTemplate', 'secondTemplate')
+      api.follow('firstTemplate', 'secondTemplate')
          .withTemplateParameters({user: 'basti1302', thing: 4711, id: 42})
          .getResource(callback)
       waitFor(
@@ -236,7 +236,7 @@ describe('getResource for JSON', function() {
       get.withArgs(startUri, sinon.match.func).callsArgWithAsync(
           1, null, rootUriTemplate)
 
-      api.walk()
+      api.follow()
           .withTemplateParameters({param: 'substituted'})
           .getResource(callback)
       waitFor(
@@ -262,7 +262,7 @@ describe('getResource for JSON', function() {
           sinon.match.func).callsArgWithAsync(1, null, next)
       get.withArgs(rootUri + '/another_user/someone_else',
           sinon.match.func).callsArgWithAsync(1, null, result)
-      api.walk('firstTemplate', 'secondTemplate')
+      api.follow('firstTemplate', 'secondTemplate')
         .withTemplateParameters([null,
                                 {user: 'basti1302', thing: 4711},
                                 {user: 'someone_else'}])
@@ -279,7 +279,7 @@ describe('getResource for JSON', function() {
 
   describe('in all its glory', function() {
 
-    it('should walk a multi element path', function(done) {
+    it('should follow a multi element path', function(done) {
       var path1 = rootUri + '/path'
       var template2 = rootUri + '/path/to/resource{/param}'
       var path2 = rootUri + '/path/to/resource/gizmo'
@@ -309,7 +309,7 @@ describe('getResource for JSON', function() {
           1, null, response4)
       get.withArgs(path4, sinon.match.func).callsArgWithAsync(
           1, null, result)
-      api.walk(['link1', 'link2', '$[nested][array][1].link', 'link4'])
+      api.follow(['link1', 'link2', '$[nested][array][1].link', 'link4'])
          .withTemplateParameters({ param: 'gizmo' })
          .getResource(callback)
       waitFor(

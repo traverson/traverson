@@ -43,7 +43,7 @@ describe('Traverson (when tested against the haltalk server at ' + rootUri +
   })
 
   it('should fetch the root response', function(done) {
-    api.walk().get(callback)
+    api.follow().get(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -56,7 +56,7 @@ describe('Traverson (when tested against the haltalk server at ' + rootUri +
   })
 
   it('should fetch the root document', function(done) {
-    api.walk().getResource(callback)
+    api.follow().getResource(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -68,8 +68,8 @@ describe('Traverson (when tested against the haltalk server at ' + rootUri +
     )
   })
 
-  it('should walk a single element path', function(done) {
-    api.walk('ht:users').getResource(callback)
+  it('should follow a single element path', function(done) {
+    api.follow('ht:users').getResource(callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -80,9 +80,9 @@ describe('Traverson (when tested against the haltalk server at ' + rootUri +
     )
   })
 
-  it('should walk a multi-element path with templating and embedded docs',
+  it('should follow a multi-element path with templating and embedded docs',
       function(done) {
-    api.walk('ht:me', 'ht:posts', 'ht:post')
+    api.follow('ht:me', 'ht:posts', 'ht:post')
        .withTemplateParameters({name: 'mike'})
        .get(callback)
     waitFor(
@@ -108,7 +108,7 @@ describe('Traverson (when tested against the haltalk server at ' + rootUri +
       'password': password,
       'real_name': realName
     }
-    api.walk('ht:signup').post(body, callback)
+    api.follow('ht:signup').post(body, callback)
     waitFor(
       function() { return callback.called },
       function() {
@@ -140,7 +140,7 @@ describe('Traverson (when tested against the haltalk server at ' + rootUri +
         pass: 'traverson',
         sendImmediately: true
       }
-    }).walk('ht:me', 'ht:posts')
+    }).follow('ht:me', 'ht:posts')
       .withTemplateParameters({ name: 'traverson' })
       .post(body, callback)
     waitFor(
