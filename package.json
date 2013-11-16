@@ -11,9 +11,11 @@
   "main": "./traverson",
   "keywords": [
     "JSON",
-    "hypermedia",
     "REST",
-    "API"
+    "API",
+    "HATEOAS",
+    "hypertext",
+    "hypermedia"
   ],
   "dependencies": {
     "halbert": "https://github.com/basti1302/halbert/tarball/master",

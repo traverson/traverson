@@ -1,5 +1,5 @@
-Traverson - Hypermedia API Consumer for Node.js and Browser
-===========================================================
+Traverson - REST/HATEOAS API Client for Node.js and the Browser
+===============================================================
 [![Build Status](https://travis-ci.org/basti1302/traverson.png?branch=master)](https://travis-ci.org/basti1302/traverson)
 [![Dependency Status](https://david-dm.org/basti1302/traverson.png)](https://david-dm.org/basti1302/traverson)
 
@@ -11,7 +11,7 @@ Traverson - Hypermedia API Consumer for Node.js and Browser
 Introduction
 ------------
 
-Traverson comes in handy when consuming hypermedia APIs, that is, REST APIs that have links between their resources. A hypermedia API typically has a root resource/endpoint, which publishes links to other resources. These resources in turn might also have, as part of their metadata, links to related resources. Sometimes you need to follow multiple consecutive links to get to the resource you want. This pattern makes it unnecessary for the client to hardcode all endpoint URIs of the API it uses, which in turn reduces the coupling between the API provider and the API consumer. This makes it easier for the API provider to change the structure of the API without breaking existing client implementations.
+Traverson comes in handy when consuming REST APIs that follow the HATEOAS principle, that is, REST APIs that have links between their resources. Such an API (also sometimes referred to as hypermedia or hypertext-driven API) typically has a root resource/endpoint, which publishes links to other resources. These resources in turn might also have, as part of their metadata, links to related resources. Sometimes you need to follow multiple consecutive links to get to the resource you want. This pattern makes it unnecessary for the client to hardcode all endpoint URIs of the API it uses, which in turn reduces the coupling between the API provider and the API consumer. This makes it easier for the API provider to change the structure of the API without breaking existing client implementations.
 
 To follow a path of links you typically start at one URI (most often the root URI of the API), then look for the link you are interested in, fetch the document from there and repeat this process until you have reached the end of this path.
 
@@ -34,7 +34,7 @@ Table of Contents
     * [JSONPath](#jsonpath)
     * [URI Templates](#uri-templates)
     * [Headers and Authentication](#headers-http-basic-auth-oauth-and-whatnot)
-    * [HAL](#hal---hypermedia-application-language)
+    * [HAL](#hal---hypertext-application-language)
 * [Features From the Future](#features-from-the-future)
     * [Caching](#caching)
     * [Customizing Traverson](#customizing-traverson)
@@ -339,9 +339,9 @@ Traverson uses Mikeal Rogers' [request](https://github.com/mikeal/request) modul
 
 This would add the header `x-my-special-header` to all requests issued for this three link walk. Check out the [request docs](https://github.com/mikeal/request#requestoptions-callback) to see which options to use. Among other things, you can set custom headers, do HTTP basic authentication, [OAuth](https://github.com/mikeal/request#oauth-signing) and other cool stuff.
 
-### HAL - hypermedia application language
+### HAL - hypertext application language
 
-Traverson supports the JSON dialect of [HAL](http://tools.ietf.org/id/draft-kelly-json-hal-06.txt), the hypermedia application language via [Halbert](https://github.com/xcambar/halbert). While in theory you could use Traverson even without special support for HAL by specifying each link relation with JSONPath (like `$._links.linkName`) that would be quite cumbersome. Instead, do the following:
+Traverson supports the JSON dialect of [HAL](http://tools.ietf.org/id/draft-kelly-json-hal-06.txt), the hypertext application language via [Halbert](https://github.com/xcambar/halbert). While in theory you could use Traverson even without special support for HAL by specifying each link relation with JSONPath (like `$._links.linkName`) that would be quite cumbersome. Instead, do the following:
 
     var traverson = require('traverson')
     var api = traverson.jsonHal.from('http://haltalk.herokuapp.com/')
