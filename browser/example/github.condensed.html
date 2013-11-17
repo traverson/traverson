@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Traverson in the Browser</title>
+    <script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
+    <script src="../dist/traverson.min.js"></script>
+  </head>
+  <body>
+
+    <div id="response"/>
+
+    <script>
+      var api = traverson.json.from('https://api.github.com/')
+      api.newRequest()
+        .follow('repository_url', 'commits_url', 'comments_url')
+        .withTemplateParameters({
+          owner: 'basti1302',
+          repo: 'traverson',
+          sha: '5c82c74583ee67eae727466179dd66c91592dd4a'
+        }).getResource(function(err, resource) {
+        if (err) {
+          $('#response').html(JSON.stringify(err))
+          return
+        }
+        $('#response').html('Hooray! The commit comment is <br/>"' +
+            resource[0].body + '"')
+      })
+    </script>
+  </body>
+</html>
