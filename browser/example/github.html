@@ -1,0 +1,54 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Traverson in the Browser</title>
+    <link rel="stylesheet" type="text/css" href="assets/bootstrap.min.css">
+    <script src="assets/jquery-2.0.2.min.js"></script>
+    <script src="../dist/traverson.min.js"></script>
+    <script src="github-example.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="jumbotron">
+        <h1>Traverson in the Browser</h1>
+        <h2>Talking to the GitHub API</h2>
+        <p>Traverson makes it easy to work with REST/HATEOAS APIs. It works in
+        Node.js as well as in the browser. This example talks to the GitHub
+        API - from your browser.</p>
+        <p>There is also the
+        <a href="index.html">Traverson Test Server Example</a>.
+        </p>
+        <p><a id="btn-all"
+              class="btn btn-primary btn-lg"
+              role="button">Start All Requests At Once</a></p>
+      </div>
+
+      <small>
+        <p>
+        To run this example locally, you should start the test server contained
+        in the Traverson repository with <tt>node bin/start-test-server.js</tt>.
+        This serves this page and its static assets. Then open the URL
+        <a href="http://localhost:2808/static/browser/example/github.html"
+        >http://localhost:2808/static/browser/example/github.html</a>
+        in your browser.
+        </p>
+      </small>
+
+      <div>
+      </div>
+
+      <h2>Setup</h2>
+      <div id="general"><img src="assets/spinner.gif"/></div>
+      <hr>
+
+      <h2>Find a commit comment</h2>
+      <div class="row">
+        <div id="commit_comment_request" class="col-md-4"><img src="assets/spinner.gif"/></div>
+        <div class="col-md-2">
+          <a id="btn-commit-comment" class="btn btn-primary" role="button">Start Request</a>
+        </div>
+        <pre id="commit_comment_response" class="col-md-6"></pre>
+      </div>
+    </div>
+  </body>
+</html>
