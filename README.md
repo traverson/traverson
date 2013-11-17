@@ -448,3 +448,8 @@ There will be some simple on/off toggles for certain parts of Traverson behaviou
 ### Other Media Types Besides JSON
 
 In the far future, Traverson might also support HTML APIs and/or XML APIs.
+
+License
+-------
+
+MIT
