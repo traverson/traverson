@@ -23,12 +23,12 @@
         repo: 'traverson',
         sha: '5c82c74583ee67eae727466179dd66c91592dd4a'
       }).getResource(function(err, resource) {
-      if (err) {
-        $('#commit_comment_response').html(JSON.stringify(err))
-        return
-      }
-      $('#commit_comment_response').html(JSON.stringify(resource, null, 2))
-    })
+        if (err) {
+          $('#commit_comment_response').html(JSON.stringify(err))
+          return
+        }
+        $('#commit_comment_response').html(JSON.stringify(resource, null, 2))
+      })
   }
 
   $(document).ready(function () {
