@@ -1,8 +1,8 @@
 {
   "name": "traverson",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "author": "Bastian Krol",
-  "description": "consume hypermedia APIs with ease",
+  "description": "HATEOAS client for Node.js and the browser",
   "repository": "https://github.com/basti1302/traverson.git",
   "contributors": [],
   "scripts": {
@@ -15,7 +15,8 @@
     "API",
     "HATEOAS",
     "hypertext",
-    "hypermedia"
+    "hypermedia",
+    "HAL"
   ],
   "dependencies": {
     "halbert": "https://github.com/basti1302/halbert/tarball/master",
