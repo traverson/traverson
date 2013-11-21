@@ -27,6 +27,7 @@ Regarding The Browser Build
 TODOs
 =====
 
+* make it configurable if embedded resources or linked resources are to be preferred
 * clean up test server document and link structure
 * use underscore.string everywhere instead of indexOf === 0 etc.
 * Builder#withLastRequestOptions({...}) - use the given options, but only in the last request (the one which get/post/put/getResource control)
