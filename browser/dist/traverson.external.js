@@ -5501,6 +5501,7 @@ module.exports = (function(){
 
 },{"pct-encode":22}],22:[function(require,module,exports){
 module.exports = function pctEncode(regexp) {
+  regexp = regexp || /\W/g;
   return function encode(string) {
     string = String(string);
     return string.replace(regexp, function (m) {
