@@ -21,11 +21,10 @@ module.exports = function(grunt) {
         'Gruntfile.js',
         '.jshintrc',
         '!node_modules/**/*',
-        '!browser/lib/third-party/**/*',
-        '!browser/test/lib/**/*',
-        '!browser/test/browserified_tests.js',
+        '!browser/dist/**/*',
         '!browser/example/assets/**/*',
-        '!browser/dist/**/*'
+        '!browser/lib/third-party/**/*',
+        '!browser/test/browserified_tests.js'
       ],
       options: {
         jshintrc: '.jshintrc'
@@ -55,7 +54,7 @@ module.exports = function(grunt) {
       // This browserify build be used by users of the module. It contains a
       // UMD (universal module definition) and can be used via an AMD module
       // loader like RequireJS or by simply placing a script tag in the page,
-      // which registers mymodule as a global var. Look at the example in
+      // which registers the module as a global var. Look at the example in
       // in browser/example/index.html.
       standalone: {
         src: [ '<%= pkg.name %>.js' ],
