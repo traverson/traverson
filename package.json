@@ -4,7 +4,6 @@
   "author": "Bastian Krol",
   "description": "HATEOAS client for Node.js and the browser",
   "repository": "https://github.com/basti1302/traverson.git",
-  "contributors": [],
   "scripts": {
     "test": "grunt"
   },
@@ -19,7 +18,7 @@
     "HAL"
   ],
   "dependencies": {
-    "halbert": "https://github.com/basti1302/halbert/tarball/master",
+    "halfred": "0.1.1",
     "JSONPath": "~0.9.1",
     "minilog": "~2.0.2",
     "request": "~2.27.0",
