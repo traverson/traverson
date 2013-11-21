@@ -22,7 +22,6 @@ Regarding The Browser Build
     * Remove jquery and use something smaller
 * Further reduce file size:
     * Excluding underscore and lodash, providing shims for the few functions that are used or detect if they are loaded anyway.
-    * Browserified Halbert is 215 KB. That's far too much
 
 TODOs
 =====

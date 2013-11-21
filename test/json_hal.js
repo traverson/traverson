@@ -92,8 +92,8 @@ describe('The JSON-HAL walker\'s', function() {
       'curies': [{ 'name': 'ea', 'href': 'http://example.com/docs/rels/{rel}',
           'templated': true }]
     },
-    'first_name': 'Halbert',
-    'last_name': 'Halbertson',
+    'first_name': 'Halfred',
+    'last_name': 'Halfredson',
     '_embedded': {
       'ea:no_self_link': embeddedWithoutSelfLink
     }

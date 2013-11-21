@@ -58,7 +58,7 @@ Download and use one of the following:
 * [Minified require/external build](https://raw.github.com/basti1302/traverson/master/browser/dist/traverson.external.min.js): Created with browserify's `--require` parameter and intended to be used (required) from other browserified modules, which were created with `--external traverson`. This build could be used if you use browserify but do not want to bundle Traverson with your own browserify build but keep it as a separate file.
 * [Non-minified require/external build](https://raw.github.com/basti1302/traverson/master/browser/dist/traverson.external.js): Same as before, just bigger.
 
-**A word of warning:** At the moment, the browser builds are too fat. The minified versions are around 85 k and the non-minified builds have whopping 360 k. Some more work is required to bring this down, but there is definitely potential (right now, the builds include underscore _and_ lodash and probably only use a fraction of their functionality). So while the code definitely works in the browser, it adds some unnecessary weight to your page.
+**A word of warning:** At the moment, the browser builds are too fat. The minified versions are around 60 KB and the non-minified builds aroung 150 KB. Some more work is required to bring this down, but there is definitely potential (right now, the builds include underscore _and_ lodash and probably only use a fraction of their functionality). So while the code definitely works in the browser, it adds some unnecessary weight to your page.
 
 Documentation by Example
 ------------------------
@@ -341,7 +341,7 @@ This would add the header `x-my-special-header` to all requests issued for this 
 
 ### HAL - hypertext application language
 
-Traverson supports the JSON dialect of [HAL](http://tools.ietf.org/id/draft-kelly-json-hal-06.txt), the hypertext application language via [Halbert](https://github.com/xcambar/halbert). While in theory you could use Traverson even without special support for HAL by specifying each link relation with JSONPath (like `$._links.linkName`) that would be quite cumbersome. Instead, do the following:
+Traverson supports the JSON dialect of [HAL](http://tools.ietf.org/id/draft-kelly-json-hal-06.txt), the hypertext application language via [Halfred](https://github.com/basti1302/halfred). While in theory you could use Traverson even without special support for HAL by specifying each link relation with JSONPath (like `$._links.linkName`) that would be quite cumbersome. Instead, do the following:
 
     var traverson = require('traverson')
     var api = traverson.jsonHal.from('http://haltalk.herokuapp.com/')
