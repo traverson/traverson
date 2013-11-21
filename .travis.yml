@@ -4,4 +4,4 @@ node_js:
   - '0.10'
 
 before_script:
-  - npm install -g grunt-cli browserify mocha-phantomjs
+  - npm install -g grunt-cli browserify@2.35.1 mocha-phantomjs
