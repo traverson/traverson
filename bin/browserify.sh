@@ -32,7 +32,7 @@ browserify \
 # These are the browserified tests.
 browserify \
   --entry browser/test/suite.js \
-  --outfile browser/dist/browserified_tests.js \
+  --outfile browser/test/browserified_tests.js \
   --external ./traverson.is
 
 popd > /dev/null
