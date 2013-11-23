@@ -1,6 +1,7 @@
 'use strict';
 
 var traverson = require('../traverson')
+var halDocs = require('./hal_docs.js')
 var mockResponse =  require('./util/mock_response')
 var waitFor = require('./util/wait_for')
 var chai = require('chai')
@@ -14,95 +15,33 @@ chai.use(sinonChai)
 describe('The JSON-HAL walker\'s', function() {
 
   var rootUri = 'http://api.io'
-
-  var rootDoc = {
-    '_links': {
-      'self': { 'href': '/' },
-      'curies': [{ 'name': 'ea', 'href': 'http://example.com/docs/rels/{rel}',
-          'templated': true }],
-      'ea:orders': { 'href': '/orders' }
-    }
-  }
+  var rootDoc = halDocs.root
   var ordersUri = rootUri + '/orders'
-  var embeddedOrderDocs = [{
-    '_links': {
-      'self': { 'href': '/orders/123' },
-      'ea:basket': { 'href': '/baskets/987' },
-      'ea:customer': { 'href': '/customers/654' }
-    },
-    'total': 30.00,
-    'currency': 'USD',
-    'status': 'shipped'
-  }, {
-    '_links': {
-      'self': { 'href': '/orders/124' },
-      'ea:basket': { 'href': '/baskets/321' },
-      'ea:customer': { 'href': '/customers/42' }
-    },
-    'total': 20.00,
-    'currency': 'USD',
-    'status': 'processing'
-  }]
-  var ordersDoc = {
-    '_links': {
-      'self': { 'href': '/orders' },
-      'curies': [{ 'name': 'ea', 'href': 'http://example.com/docs/rels/{rel}',
-          'templated': true }],
-      'next': { 'href': '/orders?page=2' },
-      'ea:find': { 'href': '/orders{/id}', 'templated': true },
-      'ea:admin': [{
-        'href': '/admins/2',
-        'title': 'Fred'
-      }, {
-        'href': '/admins/5',
-        'title': 'Kate'
-      }]
-    },
-    'currentlyProcessing': 14,
-    'shippedToday': 20,
-    '_embedded': {
-      'ea:order': embeddedOrderDocs[0]
-    }
-    // re-enable when traverson can cope with arrays of embedded
-    // objects
-    //'ea:order': embeddedOrders
-  }
+  var embeddedOrderDocs = halDocs.embeddedOrders
+  var ordersDoc = halDocs.orders
+  var admin2Uri = rootUri + '/admins/2'
+  var admin2Doc = halDocs.admin2
+  var admin5Uri = rootUri + '/admins/5'
+  var admin5Doc = halDocs.admin5
+  var basketDoc = halDocs.basket
+  var basket1Uri = rootUri + '/baskets/987'
+  var basket1Doc = halDocs.basket1
+  var basket2Uri = rootUri + '/baskets/321'
+  var basket2Doc = halDocs.basket2
   var singleOrderUri = ordersUri + '/13'
-  var singleOrderDoc = {
-    '_links': {
-      'self': { 'href': '/orders/13' },
-      'curies': [{ 'name': 'ea', 'href': 'http://example.com/docs/rels/{rel}',
-          'templated': true }],
-      'ea:customer': { 'href': '/customers/4711' },
-      'ea:basket': { 'href': '/baskets/4712' }
-    },
-    'total': 30.00,
-    'currency': 'USD',
-    'status': 'shipped'
-  }
-
-  var embeddedWithoutSelfLink = {
-    '_links': {
-    },
-  }
+  var singleOrderDoc = halDocs.singleOrder
+  var embeddedWithoutSelfLink = halDocs.embeddedWithoutSelfLink
   var customerUri = rootUri + '/customers/4711'
-  var customerDoc = {
-    '_links': {
-      'self': { 'href': '/customer/4711' },
-      'curies': [{ 'name': 'ea', 'href': 'http://example.com/docs/rels/{rel}',
-          'templated': true }]
-    },
-    'first_name': 'Halfred',
-    'last_name': 'Halfredson',
-    '_embedded': {
-      'ea:no_self_link': embeddedWithoutSelfLink
-    }
-  }
-  var basketDoc = { basket: 'empty' }
+  var customerDoc = halDocs.customer
 
   var rootResponse = mockResponse(rootDoc)
   var ordersResponse = mockResponse(ordersDoc)
+  var admin2Response = mockResponse(admin2Doc)
+  var admin5Response = mockResponse(admin5Doc)
+  var basket1Response = mockResponse(basket1Doc)
+  var basket2Response = mockResponse(basket2Doc)
   var singleOrderResponse = mockResponse(singleOrderDoc)
+  var embeddedOrdersResponse = mockResponse(embeddedOrderDocs)
   var embeddedOrderResponses = [
     mockResponse(embeddedOrderDocs[0]),
     mockResponse(embeddedOrderDocs[1])
@@ -131,6 +70,14 @@ describe('The JSON-HAL walker\'s', function() {
         rootResponse)
     get.withArgs(ordersUri, sinon.match.func).callsArgWithAsync(1, null,
         ordersResponse)
+    get.withArgs(admin2Uri, sinon.match.func).callsArgWithAsync(1, null,
+        admin2Response)
+    get.withArgs(admin5Uri, sinon.match.func).callsArgWithAsync(1, null,
+        admin5Response)
+    get.withArgs(basket1Uri, sinon.match.func).callsArgWithAsync(1, null,
+        basket1Response)
+    get.withArgs(basket2Uri, sinon.match.func).callsArgWithAsync(1, null,
+        basket2Response)
     get.withArgs(singleOrderUri, sinon.match.func).callsArgWithAsync(1,
         null, singleOrderResponse)
     get.withArgs(rootUri + '/baskets/987', sinon.match.func).
@@ -172,13 +119,40 @@ describe('The JSON-HAL walker\'s', function() {
       )
     })
 
-    it('should pass an embedded document into the callback',
+    it('should follow first link from a link array automatically',
         function(done) {
+      api.follow('ea:orders', 'ea:admin')
+         .get(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          expect(callback).to.have.been.calledWith(null, admin2Response)
+          done()
+        }
+      )
+    })
+
+    it('should follow specified link from a link array', function(done) {
+      api.follow('ea:orders', 'ea:admin[1]')
+         .get(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          expect(callback).to.have.been.calledWith(null, admin5Response)
+          done()
+        }
+      )
+    })
+
+    it('should pass first embedded document from the array into the callback ' +
+        ' automatically', function(done) {
       api.follow('ea:orders', 'ea:order')
          .get(callback)
       waitFor(
         function() { return callback.called },
         function() {
+          var error = callback.firstCall.args[0]
+          expect(error).to.not.exist
           var response = callback.firstCall.args[1]
           expect(response).to.exist
           expect(response.body).to.equal(embeddedOrderResponses[0].body)
@@ -189,13 +163,46 @@ describe('The JSON-HAL walker\'s', function() {
       )
     })
 
-    it('should follow embedded documents', function(done) {
+    it('should pass single element of an embedded document into the ' +
+        'callback', function(done) {
+      api.follow('ea:orders', 'ea:order[1]')
+         .get(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          var error = callback.firstCall.args[0]
+          expect(error).to.not.exist
+          var response = callback.firstCall.args[1]
+          expect(response).to.exist
+          expect(response.body).to.equal(embeddedOrderResponses[1].body)
+          expect(response.statusCode).to.equal(200)
+          expect(response.remark).to.exist
+          done()
+        }
+      )
+    })
+
+    it('should follow first embedded resource from an array automatically',
+        function(done) {
       api.follow('ea:orders', 'ea:order', 'ea:basket')
          .get(callback)
       waitFor(
         function() { return callback.called },
         function() {
-          expect(callback).to.have.been.calledWith(null, basketResponse)
+          expect(callback).to.have.been.calledWith(null, basket1Response)
+          done()
+        }
+      )
+    })
+
+    it('should follow specified embedded resource from an array',
+        function(done) {
+      api.follow('ea:orders', 'ea:order[1]', 'ea:basket')
+         .get(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          expect(callback).to.have.been.calledWith(null, basket2Response)
           done()
         }
       )

@@ -1577,7 +1577,7 @@ Builder.prototype.get = function(callback) {
   this.walker.walk(function(err, nextStep, lastStep) {
     log.debug('walker.walk returned')
     if (err) { return callback(err, lastStep.response, lastStep.uri) }
-    log.debug('next step: ' + JSON.stringify(nextStep))
+    log.debug('next step: ' + JSON.stringify(nextStep, null, 2))
     self.walker.process(nextStep, function(err, step) {
       log.debug('walker.process returned')
       if (err) { return callback(err, step.response, step.uri) }
@@ -1612,8 +1612,7 @@ Builder.prototype.getResource = function(callback) {
     self.walker.process(nextStep, function(err, step) {
       log.debug('walker.process returned')
       if (err) { return callback(err, step.response, step.uri) }
-      log.debug('resulting step: ' + step.uri)
-      // log.debug('resulting step: ' + JSON.stringify(step))
+      log.debug('resulting step: ' + JSON.stringify(step, null, 2))
 
       if (step.doc) {
         // return an embedded doc immediately
@@ -1718,48 +1717,135 @@ function JsonHalWalker() {}
 
 JsonHalWalker.prototype = new Walker()
 
-JsonHalWalker.prototype.findNextStep = function(doc, link) {
+JsonHalWalker.prototype.findNextStep = function(doc, key) {
   log.debug('parsing hal')
   var halResource = halfred.parse(doc)
 
+  var index = parseIndex(key)
+  key = parseKey(key)
+
   // try _links first
-  var halLinkHref = firstMatchingLinkWithHref(halResource, link)
-  if (halLinkHref) {
-    return { uri: halLinkHref }
+  var step = findLink(halResource, key, index)
+  if (step) {
+    return step
   }
 
   // no link found, check for _embedded
-  var stepForEmbeddedDoc = this.findEmbedded(doc, halResource, link)
-  if (stepForEmbeddedDoc) {
-    return stepForEmbeddedDoc
-  } else {
-    throw new Error('Could not find a link nor an embedded object for ' +
-        link + ' in document:\n' + JSON.stringify(doc))
+  step = findEmbedded(halResource, doc, key, index)
+  if (step) {
+    return step
   }
+  throw new Error('Could not find a link nor an embedded object for ' + key +
+      ' in document:\n' + JSON.stringify(doc))
 }
 
-function firstMatchingLinkWithHref(halResource, link) {
-  var halLinks = halResource.linkArray(link)
-  var halLink
-  var linkIndex
-  if (halLinks) {
-    for (linkIndex = 0; linkIndex < halLinks.length; linkIndex++) {
-      if (halLinks[linkIndex].href) {
-        halLink = halLinks[linkIndex]
-        break
-      }
-    }
+function findLink(halResource, key, index) {
+  var linkArray = halResource.linkArray(key)
+
+  if (!linkArray || linkArray.length === 0) {
+    return null
   }
-  if (halLink) {
-    if (halLinks.length > 1) {
-      log.warn('Found HAL link array with more than one element for ' +
-          'key ' + link + ', arbitrarily choosing index ' + linkIndex +
-          ', because it was the first that had a href attribute.')
+
+  var step = findLinkByIndex(linkArray, key, index)
+  if (!step) {
+    step = findLinkWithoutIndex(linkArray, key)
+  }
+  return step
+}
+
+function findLinkByIndex(linkArray, key, index) {
+  if (index) {
+    // client specified an explicit array index for this link, so use it or fail
+    if (!linkArray[index]) {
+      throw new Error(key + '[' + index + '] requested, but link array ' +
+          key + ' had no element at index ' + index)
     }
-    log.debug('found hal link: ' + halLink.href)
-    return halLink.href
+    if (!linkArray[index].href) {
+      throw new Error(key + '[' + index + '] requested, but this link had ' +
+          ' no href attribute.')
+    }
+    log.debug('found hal link: ' + linkArray[index].href)
+    return { uri: linkArray[index].href }
   }
   return null
+}
+
+function findLinkWithoutIndex(linkArray, key) {
+  // client did not specify an array index for this link, arbitrarily choose
+  // the first that has a href attribute
+  var link
+  for (var index = 0; index < linkArray.length; index++) {
+    if (linkArray[index].href) {
+      link = linkArray[index]
+      break
+    }
+  }
+  if (link) {
+    if (linkArray.length > 1) {
+      log.warn('Found HAL link array with more than one element for ' +
+          'key ' + key + ', arbitrarily choosing index ' + index +
+          ', because it was the first that had a href attribute.')
+    }
+    log.debug('found hal link: ' + link.href)
+    return { uri: link.href }
+  }
+  return null
+}
+
+
+function findEmbedded(halResource, doc, key, index) {
+  log.debug('checking for embedded: ' + key + (index?index:''))
+
+  var resourceArray = halResource.embeddedArray(key)
+  if (!resourceArray || resourceArray.length === 0) {
+    return null
+  }
+  log.debug('Found an array of embedded resource for: ' + key)
+
+  var step = findeEmbeddedByIndex(resourceArray, key, index)
+  if (!step) {
+    step = findEmbeddedWithoutIndex(resourceArray, key)
+  }
+  return step
+}
+
+function findeEmbeddedByIndex(resourceArray, key, index) {
+  if (index) {
+    // client specified an explicit array index, so use it or fail
+    if (!resourceArray[index]) {
+      throw new Error(key + '[' + index + '] requested, but there is no such ' +
+          'link. However, there is an embedded resource array named ' + key +
+          ' but it does not have an element at index ' + index)
+    }
+    log.debug('Found an embedded resource for: ' + key + '[' + index + ']')
+    return { doc: resourceArray[index].original() }
+  }
+  return null
+}
+
+function findEmbeddedWithoutIndex(resourceArray, key) {
+  // client did not specify an array index, arbitrarily choose first
+  if (resourceArray.length > 1) {
+    log.warn('Found HAL embedded resource array with more than one element ' +
+        ' for key ' + key + ', arbitrarily choosing first element.')
+  }
+  return { doc: resourceArray[0].original() }
+}
+
+function parseIndex(key) {
+  var match = key.match(/.*\[(\d+)\]/)
+  if (match) {
+    return match[1]
+  }
+  return null
+}
+
+function parseKey(key) {
+  var match = key.match(/(.*)\[\d+\]/)
+  if (match) {
+    return match[1]
+  }
+  return key
 }
 
 JsonHalWalker.prototype.postProcessStep = function(nextStep) {
@@ -1769,19 +1855,6 @@ JsonHalWalker.prototype.postProcessStep = function(nextStep) {
       nextStep.uri = _s.splice(nextStep.uri, 0, 1)
     }
     nextStep.uri = this.startUri + nextStep.uri
-  }
-}
-
-JsonHalWalker.prototype.findEmbedded = function(doc, halResource, link) {
-  log.debug('checking for embedded: ' + link)
-  // TODO The first embedded resource in the array is not necessarily the one we
-  // want...
-  var nextResourceArray = halResource.embedded(link)
-  if (nextResourceArray) {
-    log.debug('found embedded doc for: ' + link)
-    return { doc: doc._embedded[link] }
-  } else {
-    return null
   }
 }
 
@@ -1889,7 +1962,7 @@ Walker.prototype.walk = function(callback) {
 
         // turn relative URI into absolute URI or whatever else is required
         self.postProcessStep(nextStep)
-        log.debug('next step: ' + JSON.stringify(nextStep))
+        log.debug('next step: ' + JSON.stringify(nextStep, null, 2))
 
         if (nextStep.uri) {
           // next link found in last response, might be a URI template
@@ -1911,7 +1984,7 @@ Walker.prototype.walk = function(callback) {
 }
 
 Walker.prototype.process = function(step, callback) {
-  log.debug('processing next step: ' + JSON.stringify(step))
+  log.debug('processing next step: ' + JSON.stringify(step, null, 2))
   if (step.uri) {
     this.get(step, callback)
   } else if (step.doc) {
@@ -3369,6 +3442,12 @@ module.exports = {
 },{"./lib/parser":16}],15:[function(require,module,exports){
 'use strict';
 
+/*
+ * A very naive copy-on-write immutable stack. Since the size of the stack
+ * is equal to the depth of the embedded resources for one HAL resource, the bad
+ * performance for the copy-on-write approach is probably not a problem at all.
+ * Might be replaced by a smarter solution later. Or not. Whatever.
+ */
 function ImmutableStack() {
   if (arguments.length >= 1) {
     this._array = arguments[0]
@@ -3434,11 +3513,13 @@ function _parse(unparsed, validation, path) {
   if (unparsed == null) {
     return unparsed
   }
-  var links = parseLinks(unparsed._links, validation, path.push('_links'))
-  var embedded = parseEmbeddedResourcess(unparsed._embedded, validation,
-      path.push('_embedded'))
-  var resource = new Resource(links, embedded, validation)
+  var allLinkArrays = parseLinks(unparsed._links, validation,
+      path.push('_links'))
+  var allEmbeddedArrays = parseEmbeddedResourcess(unparsed._embedded,
+      validation, path.push('_embedded'))
+  var resource = new Resource(allLinkArrays, allEmbeddedArrays, validation)
   copyNonHalProperties(unparsed, resource)
+  resource._original = unparsed
   return resource
 }
 
@@ -3453,15 +3534,18 @@ function parseLinks(links, validation, path) {
   return links
 }
 
-function parseEmbeddedResourcess(embedded, parentValidation, path) {
-  embedded = parseHalProperty(embedded, identity, parentValidation, path)
+function parseEmbeddedResourcess(original, parentValidation, path) {
+  var embedded = parseHalProperty(original, identity, parentValidation, path)
   if (embedded == null) {
     return embedded
   }
   Object.keys(embedded).forEach(function(key) {
     embedded[key] = embedded[key].map(function(embeddedElement) {
       var childValidation = parentValidation != null ? [] : null
-      return _parse(embeddedElement, childValidation, path.push(key))
+      var embeddedResource = _parse(embeddedElement, childValidation,
+          path.push(key))
+      embeddedResource._original = embeddedElement
+      return embeddedResource
     })
   })
   return embedded
@@ -3610,8 +3694,8 @@ Resource.prototype.linkArray = function(key) {
   return propertyArray(this._links, key)
 }
 
-Resource.prototype.link = function(key) {
-  return firstElementOfProperty(this._links, key)
+Resource.prototype.link = function(key, index) {
+  return elementOfPropertyArray(this._links, key, index)
 }
 
 Resource.prototype.allEmbeddedResourceArrays = function () {
@@ -3622,18 +3706,23 @@ Resource.prototype.embeddedResourceArray = function(key) {
   return propertyArray(this._embedded, key)
 }
 
-Resource.prototype.embeddedResource = function(key) {
-  return firstElementOfProperty(this._embedded, key)
+Resource.prototype.embeddedResource = function(key, index) {
+  return elementOfPropertyArray(this._embedded, key, index)
+}
+
+Resource.prototype.original = function() {
+  return this._original
 }
 
 function propertyArray(object, key) {
   return object != null ? object[key] : null
 }
 
-function firstElementOfProperty(object, key) {
+function elementOfPropertyArray(object, key, index) {
+  index = index || 0
   var array = propertyArray(object, key)
   if (array != null && array.length >= 1) {
-    return array[0]
+    return array[index]
   }
   return null
 }

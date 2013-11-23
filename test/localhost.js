@@ -339,7 +339,7 @@ describe('Traverson (when tested against a local server)', function() {
     // https://github.com/visionmedia/mocha/pull/946
     // so we just mark the test as passed. Sigh.
     if (isPhantomJs()) {
-      console.log('skipping test localhost.js#should patch in PhantomJS')
+      console.log('skipping test localhost.js#"should patch" in PhantomJS')
       return done()
     }
 
