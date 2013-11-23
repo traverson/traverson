@@ -417,7 +417,7 @@ Traverson supports the JSON dialect of [HAL](http://tools.ietf.org/id/draft-kell
       }
     }
 
-This will give you all posts that the account `traverson` posted to Mike Kelly's haltalk server. Note that we used `traverson.jsonHal` when creating the `api` object, instead of the usual `traverson.json`. When called in this way, Traverson will assume the resources it receives comply with the HAL specification and looks for links in the `_links` property.
+This will give you all posts that the account `traverson` posted to Mike Kelly's haltalk server. Note that we used `traverson.jsonHal` when creating the `api` object, instead of the usual `traverson.json`. When called in this way, Traverson will assume the resources it receives comply with the HAL specification and looks for links in the `_links` property. If there is no such link, Traverson will also look for an embedded resource with the given name. You can also pass strings like `'ht:post[1]` to the `follow` method to target individual elements in an array of link objects or in an array of embedded resources.
 
 #### Embedded Documents
 
@@ -452,14 +452,16 @@ In the far future, Traverson might also support HTML APIs and/or XML APIs.
 Release Notes
 -------------
 
+* 0.5.0 2013-11-23:
+    * Make individual elements of HAL link arrays and embedded arrays available by using array indexing notation
 * 0.4.0 2013-11-21:
-    * Use Halfred instead of Halbert to parse HAL to reduce size of browser build. 
-* 0.3.0 2013-11-17: 
+    * Use Halfred instead of Halbert to parse HAL to reduce size of browser build.
+* 0.3.0 2013-11-17:
     * Browser build in addition to Node.js module (by browserify)
-* 0.2.1 2013-10-25: 
+* 0.2.1 2013-10-25:
     * Documentation fixes
 * 0.2.0 2013-10-25:
-    * Support for hypertext application language (HAL)    
+    * Support for hypertext application language (HAL)
     * Add `getUri`
     * Add `withRequestOptions`
 * 0.1.0 2013-10-11:
