@@ -24,6 +24,7 @@ module.exports = function(grunt) {
         '!browser/dist/**/*',
         '!browser/example/assets/**/*',
         '!browser/lib/third-party/**/*',
+        '!browser/lib/shim/underscore-string-reduced.js',
         '!browser/test/browserified_tests.js'
       ],
       options: {

@@ -45,6 +45,7 @@
     "minilog": "./browser/lib/shim/log.js",
     "request": "./browser/lib/shim/request.js",
     "util": "./browser/lib/shim/node-util.js",
+    "underscore.string": "./browser/lib/shim/underscore-string-reduced.js",
     "../server/app": false,
     "indexof": false,
     "emitter": false,

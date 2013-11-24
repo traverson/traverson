@@ -58,7 +58,9 @@ Download and use one of the following:
 * [Minified require/external build](https://raw.github.com/basti1302/traverson/master/browser/dist/traverson.external.min.js): Created with browserify's `--require` parameter and intended to be used (required) from other browserified modules, which were created with `--external traverson`. This build could be used if you use browserify but do not want to bundle Traverson with your own browserify build but keep it as a separate file.
 * [Non-minified require/external build](https://raw.github.com/basti1302/traverson/master/browser/dist/traverson.external.js): Same as before, just bigger.
 
-**A word of warning:** At the moment, the browser builds are too fat. The minified versions are around 60 KB and the non-minified builds aroung 150 KB. Some more work is required to bring this down, but there is definitely potential (right now, the builds include underscore _and_ lodash and probably only use a fraction of their functionality). So while the code definitely works in the browser, it adds some unnecessary weight to your page.
+File size of browser build:
+* Minified: 40 KB
+* Unminified: 100 KB
 
 Documentation by Example
 ------------------------

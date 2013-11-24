@@ -14,21 +14,18 @@ Docs
 Regarding The Browser Build
 ===========================
 
-* Add to Grunt build:
-    * Use testling to test compatibiliy with real browsers
+* !!! The superagent-request shim does not implement the request options object (properties like "auth" etc.), yet these are advertised in the Traverson readme to be used by the `withRequestParameters` method. We need some translation there.
+* !!! PR for JSONPath: shim underscore.isArray to reduce browserified build
 * Polish in-browser example page:
     * make each step during link following visible
     * pretty print code snippets, syntax highlighting, etc.
     * Remove jquery and use something smaller
-* Further reduce file size:
-    * Excluding underscore and lodash, providing shims for the few functions that are used or detect if they are loaded anyway.
 
 TODOs
 =====
 
 * make it configurable if embedded resources or linked resources are to be preferred
 * clean up test server document and link structure
-* use underscore.string everywhere instead of indexOf === 0 etc.
 * Builder#withLastRequestOptions({...}) - use the given options, but only in the last request (the one which get/post/put/getResource control)
 * Builder#withFirtRequestOptions({...}) - use the given options, but only in the first request - is there a use case for this?
 * Builder#checkHttpStatus(200, 201, ...) - provide http status codes that will be checked only for the last request - needs better name that makes clear that it only relates to the last get()/post()/put()/... call.
