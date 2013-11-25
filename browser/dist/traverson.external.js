@@ -2314,7 +2314,7 @@ function jsonPath(obj, expr, arg) {
                P.trace(P.eval(loc, val, path.substr(path.lastIndexOf(";")+1))+";"+x, val, path);
             else if (/^\?\(.*?\)$/.test(loc)) // [?(expr)]
                P.walk(loc, x, val, path, function(m,l,x,v,p) { if (P.eval(l.replace(/^\?\((.*?)\)$/,"$1"),v[m],m)) P.trace(m+";"+x,v,p); });
-            else if (/^(-?[0-9]*):(-?[0-9]*):?([0-9]*)$/.test(loc)) // [start:end:step]  phyton slice syntax
+            else if (/^(-?[0-9]*):(-?[0-9]*):?([0-9]*)$/.test(loc)) // [start:end:step]  python slice syntax
                P.slice(loc, x, val, path);
          }
          else
@@ -3971,6 +3971,8 @@ module.exports = function pctEncode(regexp) {
   }
 }
 
+},{}],"/home/bastian/projekte/traverson/traverson.js":[function(require,module,exports){
+module.exports=require('5u5bvt');
 },{}],"5u5bvt":[function(require,module,exports){
 'use strict';
 
@@ -4002,7 +4004,5 @@ module.exports = {
   }
 }
 
-},{"./lib/builder":6,"./lib/media_types":10,"minilog":1}],"/home/bastian/projekte/traverson/traverson.js":[function(require,module,exports){
-module.exports=require('5u5bvt');
-},{}]},{},["5u5bvt"])
+},{"./lib/builder":6,"./lib/media_types":10,"minilog":1}]},{},["5u5bvt"])
 ;
