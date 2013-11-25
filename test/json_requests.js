@@ -66,12 +66,12 @@ describe('The JSON client\'s', function() {
         new Error('GET is not implemented for this URI, please POST ' +
         'something'))
 
-    executeRequest = sinon.stub(api.constructor.prototype,
+    executeRequest = sinon.stub(api.finalAction.constructor.prototype,
         'executeRequest')
   })
 
   afterEach(function() {
-    api.constructor.prototype.executeRequest.restore()
+    api.finalAction.constructor.prototype.executeRequest.restore()
   })
 
   describe('get method', function() {
@@ -163,13 +163,13 @@ describe('The JSON client\'s', function() {
 
     it('should follow the links and post to the last URI',
         function(done) {
-      executeRequest.withArgs(postUri, sinon.match.func, payload,
-          sinon.match.func).callsArgWithAsync(3, null, result, postUri)
+      executeRequest.withArgs(postUri, api.request, sinon.match.func, payload,
+          sinon.match.func).callsArgWithAsync(4, null, result, postUri)
       api.follow('post_link').post(payload, callback)
       waitFor(
         function() { return callback.called },
         function() {
-          expect(executeRequest).to.have.been.calledWith(postUri,
+          expect(executeRequest).to.have.been.calledWith(postUri, api.request,
               sinon.match.func, payload, sinon.match.func)
           expect(callback).to.have.been.calledWith(null, result, postUri)
           done()
@@ -180,8 +180,8 @@ describe('The JSON client\'s', function() {
     it('should call callback with err when post fails',
         function(done) {
       var err = new Error('test error')
-      executeRequest.withArgs(postUri, sinon.match.func, payload,
-          sinon.match.func).callsArgWithAsync(3, err)
+      executeRequest.withArgs(postUri, api.request, sinon.match.func, payload,
+          sinon.match.func).callsArgWithAsync(4, err)
       api.follow('post_link').post(payload, callback)
       waitFor(
         function() { return callback.called },
@@ -200,13 +200,13 @@ describe('The JSON client\'s', function() {
 
     it('should follow the links and put to the last URI',
         function(done) {
-      executeRequest.withArgs(putUri, sinon.match.func, payload,
-          sinon.match.func).callsArgWithAsync(3, null, result, putUri)
+      executeRequest.withArgs(putUri, api.request, sinon.match.func, payload,
+          sinon.match.func).callsArgWithAsync(4, null, result, putUri)
       api.follow('put_link').put(payload, callback)
       waitFor(
         function() { return callback.called },
         function() {
-          expect(executeRequest).to.have.been.calledWith(putUri,
+          expect(executeRequest).to.have.been.calledWith(putUri, api.request,
               sinon.match.func, payload, sinon.match.func)
           expect(callback).to.have.been.calledWith(null, result, putUri)
           done()
@@ -217,8 +217,8 @@ describe('The JSON client\'s', function() {
     it('should call callback with err when put fails',
         function(done) {
       var err = new Error('test error')
-      executeRequest.withArgs(putUri, sinon.match.func, payload,
-          sinon.match.func).callsArgWithAsync(3, err)
+      executeRequest.withArgs(putUri, api.request, sinon.match.func, payload,
+          sinon.match.func).callsArgWithAsync(4, err)
       api.follow('put_link').put(payload, callback)
       waitFor(
         function() { return callback.called },
@@ -236,13 +236,13 @@ describe('The JSON client\'s', function() {
 
     it('should follow the links and patch the last URI',
         function(done) {
-      executeRequest.withArgs(patchUri, sinon.match.func, payload,
-          sinon.match.func).callsArgWithAsync(3, null, result, patchUri)
+      executeRequest.withArgs(patchUri, api.request, sinon.match.func, payload,
+          sinon.match.func).callsArgWithAsync(4, null, result, patchUri)
       api.follow('patch_link').patch(payload, callback)
       waitFor(
         function() { return callback.called },
         function() {
-          expect(executeRequest).to.have.been.calledWith(patchUri,
+          expect(executeRequest).to.have.been.calledWith(patchUri, api.request,
               sinon.match.func, payload, sinon.match.func)
           expect(callback).to.have.been.calledWith(null, result, patchUri)
           done()
@@ -253,8 +253,8 @@ describe('The JSON client\'s', function() {
     it('should call callback with err when patch fails',
         function(done) {
       var err = new Error('test error')
-      executeRequest.withArgs(patchUri, sinon.match.func, payload,
-          sinon.match.func).callsArgWithAsync(3, err, null)
+      executeRequest.withArgs(patchUri, api.request, sinon.match.func, payload,
+          sinon.match.func).callsArgWithAsync(4, err, null)
       api.follow('patch_link').patch(payload, callback)
       waitFor(
         function() { return callback.called },
@@ -266,19 +266,19 @@ describe('The JSON client\'s', function() {
     })
   })
 
-  describe('delete method', function() {
+  describe('del method', function() {
 
     var result = mockResponse(null, 204)
 
     it('should follow the links and delete the last URI',
         function(done) {
-      executeRequest.withArgs(deleteUri, sinon.match.func, null,
-          sinon.match.func).callsArgWithAsync(3, null, result, deleteUri)
-      api.follow('delete_link').delete(callback)
+      executeRequest.withArgs(deleteUri, api.request, sinon.match.func, null,
+          sinon.match.func).callsArgWithAsync(4, null, result, deleteUri)
+      api.follow('delete_link').del(callback)
       waitFor(
         function() { return callback.called },
         function() {
-          expect(executeRequest).to.have.been.calledWith(deleteUri,
+          expect(executeRequest).to.have.been.calledWith(deleteUri, api.request,
               sinon.match.func, null, sinon.match.func)
           expect(callback).to.have.been.calledWith(null, result, deleteUri)
           done()
@@ -286,12 +286,12 @@ describe('The JSON client\'s', function() {
       )
     })
 
-    it('should call callback with err when delete fails',
+    it('should call callback with err when deleting fails',
         function(done) {
       var err = new Error('test error')
-      executeRequest.withArgs(deleteUri, sinon.match.func, null,
-          sinon.match.func).callsArgWithAsync(3, err)
-      api.follow('delete_link').delete(callback)
+      executeRequest.withArgs(deleteUri, api.request, sinon.match.func, null,
+          sinon.match.func).callsArgWithAsync(4, err)
+      api.follow('delete_link').del(callback)
       waitFor(
         function() { return callback.called },
         function() {

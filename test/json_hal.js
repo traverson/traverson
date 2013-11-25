@@ -85,12 +85,12 @@ describe('The JSON-HAL walker\'s', function() {
     get.withArgs(customerUri, sinon.match.func).callsArgWithAsync(1,
         null, customerResponse)
     callback = sinon.spy()
-    executeRequest = sinon.stub(api.constructor.prototype,
+    executeRequest = sinon.stub(api.finalAction.constructor.prototype,
         'executeRequest')
   })
 
   afterEach(function() {
-    api.constructor.prototype.executeRequest.restore()
+    api.finalAction.constructor.prototype.executeRequest.restore()
   })
 
   describe('get method', function() {
@@ -289,8 +289,8 @@ describe('The JSON-HAL walker\'s', function() {
 
     it('should follow multiple links and post to the last URI',
         function(done) {
-      executeRequest.withArgs(customerUri, sinon.match.func, payload,
-          sinon.match.func).callsArgWithAsync(3, null, updateResponse,
+      executeRequest.withArgs(customerUri, api.request, sinon.match.func,
+          payload, sinon.match.func).callsArgWithAsync(4, null, updateResponse,
           customerUri)
       api.follow('ea:orders', 'ea:find', 'ea:customer')
          .withTemplateParameters({ id: 13 })
@@ -299,7 +299,7 @@ describe('The JSON-HAL walker\'s', function() {
         function() { return callback.called },
         function() {
           expect(executeRequest).to.have.been.calledWith(customerUri,
-              sinon.match.func, payload, sinon.match.func)
+              api.request, sinon.match.func, payload, sinon.match.func)
           expect(callback).to.have.been.calledWith(null, updateResponse,
               customerUri)
           done()
@@ -310,8 +310,8 @@ describe('The JSON-HAL walker\'s', function() {
     it('should call callback with err when post fails',
         function(done) {
       var err = new Error('test error')
-      executeRequest.withArgs(customerUri, sinon.match.func, payload,
-          sinon.match.func).callsArgWithAsync(3, err)
+      executeRequest.withArgs(customerUri, api.request, sinon.match.func,
+          payload, sinon.match.func).callsArgWithAsync(4, err)
       api.follow('ea:orders', 'ea:find', 'ea:customer')
          .withTemplateParameters({ id: 13 })
          .post(payload, callback)
@@ -329,8 +329,8 @@ describe('The JSON-HAL walker\'s', function() {
 
     it('should follow multiple links and put to the last URI',
         function(done) {
-      executeRequest.withArgs(customerUri, sinon.match.func, payload,
-          sinon.match.func).callsArgWithAsync(3, null, updateResponse,
+      executeRequest.withArgs(customerUri, api.request, sinon.match.func,
+          payload, sinon.match.func).callsArgWithAsync(4, null, updateResponse,
           customerUri)
       api.follow('ea:orders', 'ea:find', 'ea:customer')
          .withTemplateParameters({ id: 13 })
@@ -339,7 +339,7 @@ describe('The JSON-HAL walker\'s', function() {
         function() { return callback.called },
         function() {
           expect(executeRequest).to.have.been.calledWith(customerUri,
-              sinon.match.func, payload, sinon.match.func)
+              api.request, sinon.match.func, payload, sinon.match.func)
           expect(callback).to.have.been.calledWith(null, updateResponse,
               customerUri)
           done()
@@ -350,8 +350,8 @@ describe('The JSON-HAL walker\'s', function() {
     it('should call callback with err when put fails',
         function(done) {
       var err = new Error('test error')
-      executeRequest.withArgs(customerUri, sinon.match.func, payload,
-          sinon.match.func).callsArgWithAsync(3, err)
+      executeRequest.withArgs(customerUri, api.request, sinon.match.func,
+          payload, sinon.match.func).callsArgWithAsync(4, err)
       api.follow('ea:orders', 'ea:find', 'ea:customer')
          .withTemplateParameters({ id: 13 })
          .put(payload, callback)
@@ -369,8 +369,8 @@ describe('The JSON-HAL walker\'s', function() {
 
     it('should follow multiple links and patch the last URI',
         function(done) {
-      executeRequest.withArgs(customerUri, sinon.match.func, payload,
-          sinon.match.func).callsArgWithAsync(3, null, updateResponse,
+      executeRequest.withArgs(customerUri, api.request, sinon.match.func,
+          payload, sinon.match.func).callsArgWithAsync(4, null, updateResponse,
           customerUri)
       api.follow('ea:orders', 'ea:find', 'ea:customer')
          .withTemplateParameters({ id: 13 })
@@ -379,7 +379,7 @@ describe('The JSON-HAL walker\'s', function() {
         function() { return callback.called },
         function() {
           expect(executeRequest).to.have.been.calledWith(customerUri,
-              sinon.match.func, payload, sinon.match.func)
+              api.request, sinon.match.func, payload, sinon.match.func)
           expect(callback).to.have.been.calledWith(null, updateResponse,
               customerUri)
           done()
@@ -390,8 +390,8 @@ describe('The JSON-HAL walker\'s', function() {
     it('should call callback with err when patch fails',
         function(done) {
       var err = new Error('test error')
-      executeRequest.withArgs(customerUri, sinon.match.func, payload,
-          sinon.match.func).callsArgWithAsync(3, err)
+      executeRequest.withArgs(customerUri, api.request, sinon.match.func,
+          payload, sinon.match.func).callsArgWithAsync(4, err)
       api.follow('ea:orders', 'ea:find', 'ea:customer')
          .withTemplateParameters({ id: 13 })
          .patch(payload, callback)
@@ -409,17 +409,17 @@ describe('The JSON-HAL walker\'s', function() {
 
     it('should follow multiple links and delete the last URI',
         function(done) {
-      executeRequest.withArgs(customerUri, sinon.match.func, null,
-          sinon.match.func).callsArgWithAsync(3, null, updateResponse,
+      executeRequest.withArgs(customerUri, api.request, sinon.match.func, null,
+          sinon.match.func).callsArgWithAsync(4, null, updateResponse,
           customerUri)
       api.follow('ea:orders', 'ea:find', 'ea:customer')
          .withTemplateParameters({ id: 13 })
-         .delete(callback)
+         .del(callback)
       waitFor(
         function() { return callback.called },
         function() {
           expect(executeRequest).to.have.been.calledWith(customerUri,
-              sinon.match.func, null, sinon.match.func)
+              api.request, sinon.match.func, null, sinon.match.func)
           expect(callback).to.have.been.calledWith(null, updateResponse,
               customerUri)
           done()
@@ -427,14 +427,14 @@ describe('The JSON-HAL walker\'s', function() {
       )
     })
 
-    it('should call callback with err when delete fails',
+    it('should call callback with err when deleting fails',
         function(done) {
       var err = new Error('test error')
-      executeRequest.withArgs(customerUri, sinon.match.func, null,
-          sinon.match.func).callsArgWithAsync(3, err)
+      executeRequest.withArgs(customerUri, api.request, sinon.match.func, null,
+          sinon.match.func).callsArgWithAsync(4, err)
       api.follow('ea:orders', 'ea:find', 'ea:customer')
          .withTemplateParameters({ id: 13 })
-         .delete(callback)
+         .del(callback)
       waitFor(
         function() { return callback.called },
         function() {

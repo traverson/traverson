@@ -1564,14 +1564,16 @@ if (typeof exports == "object") {
   this["superagent"] = require("superagent");
 }})();
 
-},{"emitter":14,"indexof":14,"reduce":14,"superagent":14}],6:[function(require,module,exports){
+},{"emitter":15,"indexof":15,"reduce":15,"superagent":15}],6:[function(require,module,exports){
 'use strict';
 
+var minilog = require('minilog')
 var standardRequest = require('request')
 var util = require('util')
+
+var FinalAction = require('./final_action')
 var JsonWalker = require('./json_walker')
 var JsonHalWalker = require('./json_hal_walker')
-var minilog = require('minilog')
 var mediaTypes = require('./media_types')
 
 var log = minilog('traverson')
@@ -1580,6 +1582,7 @@ function Builder(mediaType, startUri) {
   this.walker = this.createWalker(mediaType)
   this.walker.startUri = startUri
   this.walker.request = this.request = standardRequest
+  this.finalAction = new FinalAction(this.walker)
 }
 
 Builder.prototype.createWalker = function(mediaType) {
@@ -1620,24 +1623,10 @@ Builder.prototype.get = function(callback) {
   var self = this
   this.walker.walk(function(err, nextStep, lastStep) {
     log.debug('walker.walk returned')
-    if (err) { return callback(err, lastStep.response, lastStep.uri) }
-    log.debug('next step: ' + JSON.stringify(nextStep, null, 2))
-    self.walker.process(nextStep, function(err, step) {
-      log.debug('walker.process returned')
-      if (err) { return callback(err, step.response, step.uri) }
-      if (!step.response && step.doc) {
-        log.debug('faking HTTP response for embedded resource')
-        step.response = {
-          statusCode: 200,
-          body: JSON.stringify(step.doc),
-          remark: 'This is not an actual HTTP response. The resource you ' +
-            'requested was an embedded resource, so no HTTP request was ' +
-            'made to acquire it.'
-        }
-      }
-      // log.debug('returning response')
-      callback(null, step.response)
-    })
+    if (err) {
+      return callback(err, lastStep.response, lastStep.uri)
+    }
+    self.finalAction.get(nextStep, callback)
   })
 }
 
@@ -1648,30 +1637,11 @@ Builder.prototype.get = function(callback) {
 Builder.prototype.getResource = function(callback) {
   var self = this
   this.walker.walk(function(err, nextStep, lastStep) {
-    // TODO Remove duplication: This duplicates the get/checkHttpStatus/parse
-    // sequence from the Walker's walk method.
     log.debug('walker.walk returned')
-    if (err) { return callback(err, lastStep.response, lastStep.uri) }
-    log.debug('next step: ' + JSON.stringify(nextStep))
-    self.walker.process(nextStep, function(err, step) {
-      log.debug('walker.process returned')
-      if (err) { return callback(err, step.response, step.uri) }
-      log.debug('resulting step: ' + JSON.stringify(step, null, 2))
-
-      if (step.doc) {
-        // return an embedded doc immediately
-        return callback(null, step.doc)
-      }
-
-      var resource
-      try {
-        self.walker.checkHttpStatus(step)
-        resource = self.walker.parse(step)
-        return callback(null, resource)
-      } catch (e) {
-        return callback(e, e.doc)
-      }
-    })
+    if (err) {
+      return callback(err, lastStep.response, lastStep.uri)
+    }
+    self.finalAction.getResource(nextStep, callback)
   })
 }
 
@@ -1684,52 +1654,121 @@ Builder.prototype.getUri = function(callback) {
   var self = this
   this.walker.walk(function(err, nextStep, lastStep) {
     log.debug('walker.walk returned')
-    if (err) { return callback(err, lastStep.response, lastStep.uri) }
-    log.debug('returning uri')
-    if (nextStep.uri) {
-      return callback(null, nextStep.uri)
-    } else if (nextStep.doc &&
-      nextStep.doc._links &&
-      nextStep.doc._links.self &&
-      nextStep.doc._links.self.href) {
-      return callback(null, self.walker.startUri +
-          nextStep.doc._links.self.href)
-    } else {
-      return callback(new Error('You requested an URI but the last ' +
-          'resource is an embedded resource and has no URI of its own ' +
-          '(that is, it has no link with rel=\"self\"'))
+    if (err) {
+      return callback(err, lastStep.response, lastStep.uri)
     }
+    self.finalAction.getUri(nextStep, callback)
   })
 }
 
 Builder.prototype.post = function(body, callback) {
-  this.walkAndExecute(body, this.request.post, callback)
+  this.finalAction.walkAndExecute(body, this.request, this.request.post,
+      callback)
 }
 
 Builder.prototype.put = function(body, callback) {
-  this.walkAndExecute(body, this.request.put, callback)
+  this.finalAction.walkAndExecute(body, this.request, this.request.put,
+      callback)
 }
 
 Builder.prototype.patch = function(body, callback) {
-  this.walkAndExecute(body, this.request.patch, callback)
+  this.finalAction.walkAndExecute(body, this.request, this.request.patch,
+      callback)
 }
 
-Builder.prototype.delete = function(callback) {
-  this.walkAndExecute(null, this.request.del, callback)
+Builder.prototype.del = function(callback) {
+  this.finalAction.walkAndExecute(null, this.request, this.request.del,
+      callback)
 }
 
-Builder.prototype.walkAndExecute = function(body, method, callback) {
+module.exports = Builder
+
+},{"./final_action":7,"./json_hal_walker":8,"./json_walker":9,"./media_types":10,"minilog":1,"request":3,"util":2}],7:[function(require,module,exports){
+'use strict';
+
+var minilog = require('minilog')
+var log = minilog('traverson')
+
+function FinalAction(walker) {
+  this.walker = walker
+}
+
+FinalAction.prototype.get = function(nextStep, callback) {
+  log.debug('next step: ' + JSON.stringify(nextStep, null, 2))
+  this.walker.process(nextStep, function(err, step) {
+    log.debug('walker.process returned')
+    if (err) { return callback(err, step.response, step.uri) }
+    if (!step.response && step.doc) {
+      log.debug('faking HTTP response for embedded resource')
+      step.response = {
+        statusCode: 200,
+        body: JSON.stringify(step.doc),
+        remark: 'This is not an actual HTTP response. The resource you ' +
+          'requested was an embedded resource, so no HTTP request was ' +
+          'made to acquire it.'
+      }
+    }
+    callback(null, step.response)
+  })
+}
+
+FinalAction.prototype.getResource = function(nextStep, callback) {
+  // TODO Remove duplication: This duplicates the get/checkHttpStatus/parse
+  // sequence from the Walker's walk method.
+  var self = this
+  log.debug('next step: ' + JSON.stringify(nextStep))
+  this.walker.process(nextStep, function(err, step) {
+    log.debug('walker.process returned')
+    if (err) { return callback(err, step.response, step.uri) }
+    // log.debug('resulting step: ' + JSON.stringify(step, null, 2))
+
+    if (step.doc) {
+      // return an embedded doc immediately
+      return callback(null, step.doc)
+    }
+
+    var resource
+    try {
+      self.walker.checkHttpStatus(step)
+      resource = self.walker.parse(step)
+      return callback(null, resource)
+    } catch (e) {
+      return callback(e, e.doc)
+    }
+  })
+}
+
+FinalAction.prototype.getUri = function(nextStep, callback) {
+  var self = this
+  log.debug('returning uri')
+  if (nextStep.uri) {
+    return callback(null, nextStep.uri)
+  } else if (nextStep.doc &&
+    nextStep.doc._links &&
+    nextStep.doc._links.self &&
+    nextStep.doc._links.self.href) {
+    return callback(null, self.walker.startUri +
+        nextStep.doc._links.self.href)
+  } else {
+    return callback(new Error('You requested an URI but the last ' +
+        'resource is an embedded resource and has no URI of its own ' +
+        '(that is, it has no link with rel=\"self\"'))
+  }
+}
+
+FinalAction.prototype.walkAndExecute = function(body, request, method,
+    callback) {
   var self = this
   this.walker.walk(function(err, nextStep, lastStep) {
     log.debug('walker.walk returned')
     if (err) { return callback(err, lastStep.response, lastStep.uri) }
     log.debug('executing final request with step: ' +
         JSON.stringify(nextStep))
-    self.executeRequest(nextStep.uri, method, body, callback)
+    self.executeRequest(nextStep.uri, request, method, body, callback)
   })
 }
 
-Builder.prototype.executeRequest = function(uri, method, body,
+FinalAction.prototype.executeRequest = function(uri, request, method, body,
     callback) {
   var options
   if (body) {
@@ -1738,16 +1777,16 @@ Builder.prototype.executeRequest = function(uri, method, body,
     options = {}
   }
   log.debug('request to ' + uri + ' with options ' + JSON.stringify(options))
-  method.call(this.request, uri, options, function(err, response) {
+  method.call(request, uri, options, function(err, response) {
     log.debug('request to ' + uri + ' succeeded')
     if (err) { return callback(err, response, uri) }
     return callback(null, response, uri)
   })
 }
 
-module.exports = Builder
+module.exports = FinalAction
 
-},{"./json_hal_walker":7,"./json_walker":8,"./media_types":9,"minilog":1,"request":3,"util":2}],7:[function(require,module,exports){
+},{"minilog":1}],8:[function(require,module,exports){
 'use strict';
 
 var halfred = require('halfred')
@@ -1904,7 +1943,7 @@ JsonHalWalker.prototype.postProcessStep = function(nextStep) {
 
 module.exports = JsonHalWalker
 
-},{"./walker":10,"halfred":15,"minilog":1,"underscore.string":4}],8:[function(require,module,exports){
+},{"./walker":11,"halfred":16,"minilog":1,"underscore.string":4}],9:[function(require,module,exports){
 'use strict';
 
 var Walker = require('./walker')
@@ -1915,7 +1954,7 @@ JsonWalker.prototype = new Walker()
 
 module.exports = JsonWalker
 
-},{"./walker":10}],9:[function(require,module,exports){
+},{"./walker":11}],10:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -1923,7 +1962,7 @@ module.exports = {
   JSON_HAL: 'application/hal+json'
 }
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
 var jsonpathLib = require('JSONPath')
@@ -2178,7 +2217,7 @@ function jsonError(uri, body) {
 
 module.exports = Walker
 
-},{"JSONPath":12,"minilog":1,"underscore.string":4,"uri-template":19,"util":2}],11:[function(require,module,exports){
+},{"JSONPath":13,"minilog":1,"underscore.string":4,"uri-template":20,"util":2}],12:[function(require,module,exports){
 /* jshint -W116 */
 var nativeIsArray = Array.isArray;
 
@@ -2189,7 +2228,7 @@ exports.isArray = nativeIsArray || function(obj) {
 };
 /* jshint +W116 */
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /* JSONPath 0.8.0 - XPath for JSON
  *
  * Copyright (c) 2007 Stefan Goessner (goessner.net)
@@ -2324,7 +2363,7 @@ function jsonPath(obj, expr, arg) {
    }
 } 
 
-},{"underscore":11,"vm":13}],13:[function(require,module,exports){
+},{"underscore":12,"vm":14}],14:[function(require,module,exports){
 var Object_keys = function (obj) {
     if (Object.keys) return Object.keys(obj)
     else {
@@ -2411,9 +2450,9 @@ exports.createContext = Script.createContext = function (context) {
     return copy;
 };
 
-},{}],14:[function(require,module,exports){
-
 },{}],15:[function(require,module,exports){
+
+},{}],16:[function(require,module,exports){
 var Parser = require('./lib/parser')
 
 var validationFlag = false
@@ -2433,7 +2472,7 @@ module.exports = {
   }
 }
 
-},{"./lib/parser":17}],16:[function(require,module,exports){
+},{"./lib/parser":18}],17:[function(require,module,exports){
 'use strict';
 
 /*
@@ -2478,7 +2517,7 @@ ImmutableStack.prototype.peek = function() {
 
 module.exports = ImmutableStack
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 'use strict';
 
 var Resource = require('./resource')
@@ -2669,7 +2708,7 @@ function pathToString(path) {
 
 module.exports = Parser
 
-},{"./immutable_stack":16,"./resource":18}],18:[function(require,module,exports){
+},{"./immutable_stack":17,"./resource":19}],19:[function(require,module,exports){
 'use strict';
 
 function Resource(links, embedded, validationIssues) {
@@ -2737,7 +2776,7 @@ Resource.prototype.validation = Resource.prototype.validationIssues
 
 module.exports = Resource
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports = (function(){
   /*
    * Generated by PEG.js 0.7.0.
@@ -3464,7 +3503,7 @@ module.exports = (function(){
   return result;
 })();
 
-},{"./lib/classes":20}],20:[function(require,module,exports){
+},{"./lib/classes":21}],21:[function(require,module,exports){
 // Generated by CoffeeScript 1.6.2
 (function() {
   var FormContinuationExpression, FormStartExpression, FragmentExpression, LabelExpression, NamedExpression, PathParamExpression, PathSegmentExpression, ReservedExpression, SimpleExpression, Template, encoders, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7,
@@ -3894,7 +3933,7 @@ module.exports = (function(){
 
 }).call(this);
 
-},{"./encoders":21}],21:[function(require,module,exports){
+},{"./encoders":22}],22:[function(require,module,exports){
 // Generated by CoffeeScript 1.6.2
 (function() {
   var pctEncode;
@@ -3907,7 +3946,7 @@ module.exports = (function(){
 
 }).call(this);
 
-},{"pct-encode":22}],22:[function(require,module,exports){
+},{"pct-encode":23}],23:[function(require,module,exports){
 module.exports = function pctEncode(regexp) {
   regexp = regexp || /\W/g;
   return function encode(string) {
@@ -3932,8 +3971,6 @@ module.exports = function pctEncode(regexp) {
   }
 }
 
-},{}],"/home/bastian/projekte/traverson/traverson.js":[function(require,module,exports){
-module.exports=require('5u5bvt');
 },{}],"5u5bvt":[function(require,module,exports){
 'use strict';
 
@@ -3965,5 +4002,7 @@ module.exports = {
   }
 }
 
-},{"./lib/builder":6,"./lib/media_types":9,"minilog":1}]},{},["5u5bvt"])
+},{"./lib/builder":6,"./lib/media_types":10,"minilog":1}],"/home/bastian/projekte/traverson/traverson.js":[function(require,module,exports){
+module.exports=require('5u5bvt');
+},{}]},{},["5u5bvt"])
 ;

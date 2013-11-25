@@ -359,7 +359,7 @@ describe('Traverson (when tested against a local server)', function() {
   })
 
   it('should delete', function(done) {
-    jsonApi.follow('delete_link').delete(callback)
+    jsonApi.follow('delete_link').del(callback)
     waitFor(
       function() { return callback.called },
       function() {

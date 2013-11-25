@@ -168,7 +168,7 @@ This looks very similar to using the `get` method:
       }
     })
 
-All methods except `getResource` (that is `get`, `post`, `put`, `delete` and `patch` pass the full http response into the provided callback, so the callback's method signature always looks like `function(error, response)`. `post`, `put` and `patch` obviously have a body argument, `delete` doesn't. Some more examples, just for completenss' sake:
+All methods except `getResource` (that is `get`, `post`, `put`, `del` and `patch` pass the full http response into the provided callback, so the callback's method signature always looks like `function(error, response)`. `post`, `put` and `patch` obviously have a body argument, `del` doesn't. Some more examples, just for completenss' sake:
 
     api.newRequest()
        .follow('link_to', 'resource')
@@ -184,7 +184,7 @@ All methods except `getResource` (that is `get`, `post`, `put`, `delete` and `pa
 
     api.newRequest()
        .follow('link_to', 'resource')
-       .delete(function(error, response) {
+       .del(function(error, response) {
        ...
     })
 
@@ -454,6 +454,8 @@ In the far future, Traverson might also support HTML APIs and/or XML APIs.
 Release Notes
 -------------
 
+* 0.6.0 2013-11-25:
+    * Further reduce browserified size
 * 0.5.0 2013-11-23:
     * Make individual elements of HAL link arrays and embedded arrays available by using array indexing notation
 * 0.4.0 2013-11-21:
