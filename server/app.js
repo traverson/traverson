@@ -10,12 +10,6 @@ var app = express()
 var server
 
 var json = require('./routes')
-/*
-var root = require('./routes/root')
-var shop = require('./routes/shop')
-var customerCare = require('./routes/cc')
-var billing = require('./routes/billing')
-*/
 
 exports.start = function() {
   // all environments
@@ -50,11 +44,14 @@ exports.start = function() {
     app.use(express.errorHandler())
   }
 
+  var auth = express.basicAuth('traverson', 'verysecretpassword');
+
   app.get('/', json.root.get)
   app.get('/first', json.first.get)
   app.get('/second', json.second.get)
   app.get('/second/document', json.second.document.get)
   app.get('/third', json.third.get)
+  app.get('/basic/auth', auth, json.auth.get)
   app.get(/^\/(\w+)\/fixed\/(\w+)?$/, json.uriTemplate.get)
   app.post('/postings', json.postings.post)
   app.put('/puttings/42', json.puttings.put)

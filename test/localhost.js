@@ -167,6 +167,27 @@ describe('Traverson (when tested against a local server)', function() {
     )
   })
 
+  it('should authenticate', function(done) {
+    jsonApi
+      .withRequestOptions({
+        auth: {
+          user: 'traverson',
+          pass: 'verysecretpassword',
+          sendImmediately: false
+        }
+      }).follow('auth')
+      .getResource(callback)
+    waitFor(
+      function() { return callback.called },
+      function() {
+        var resultDoc = checkResultDoc()
+        expect(resultDoc.user).to.exist
+        expect(resultDoc.user).to.equal('authenticated')
+        done()
+      }
+    )
+  })
+
   it('should leverage JSONPath', function(done) {
     jsonApi.follow('$.jsonpath.nested.key').getResource(callback)
     waitFor(

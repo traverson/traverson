@@ -13,57 +13,76 @@ Request.prototype.defaults = function(options) {
 }
 
 Request.prototype.get = function(uri, callback) {
-  setupRequest(superagent.get(uri), this.options)
+  mapRequest(superagent.get(uri), this.options)
     .end(function(response) {
-    callback(null, map(response))
+    callback(null, mapResponse(response))
   })
 }
 
 Request.prototype.post = function(uri, options, callback) {
-  setupRequest(superagent.post(uri), this.options, options)
+  mapRequest(superagent.post(uri), this.options, options)
     .end(function(response) {
-    callback(null, map(response))
+    callback(null, mapResponse(response))
   })
 }
 
 Request.prototype.put = function(uri, options, callback) {
-  setupRequest(superagent.put(uri), this.options, options)
+  mapRequest(superagent.put(uri), this.options, options)
     .end(function(response) {
-    callback(null, map(response))
+    callback(null, mapResponse(response))
   })
 }
 
 Request.prototype.patch = function(uri, options, callback) {
-  setupRequest(superagent.patch(uri), this.options, options)
+  mapRequest(superagent.patch(uri), this.options, options)
     .end(function(response) {
-    callback(null, map(response))
+    callback(null, mapResponse(response))
   })
 }
 
 Request.prototype.del = function(uri, options, callback) {
-  setupRequest(superagent.del(uri), this.options)
+  mapRequest(superagent.del(uri), this.options)
     .end(function(response) {
-    callback(null, map(response))
+    callback(null, mapResponse(response))
   })
 }
 
-function setupRequest(superagentRequest, options, bodyOptions) {
+function mapRequest(superagentRequest, options, bodyOptions) {
+  mapHeaders(superagentRequest, options)
+  mapAuth(superagentRequest, options)
+  mapBody(superagentRequest, options, bodyOptions)
+  return superagentRequest
+}
+
+function mapHeaders(superagentRequest, options) {
   var headers = options.headers
   if (headers != null) {
-    superagentRequest = superagentRequest.set(options.headers)
+    superagentRequest = superagentRequest.set(headers)
   }
+}
+
+function mapAuth(superagentRequest, options) {
+  var auth = options.auth
+  if (auth != null) {
+    superagentRequest = superagentRequest.auth(
+      auth.user || auth.username,
+      auth.pass || auth.password
+    )
+  }
+}
+
+function mapBody(superagentRequest, options, bodyOptions) {
   if (bodyOptions != null) {
     var body = bodyOptions.body
     if (body != null) {
       superagentRequest = superagentRequest.send(body)
     }
   }
-  return superagentRequest
 }
 
 // map XHR response object properties to Node.js request lib's response object
 // properties
-function map(response) {
+function mapResponse(response) {
   response.body = response.text
   response.statusCode = response.status
   return response

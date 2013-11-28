@@ -16,6 +16,7 @@ module.exports = {
             'jsonpath': {
               'nested': { 'key': root + '/third' }
             },
+            'auth': root + '/basic/auth',
             'uri_template': root + '/{param}/fixed{/id}',
             'post_link': root + '/postings',
             'put_link': root + '/puttings/42',
@@ -100,6 +101,14 @@ module.exports = {
     get: function(req, res) {
       var root = baseUrl(req)
       res.json({ 'third': 'document' })
+    }
+  },
+
+  auth: {
+    get:  function(req, res) {
+      res.json({
+        'user': 'authenticated'
+      })
     }
   },
 
