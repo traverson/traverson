@@ -458,6 +458,8 @@ In the far future, Traverson might also support HTML APIs and/or XML APIs.
 Release Notes
 -------------
 
+* 0.7.0 2013-12-05:
+    * Select HAL links by secondary key 
 * 0.6.0 2013-11-25:
     * Further reduce browserified size
 * 0.5.0 2013-11-23:
