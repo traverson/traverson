@@ -21,7 +21,7 @@
     "halfred": "0.2.0",
     "JSONPath": "https://github.com/basti1302/JSONPath/tarball/master",
     "minilog": "~2.0.2",
-    "request": "~2.27.0",
+    "request": "~2.28.0",
     "underscore.string": "~2.3.3",
     "uri-template": "~0.4.1"
   },
