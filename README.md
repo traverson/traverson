@@ -419,7 +419,11 @@ Traverson supports the JSON dialect of [HAL](http://tools.ietf.org/id/draft-kell
       }
     }
 
-This will give you all posts that the account `traverson` posted to Mike Kelly's haltalk server. Note that we used `traverson.jsonHal` when creating the `api` object, instead of the usual `traverson.json`. When called in this way, Traverson will assume the resources it receives comply with the HAL specification and looks for links in the `_links` property. If there is no such link, Traverson will also look for an embedded resource with the given name. You can also pass strings like `'ht:post[1]` to the `follow` method to target individual elements in an array of link objects or in an array of embedded resources.
+This will give you all posts that the account `traverson` posted to Mike Kelly's haltalk server. Note that we used `traverson.jsonHal` when creating the `api` object, instead of the usual `traverson.json`. When called in this way, Traverson will assume the resources it receives comply with the HAL specification and looks for links in the `_links` property. If there is no such link, Traverson will also look for an embedded resource with the given name.
+
+You can also pass strings like `'ht:post[name:foo]'` or `'ht:post[name:foo]'` to the `follow` method to select links which share the same link relation by a secondary key. Because multiple links with the same link relation type are represented as an array of link objects in HAL, you can also use an array indexing notation like `'ht:post[1]'` to select an individual elements from an array of link objects. However, this is not recommended and should only be used as a last resort if the API does not provide a secondary key to select the correct link, because it relies on the ordering of the links as returned from the server, which might not be guaranteed to be always the same. 
+
+You can also use the array indexing notation `'ht:post[1]'` to target individual elements in an array of embedded resources.
 
 #### Embedded Documents
 
