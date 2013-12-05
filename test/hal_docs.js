@@ -53,7 +53,10 @@ module.exports = {
         'title': 'Fred'
       }, {
         'href': '/admins/5',
-        'title': 'Kate'
+        'title': 'Kate',
+        'name': 'boss'
+      }, {
+        'name': 'no-href'
       }]
     },
     'currentlyProcessing': 14,

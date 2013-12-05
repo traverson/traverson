@@ -132,13 +132,68 @@ describe('The JSON-HAL walker\'s', function() {
       )
     })
 
-    it('should follow specified link from a link array', function(done) {
+    it('should follow a link specified by index from a link array',
+        function(done) {
       api.follow('ea:orders', 'ea:admin[1]')
          .get(callback)
       waitFor(
         function() { return callback.called },
         function() {
           expect(callback).to.have.been.calledWith(null, admin5Response)
+          done()
+        }
+      )
+    })
+
+    it('should follow a link specified by title from a link array',
+        function(done) {
+      api.follow('ea:orders', 'ea:admin[title:Kate]')
+         .get(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          expect(callback).to.have.been.calledWith(null, admin5Response)
+          done()
+        }
+      )
+    })
+
+    it('should follow a link specified by name from a link array',
+        function(done) {
+      api.follow('ea:orders', 'ea:admin[name:boss]')
+         .get(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          expect(callback).to.have.been.calledWith(null, admin5Response)
+          done()
+        }
+      )
+    })
+
+    it('should fail if there is no link with the specified secondary key',
+        function(done) {
+      api.follow('ea:orders', 'ea:admin[name:not-existing]')
+         .get(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          var err = callback.firstCall.args[0]
+          expect(err.message).to.contain('but there is no such link')
+          done()
+        }
+      )
+    })
+
+    it('should fail if the link specified by secondary key has no href',
+        function(done) {
+      api.follow('ea:orders', 'ea:admin[name:no-href]')
+         .get(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          var err = callback.firstCall.args[0]
+          expect(err.message).to.contain('but this link had no href attribute.')
           done()
         }
       )
