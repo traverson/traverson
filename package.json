@@ -2,7 +2,7 @@
   "name": "traverson",
   "version": "0.7.0",
   "author": "Bastian Krol",
-  "description": "HATEOAS client for Node.js and the browser",
+  "description": "Hypermedia API/HATEOAS client for Node.js and the browser",
   "repository": "https://github.com/basti1302/traverson.git",
   "scripts": {
     "test": "grunt"
