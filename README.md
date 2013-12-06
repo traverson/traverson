@@ -1,5 +1,9 @@
-Traverson - REST/HATEOAS API Client for Node.js and the Browser
-===============================================================
+Traverson
+=========
+
+A Hypermedia API/HATEOAS Client for Node.js and the Browser
+-----------------------------------------------------------
+
 [![Build Status](https://travis-ci.org/basti1302/traverson.png?branch=master)](https://travis-ci.org/basti1302/traverson)
 [![Dependency Status](https://david-dm.org/basti1302/traverson.png)](https://david-dm.org/basti1302/traverson)
 
