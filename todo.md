@@ -45,9 +45,16 @@ TODOs
     * Tests
     * Examples in README.md
 * support more media types in addition to application/json and application/hal+json:
-    * xml?
-    * html (jsdom, htmlparser2, cheerio, .... )
+    * HAL (done)
+    * Collection+JSON
+    * JSON+API
+    * Siren
+    * HTML5 (jsdom, htmlparser2, cheerio, .... )
+    * HTML5 + microdata
+    * XML media types or XML in general?
+    * Atom
     * application/hal+xml? Does anybody use this? There's no RFC for that, but http://stateless.co/hal_specification.html ._ mentions it.
+    * Including support for all media types would be considerable bloat, maybe some kind of plug-in mechanism could be used...
 * Hooks: Set filters/hooks (callbacks) on Builder which get called on each hop and can influence what happens
 
 
