@@ -1638,6 +1638,11 @@ Builder.prototype.withRequestOptions = function(options) {
   return this
 }
 
+Builder.prototype.resolveRelative = function() {
+  this.walker.resolveRelative = true;
+  return this
+}
+
 Builder.prototype.get = function(callback) {
   var self = this
   this.walker.walk(function(err, nextStep, lastStep) {
@@ -1992,12 +1997,6 @@ function findEmbeddedWithoutIndex(resourceArray, key) {
   return { doc: resourceArray[0].original() }
 }
 
-JsonHalWalker.prototype.postProcessStep = function(nextStep) {
-  if (nextStep.uri) {
-    nextStep.uri = url.resolve(this.startUri, nextStep.uri)
-  }
-}
-
 module.exports = JsonHalWalker
 
 },{"./walker":11,"halfred":22,"minilog":1,"underscore.string":4,"url":19}],9:[function(require,module,exports){
@@ -2026,6 +2025,7 @@ var jsonpathLib = require('JSONPath')
 var minilog = require('minilog')
 var _s = require('underscore.string')
 var uriTemplate = require('uri-template')
+var url = require('url')
 var util = require('util')
 
 
@@ -2110,7 +2110,7 @@ Walker.prototype.walk = function(callback) {
         }
 
         // turn relative URI into absolute URI or whatever else is required
-        self.postProcessStep(nextStep)
+        self.postProcessStep(nextStep, lastStep)
         log.debug('next step: ' + JSON.stringify(nextStep, null, 2))
 
         // follow next link
@@ -2200,8 +2200,21 @@ Walker.prototype.findNextStep = function(doc, link) {
   }
 }
 
-Walker.prototype.postProcessStep = function(nextStep) {
-  // default behaviour: no post processing
+Walker.prototype.postProcessStep = function(nextStep, lastStep) {
+  // default behaviour: resolve full/absolute/relative url via url.resolve
+  if (nextStep.uri) {
+    if (!_s.startsWith(nextStep.uri, 'http://')) {
+      if (this.resolveRelative && lastStep && lastStep.uri) {
+        if (_s.startsWith(nextStep.uri, '/') &&
+          _s.endsWith(lastStep.uri, '/')) {
+          nextStep.uri = _s.splice(nextStep.uri, 0, 1)
+        }
+        nextStep.uri = lastStep.uri + nextStep.uri
+      } else {
+        nextStep.uri = url.resolve(this.startUri, nextStep.uri)
+      }
+    }
+  }
 }
 
 Walker.prototype.testJSONPath = function(link) {
@@ -2239,8 +2252,7 @@ Walker.prototype.resolveUriTemplate = function(uri, templateParams,
   }
 
   if (!templateParams) {
-    // Skip URI templating if no template parameters were provided
-    return uri
+    templateParams = {}
   }
 
   if (_s.contains(uri, '{')) {
@@ -2277,7 +2289,7 @@ function jsonError(uri, body) {
 
 module.exports = Walker
 
-},{"JSONPath":13,"minilog":1,"underscore.string":4,"uri-template":26,"util":2}],12:[function(require,module,exports){
+},{"JSONPath":13,"minilog":1,"underscore.string":4,"uri-template":26,"url":19,"util":2}],12:[function(require,module,exports){
 /* jshint -W116 */
 var nativeIsArray = Array.isArray;
 
