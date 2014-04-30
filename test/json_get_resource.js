@@ -275,6 +275,27 @@ describe('getResource for JSON', function() {
         }
       )
     })
+
+    it('should resolve optional URI templates also without template parameters',
+        function(done) {
+      var responseUriTemplate = mockResponse({
+        template: rootUri + '/users{?page,size,sort}',
+      })
+
+      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
+          1, null, responseUriTemplate)
+      get.withArgs(rootUri + '/users',
+          sinon.match.func).callsArgWithAsync(1, null, result)
+      api.follow('template')
+         .getResource(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          expect(callback).to.have.been.calledWith(null, result.doc)
+          done()
+        }
+      )
+    })
   })
 
   describe('with absolute and relative urls', function() {
