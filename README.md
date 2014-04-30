@@ -123,6 +123,14 @@ Because the list of links given to `follow` is exhausted now (`resource` was the
     We have followed the path and reached the final resource.
     { "the_document": "that we really wanted to have", "with": "lots of interesting and valuable content", ...  }
 
+#### On Absolute URLs, Absolute URL Paths and Relative URL Paths
+
+Different APIs use different flavours of links in their responses. Traverson can handle the following cases:
+
+* Absolute URLs (URLs that start with the a scheme/protocol, that is http(s)). Those are always used as is to retrieve the next resource representation (except for resolving URI templates).
+* Absolute URL paths, that is, URLs that omit the http(s) part and start with a slash (`/`) and ought to be interpreted relative to the host part of the root URL. Example: If the root URL is `https://api.example.com/home` and a link contains `/customers/1302` this will be resolved to `https://api.example.com/customers/1302`. If following a link `/orders` from there, this would be resolved to `https://api.example.com/orders`. This is how most browsers behave and what node's `url.resolve` does, and also what most APIs expect you to do.
+* Relative URL paths, that is, URLs that also omit the protocol, start with a slash (like absolute URL paths) but are to be interpreted relative to the current location. If you want this behaviour, you need to call `resolveRelative()` on the `api` object. Example: If the root URL is `https://api.example.com/home` and the first link contains `/customers/1302` this will be resolved to `https://api.example.com/home/customers/1302`. If this has a link `/orders`, this would be resolved to `https://api.example.com/home/customers/1302/orders`. This feature should be rarely needed.
+
 ### More Control: Receive the Full HTTP Response
 
 The example above chained the `getResource` method to the `follow` method. For this method, Traverson will parse the JSON from the last HTTP response and pass the resulting JavaScript object to your callback. In certain situations you might want more control and would like to receive the full HTTP response object instead of the body, already parsed to an object. This is what the `get` method is for:
@@ -265,7 +273,7 @@ Traverson recognizes that this is an URI template and resolves the template with
       "the_document": "we wanted to have"
     }
 
-To find out if URI templating is necessary, Traverson simply checks if the URI contains the character `{` and if URI template parameters have been provided.
+To find out if URI templating is necessary, Traverson simply checks if the URI contains the character `{`.
 
 Of course, URI templating also works if the path from the start URI to the final document involves multiple hops.
 
@@ -425,7 +433,7 @@ Traverson supports the JSON dialect of [HAL](http://tools.ietf.org/id/draft-kell
 
 This will give you all posts that the account `traverson` posted to Mike Kelly's haltalk server. Note that we used `traverson.jsonHal` when creating the `api` object, instead of the usual `traverson.json`. When called in this way, Traverson will assume the resources it receives comply with the HAL specification and looks for links in the `_links` property. If there is no such link, Traverson will also look for an embedded resource with the given name.
 
-You can also pass strings like `'ht:post[name:foo]'` or `'ht:post[name:foo]'` to the `follow` method to select links which share the same link relation by a secondary key. Because multiple links with the same link relation type are represented as an array of link objects in HAL, you can also use an array indexing notation like `'ht:post[1]'` to select an individual elements from an array of link objects. However, this is not recommended and should only be used as a last resort if the API does not provide a secondary key to select the correct link, because it relies on the ordering of the links as returned from the server, which might not be guaranteed to be always the same. 
+You can also pass strings like `'ht:post[name:foo]'` or `'ht:post[name:foo]'` to the `follow` method to select links which share the same link relation by a secondary key. Because multiple links with the same link relation type are represented as an array of link objects in HAL, you can also use an array indexing notation like `'ht:post[1]'` to select an individual elements from an array of link objects. However, this is not recommended and should only be used as a last resort if the API does not provide a secondary key to select the correct link, because it relies on the ordering of the links as returned from the server, which might not be guaranteed to be always the same.
 
 You can also use the array indexing notation `'ht:post[1]'` to target individual elements in an array of embedded resources.
 
@@ -462,8 +470,11 @@ In the far future, Traverson might also support HTML APIs and/or XML APIs.
 Release Notes
 -------------
 
+* 0.8.0 2014-04-30:
+    * Support absolute URLs, absolute URL paths and relative URLs (#3)
+    * Fix: Also resolve URI templates when no template params are given (makes sense for templates with optional components)
 * 0.7.0 2013-12-05:
-    * Select HAL links by secondary key 
+    * Select HAL links by secondary key
 * 0.6.0 2013-11-25:
     * Further reduce browserified size
 * 0.5.0 2013-11-23:
