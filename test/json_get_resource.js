@@ -277,6 +277,86 @@ describe('getResource for JSON', function() {
     })
   })
 
+  describe('with absolute and relative urls', function() {
+
+    it('should follow links with absolute urls with protocol', function(done) {
+      var path1 = rootUri + '/path/1'
+      var path2 = rootUri + '/path/2'
+
+      var response1 = mockResponse({ link1: path1 })
+      var response2 = mockResponse({ link2: path2 })
+
+      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
+          1, null, response1)
+      get.withArgs(path1, sinon.match.func).callsArgWithAsync(
+          1, null, response2)
+      get.withArgs(path2, sinon.match.func).callsArgWithAsync(
+          1, null, result)
+
+      api.follow(['link1', 'link2'])
+         .getResource(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          expect(callback).to.have.been.calledWith(null, result.doc)
+          done()
+        }
+      )
+    })
+
+    it('should follow links with absolute urls without protocol',
+      function(done) {
+      var path1 = '/path/1'
+      var path2 = '/path/2'
+
+      var response1 = mockResponse({ link1: path1 })
+      var response2 = mockResponse({ link2: path2 })
+
+      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
+          1, null, response1)
+      get.withArgs(rootUri + path1, sinon.match.func).callsArgWithAsync(
+          1, null, response2)
+      get.withArgs(rootUri + path2, sinon.match.func).callsArgWithAsync(
+          1, null, result)
+
+      api.follow(['link1', 'link2'])
+         .getResource(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          expect(callback).to.have.been.calledWith(null, result.doc)
+          done()
+        }
+      )
+    })
+
+    it('should follow links with relative urls', function(done) {
+      var path1 = '/first'
+      var path2 = '/second'
+
+      var response1 = mockResponse({ link1: path1 })
+      var response2 = mockResponse({ link2: path2 })
+
+      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
+          1, null, response1)
+      get.withArgs(rootUri + path1, sinon.match.func).callsArgWithAsync(
+          1, null, response2)
+      get.withArgs(rootUri + path1 + path2, sinon.match.func).callsArgWithAsync(
+          1, null, result)
+
+      api.follow(['link1', 'link2'])
+         .resolveRelative()
+         .getResource(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          expect(callback).to.have.been.calledWith(null, result.doc)
+          done()
+        }
+      )
+    })
+  })
+
   describe('in all its glory', function() {
 
     it('should follow a multi element path', function(done) {
@@ -309,6 +389,7 @@ describe('getResource for JSON', function() {
           1, null, response4)
       get.withArgs(path4, sinon.match.func).callsArgWithAsync(
           1, null, result)
+
       api.follow(['link1', 'link2', '$[nested][array][1].link', 'link4'])
          .withTemplateParameters({ param: 'gizmo' })
          .getResource(callback)
@@ -320,5 +401,7 @@ describe('getResource for JSON', function() {
         }
       )
     })
+
+
   })
 })
