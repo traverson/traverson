@@ -71,7 +71,7 @@ module.exports = function(grunt) {
         src: [ '<%= pkg.name %>.js' ],
         dest: './browser/dist/<%= pkg.name %>.external.js',
         options: {
-          alias: [ './<%= pkg.name %>.js:' ]
+          alias: [ './<%= pkg.name %>.js:traverson' ]
         }
       },
       // Browserify the tests
