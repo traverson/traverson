@@ -54,7 +54,11 @@ Installation
 
 ### Browser
 
-Download and use one of the following:
+Download manually or use [bower](http://bower.io) to install:
+
+    bower install traverson --save
+
+Use one of the following:
 
 * [Minified build with UMD](https://raw.github.com/basti1302/traverson/master/browser/dist/traverson.min.js): This build can be used with an AMD loader like RequireJS or with a script tag (in which case it will register `traverson` in the global scope). **If in doubt, use this build.**
 * [Non-minified build with UMD](https://raw.github.com/basti1302/traverson/master/browser/dist/traverson.js): Same as above, just larger :-)
