@@ -1,0 +1,30 @@
+{
+  "name": "traverson",
+  "main": "browser/dist/traverson.js",
+  "version": "0.8.0",
+  "homepage": "https://github.com/basti1302/traverson",
+  "authors": [
+    "Bastian Krol <bastian.krol@web.de>"
+  ],
+  "description": "Hypermedia API/HATEOAS client for Node.js and the browser",
+  "moduleType": [
+    "amd"
+  ],
+  "keywords": [
+    "JSON",
+    "REST",
+    "API",
+    "HATEOAS",
+    "hypertext",
+    "hypermedia",
+    "HAL"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
