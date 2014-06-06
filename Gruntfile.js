@@ -61,7 +61,9 @@ module.exports = function(grunt) {
         src: [ '<%= pkg.name %>.js' ],
         dest: './browser/dist/<%= pkg.name %>.js',
         options: {
-          standalone: '<%= pkg.name %>'
+          bundleOptions: {
+            standalone: '<%= pkg.name %>'
+          }
         }
       },
       // With this browserify build, Traverson can be required by other
@@ -76,12 +78,14 @@ module.exports = function(grunt) {
       },
       // Browserify the tests
       tests: {
-        src: [ 'browser/test/suite.js' ],
+        src: [ 'test/browser_suite.js' ],
         dest: './browser/test/browserified_tests.js',
         options: {
           external: [ './<%= pkg.name %>.js' ],
-          // Embed source map for tests
-          debug: true
+          bundleOptions: {
+            // Embed source map for tests
+            debug: true
+          }
         }
       }
     },
