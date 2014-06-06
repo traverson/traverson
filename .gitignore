@@ -1,5 +1,11 @@
 node_modules
 
+browser/dist/traverson.external.js
+browser/dist/traverson.external.min.js
+browser/dist/traverson.js
+browser/dist/traverson.min.js
+browser/test/browserified_tests.js
+
 # vim tmp files
 *.swp
 *.un~

@@ -1,4 +1,4 @@
-This folder contains the browserified single-file builds that can be used in the browser in production.
+After a full build, this folder contains the browserified single-file builds that can be used in the browser in production.
 
 * traverson.js: Standalone with UMD, not minified. Can be used by script tag or with an AMD module loader.
 * traverson.min.js: Standalone with UMD, minified. Can be used by script tag or with an AMD module loader.
