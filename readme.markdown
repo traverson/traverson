@@ -54,21 +54,13 @@ Installation
 
 ### Browser
 
-Download manually or use [bower](http://bower.io) to install:
-
-    bower install traverson --save
-
-Use one of the following:
-
-* [Minified build with UMD](https://raw.github.com/basti1302/traverson/master/browser/dist/traverson.min.js): This build can be used with an AMD loader like RequireJS or with a script tag (in which case it will register `traverson` in the global scope). **If in doubt, use this build.**
-* [Non-minified build with UMD](https://raw.github.com/basti1302/traverson/master/browser/dist/traverson.js): Same as above, just larger :-)
-* If your project uses browserify, you don't need to do anything. Just `npm install traverson --save` and `require('traverson')`, then browserify your module as usual - browserify will include Traverson and its dependencies for you and also use the shims defined in Traverson's package.json's `browser` property.
-* [Minified require/external build](https://raw.github.com/basti1302/traverson/master/browser/dist/traverson.external.min.js): Created with browserify's `--require` parameter and intended to be used (required) from other browserified modules, which were created with `--external traverson`. This build could be used if you use browserify but do not want to bundle Traverson with your own browserify build but keep it as a separate file.
-* [Non-minified require/external build](https://raw.github.com/basti1302/traverson/master/browser/dist/traverson.external.js): Same as before, just bigger.
-
-File size of browser build:
-* Minified: 40 KB
-* Unminified: 100 KB
+* If you are using npm and [Browserify](http://browserify.org/): Just `npm install traverson --save` and `require('traverson')`, then browserify your module as usual - browserify will include Traverson and its dependencies for you and also use the shims defined in Traverson's package.json's `browser` property.
+* If you are using [Bower](http://bower.io): `bower install traverson --save`
+* Otherwise you can grab a download from the [latest release](https://github.com/basti1302/traverson/releases/latest):
+    * `traverson.min.js`: Minified build with UMD. This build can be used with an AMD loader like RequireJS or with a script tag (in which case it will register `traverson` in the global scope). **If in doubt, use this build.**
+    * `traverson.js`: Non-minified build with UMD. Same as above, just larger :-)
+    * `traverson.external.min.js`: Minified require/external build. Created with browserify's `--require` parameter and intended to be used (required) from other browserified modules, which were created with `--external traverson`. This build could be used if you use browserify but do not want to bundle Traverson with your own browserify build but keep it as a separate file.
+    * `traverson.external.js`: Non-minified require/external build, same as before, just larger.
 
 Documentation by Example
 ------------------------
