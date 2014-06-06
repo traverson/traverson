@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+!function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.traverson=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 'use strict';
 
 // TODO Replace by a proper lightweight logging module, suited for the browser
@@ -49,7 +49,7 @@ minilog.enable = function() {
 
 module.exports = minilog
 
-},{}],2:[function(require,module,exports){
+},{}],2:[function(_dereq_,module,exports){
 'use strict';
 
 module.exports = {
@@ -61,10 +61,10 @@ module.exports = {
   }
 }
 
-},{}],3:[function(require,module,exports){
+},{}],3:[function(_dereq_,module,exports){
 'use strict';
 
-var superagent = require('../third-party/superagent')
+var superagent = _dereq_('../third-party/superagent')
 
 function Request() {
   this.options = {}
@@ -154,7 +154,7 @@ function mapResponse(response) {
 
 module.exports = new Request()
 
-},{"../third-party/superagent":5}],4:[function(require,module,exports){
+},{"../third-party/superagent":5}],4:[function(_dereq_,module,exports){
 'use strict';
 
 /*
@@ -198,7 +198,7 @@ var _s = {
 
 module.exports = _s
 
-},{}],5:[function(require,module,exports){
+},{}],5:[function(_dereq_,module,exports){
 ;(function(){
 
 /**
@@ -401,7 +401,7 @@ require.relative = function(parent) {
 
   return localRequire;
 };
-require.register("component-indexof/index.js", function(exports, require, module){
+require.register("component-indexof/index.js", function(exports, _dereq_, module){
 
 var indexOf = [].indexOf;
 
@@ -413,13 +413,13 @@ module.exports = function(arr, obj){
   return -1;
 };
 });
-require.register("component-emitter/index.js", function(exports, require, module){
+require.register("component-emitter/index.js", function(exports, _dereq_, module){
 
 /**
  * Module dependencies.
  */
 
-var index = require('indexof');
+var index = _dereq_('indexof');
 
 /**
  * Expose `Emitter`.
@@ -578,7 +578,7 @@ Emitter.prototype.hasListeners = function(event){
 };
 
 });
-require.register("RedVentures-reduce/index.js", function(exports, require, module){
+require.register("RedVentures-reduce/index.js", function(exports, _dereq_, module){
 
 /**
  * Reduce `arr` with `fn`.
@@ -604,14 +604,14 @@ module.exports = function(arr, fn, initial){
   return curr;
 };
 });
-require.register("superagent/lib/client.js", function(exports, require, module){
+require.register("superagent/lib/client.js", function(exports, _dereq_, module){
 
 /**
  * Module dependencies.
  */
 
-var Emitter = require('emitter');
-var reduce = require('reduce');
+var Emitter = _dereq_('emitter');
+var reduce = _dereq_('reduce');
 
 /**
  * Root reference for iframes.
@@ -1583,17 +1583,17 @@ if (typeof exports == "object") {
   this["superagent"] = require("superagent");
 }})();
 
-},{"emitter":14,"indexof":14,"reduce":14,"superagent":14}],6:[function(require,module,exports){
+},{"emitter":14,"indexof":14,"reduce":14,"superagent":14}],6:[function(_dereq_,module,exports){
 'use strict';
 
-var minilog = require('minilog')
-var standardRequest = require('request')
-var util = require('util')
+var minilog = _dereq_('minilog')
+var standardRequest = _dereq_('request')
+var util = _dereq_('util')
 
-var FinalAction = require('./final_action')
-var JsonWalker = require('./json_walker')
-var JsonHalWalker = require('./json_hal_walker')
-var mediaTypes = require('./media_types')
+var FinalAction = _dereq_('./final_action')
+var JsonWalker = _dereq_('./json_walker')
+var JsonHalWalker = _dereq_('./json_hal_walker')
+var mediaTypes = _dereq_('./media_types')
 
 var log = minilog('traverson')
 
@@ -1707,10 +1707,10 @@ Builder.prototype.del = function(callback) {
 
 module.exports = Builder
 
-},{"./final_action":7,"./json_hal_walker":8,"./json_walker":9,"./media_types":10,"minilog":1,"request":3,"util":2}],7:[function(require,module,exports){
+},{"./final_action":7,"./json_hal_walker":8,"./json_walker":9,"./media_types":10,"minilog":1,"request":3,"util":2}],7:[function(_dereq_,module,exports){
 'use strict';
 
-var minilog = require('minilog')
+var minilog = _dereq_('minilog')
 var log = minilog('traverson')
 
 function FinalAction(walker) {
@@ -1810,14 +1810,14 @@ FinalAction.prototype.executeRequest = function(uri, request, method, body,
 
 module.exports = FinalAction
 
-},{"minilog":1}],8:[function(require,module,exports){
+},{"minilog":1}],8:[function(_dereq_,module,exports){
 'use strict';
 
-var url = require('url')
-var halfred = require('halfred')
-var minilog = require('minilog')
-var _s = require('underscore.string')
-var Walker = require('./walker')
+var url = _dereq_('url')
+var halfred = _dereq_('halfred')
+var minilog = _dereq_('minilog')
+var _s = _dereq_('underscore.string')
+var Walker = _dereq_('./walker')
 
 var log = minilog('traverson')
 
@@ -1999,10 +1999,10 @@ function findEmbeddedWithoutIndex(resourceArray, key) {
 
 module.exports = JsonHalWalker
 
-},{"./walker":11,"halfred":22,"minilog":1,"underscore.string":4,"url":19}],9:[function(require,module,exports){
+},{"./walker":11,"halfred":22,"minilog":1,"underscore.string":4,"url":19}],9:[function(_dereq_,module,exports){
 'use strict';
 
-var Walker = require('./walker')
+var Walker = _dereq_('./walker')
 
 function JsonWalker() { }
 
@@ -2010,7 +2010,7 @@ JsonWalker.prototype = new Walker()
 
 module.exports = JsonWalker
 
-},{"./walker":11}],10:[function(require,module,exports){
+},{"./walker":11}],10:[function(_dereq_,module,exports){
 'use strict';
 
 module.exports = {
@@ -2018,15 +2018,15 @@ module.exports = {
   JSON_HAL: 'application/hal+json'
 }
 
-},{}],11:[function(require,module,exports){
+},{}],11:[function(_dereq_,module,exports){
 'use strict';
 
-var jsonpathLib = require('JSONPath')
-var minilog = require('minilog')
-var _s = require('underscore.string')
-var uriTemplate = require('uri-template')
-var url = require('url')
-var util = require('util')
+var jsonpathLib = _dereq_('JSONPath')
+var minilog = _dereq_('minilog')
+var _s = _dereq_('underscore.string')
+var uriTemplate = _dereq_('uri-template')
+var url = _dereq_('url')
+var util = _dereq_('util')
 
 
 /* jshint -W061 */
@@ -2289,7 +2289,7 @@ function jsonError(uri, body) {
 
 module.exports = Walker
 
-},{"JSONPath":13,"minilog":1,"underscore.string":4,"uri-template":26,"url":19,"util":2}],12:[function(require,module,exports){
+},{"JSONPath":13,"minilog":1,"underscore.string":4,"uri-template":26,"url":19,"util":2}],12:[function(_dereq_,module,exports){
 /* jshint -W116 */
 var nativeIsArray = Array.isArray;
 
@@ -2300,15 +2300,15 @@ exports.isArray = nativeIsArray || function(obj) {
 };
 /* jshint +W116 */
 
-},{}],13:[function(require,module,exports){
+},{}],13:[function(_dereq_,module,exports){
 /* JSONPath 0.8.0 - XPath for JSON
  *
  * Copyright (c) 2007 Stefan Goessner (goessner.net)
  * Licensed under the MIT (MIT-LICENSE.txt) licence.
  */
 
-var vm = require('vm'),
-    _ = require('underscore');
+var vm = _dereq_('vm'),
+    _ = _dereq_('underscore');
 exports.eval = jsonPath;
 var cache = {};
 function jsonPath(obj, expr, arg) {
@@ -2435,9 +2435,9 @@ function jsonPath(obj, expr, arg) {
    }
 } 
 
-},{"underscore":12,"vm":20}],14:[function(require,module,exports){
+},{"underscore":12,"vm":20}],14:[function(_dereq_,module,exports){
 
-},{}],15:[function(require,module,exports){
+},{}],15:[function(_dereq_,module,exports){
 (function (global){
 /*! http://mths.be/punycode v1.2.4 by @mathias */
 ;(function(root) {
@@ -2948,7 +2948,7 @@ function jsonPath(obj, expr, arg) {
 }(this));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],16:[function(require,module,exports){
+},{}],16:[function(_dereq_,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3034,7 +3034,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],17:[function(require,module,exports){
+},{}],17:[function(_dereq_,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3121,13 +3121,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],18:[function(require,module,exports){
+},{}],18:[function(_dereq_,module,exports){
 'use strict';
 
-exports.decode = exports.parse = require('./decode');
-exports.encode = exports.stringify = require('./encode');
+exports.decode = exports.parse = _dereq_('./decode');
+exports.encode = exports.stringify = _dereq_('./encode');
 
-},{"./decode":16,"./encode":17}],19:[function(require,module,exports){
+},{"./decode":16,"./encode":17}],19:[function(_dereq_,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3149,7 +3149,7 @@ exports.encode = exports.stringify = require('./encode');
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var punycode = require('punycode');
+var punycode = _dereq_('punycode');
 
 exports.parse = urlParse;
 exports.resolve = urlResolve;
@@ -3221,7 +3221,7 @@ var protocolPattern = /^([a-z0-9.+-]+:)/i,
       'gopher:': true,
       'file:': true
     },
-    querystring = require('querystring');
+    querystring = _dereq_('querystring');
 
 function urlParse(url, parseQueryString, slashesDenoteHost) {
   if (url && isObject(url) && url instanceof Url) return url;
@@ -3836,8 +3836,8 @@ function isNullOrUndefined(arg) {
   return  arg == null;
 }
 
-},{"punycode":15,"querystring":18}],20:[function(require,module,exports){
-var indexOf = require('indexof');
+},{"punycode":15,"querystring":18}],20:[function(_dereq_,module,exports){
+var indexOf = _dereq_('indexof');
 
 var Object_keys = function (obj) {
     if (Object.keys) return Object.keys(obj)
@@ -3976,7 +3976,7 @@ exports.createContext = Script.createContext = function (context) {
     return copy;
 };
 
-},{"indexof":21}],21:[function(require,module,exports){
+},{"indexof":21}],21:[function(_dereq_,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -3987,8 +3987,8 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],22:[function(require,module,exports){
-var Parser = require('./lib/parser')
+},{}],22:[function(_dereq_,module,exports){
+var Parser = _dereq_('./lib/parser')
 
 var validationFlag = false
 
@@ -4007,7 +4007,7 @@ module.exports = {
   }
 }
 
-},{"./lib/parser":24}],23:[function(require,module,exports){
+},{"./lib/parser":24}],23:[function(_dereq_,module,exports){
 'use strict';
 
 /*
@@ -4052,11 +4052,11 @@ ImmutableStack.prototype.peek = function() {
 
 module.exports = ImmutableStack
 
-},{}],24:[function(require,module,exports){
+},{}],24:[function(_dereq_,module,exports){
 'use strict';
 
-var Resource = require('./resource')
-var Stack = require('./immutable_stack')
+var Resource = _dereq_('./resource')
+var Stack = _dereq_('./immutable_stack')
 
 var linkSpec = {
   href: { required: true, defaultValue: null },
@@ -4243,7 +4243,7 @@ function pathToString(path) {
 
 module.exports = Parser
 
-},{"./immutable_stack":23,"./resource":25}],25:[function(require,module,exports){
+},{"./immutable_stack":23,"./resource":25}],25:[function(_dereq_,module,exports){
 'use strict';
 
 function Resource(links, embedded, validationIssues) {
@@ -4311,7 +4311,7 @@ Resource.prototype.validation = Resource.prototype.validationIssues
 
 module.exports = Resource
 
-},{}],26:[function(require,module,exports){
+},{}],26:[function(_dereq_,module,exports){
 module.exports = (function(){
   /*
    * Generated by PEG.js 0.7.0.
@@ -4948,7 +4948,7 @@ module.exports = (function(){
       }
       
       
-          var cls = require('./lib/classes')
+          var cls = _dereq_('./lib/classes')
           var Template = cls.Template
           var expression = cls.expression
       
@@ -5038,7 +5038,7 @@ module.exports = (function(){
   return result;
 })();
 
-},{"./lib/classes":27}],27:[function(require,module,exports){
+},{"./lib/classes":27}],27:[function(_dereq_,module,exports){
 // Generated by CoffeeScript 1.6.2
 (function() {
   var FormContinuationExpression, FormStartExpression, FragmentExpression, LabelExpression, NamedExpression, PathParamExpression, PathSegmentExpression, ReservedExpression, SimpleExpression, Template, encoders, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7,
@@ -5046,7 +5046,7 @@ module.exports = (function(){
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  encoders = require('./encoders');
+  encoders = _dereq_('./encoders');
 
   Template = Template = (function() {
     function Template(pieces) {
@@ -5468,12 +5468,12 @@ module.exports = (function(){
 
 }).call(this);
 
-},{"./encoders":28}],28:[function(require,module,exports){
+},{"./encoders":28}],28:[function(_dereq_,module,exports){
 // Generated by CoffeeScript 1.6.2
 (function() {
   var pctEncode;
 
-  pctEncode = require('pct-encode');
+  pctEncode = _dereq_('pct-encode');
 
   exports["U"] = pctEncode(/[^\w~.-]/g);
 
@@ -5481,7 +5481,7 @@ module.exports = (function(){
 
 }).call(this);
 
-},{"pct-encode":29}],29:[function(require,module,exports){
+},{"pct-encode":29}],29:[function(_dereq_,module,exports){
 module.exports = function pctEncode(regexp) {
   regexp = regexp || /\W/g;
   return function encode(string) {
@@ -5506,12 +5506,12 @@ module.exports = function pctEncode(regexp) {
   }
 }
 
-},{}],30:[function(require,module,exports){
+},{}],30:[function(_dereq_,module,exports){
 'use strict';
 
-var minilog = require('minilog')
-var mediaTypes = require('./lib/media_types')
-var Builder = require('./lib/builder')
+var minilog = _dereq_('minilog')
+var mediaTypes = _dereq_('./lib/media_types')
+var Builder = _dereq_('./lib/builder')
 
 // activate this line to enable logging
 // require('minilog').enable();
@@ -5538,3 +5538,5 @@ module.exports = {
 }
 
 },{"./lib/builder":6,"./lib/media_types":10,"minilog":1}]},{},[30])
+(30)
+});
