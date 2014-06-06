@@ -474,6 +474,8 @@ In the far future, Traverson might also support HTML APIs and/or XML APIs.
 Release Notes
 -------------
 
+* 0.8.1 2014-06-06:
+    * Fix corrupted browser build (#10)
 * 0.8.0 2014-04-30:
     * Support absolute URLs, absolute URL paths and relative URLs (#3)
     * Fix: Also resolve URI templates when no template params are given (makes sense for templates with optional components)
