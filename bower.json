@@ -22,9 +22,14 @@
   "license": "MIT",
   "ignore": [
     "**/.*",
-    "node_modules",
+    "bin",
     "bower_components",
+    "haltalk_test",
+    "howto-release.txt",
+    "lib",
+    "node_modules",
+    "server",
     "test",
-    "tests"
+    "todo.md"
   ]
 }
