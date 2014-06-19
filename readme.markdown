@@ -466,6 +466,8 @@ In the far future, Traverson might also support HTML APIs and/or XML APIs.
 Release Notes
 -------------
 
+* 0.8.3 2014-06-19:
+    * Fix bower release (#11)
 * 0.8.2 2014-06-12:
     * Fix corrupted browser build (#10)
 * 0.8.0 2014-04-30:
