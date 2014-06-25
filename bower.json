@@ -25,7 +25,7 @@
     "bin",
     "bower_components",
     "haltalk_test",
-    "howto-release.txt",
+    "howto_release.markdown",
     "lib",
     "node_modules",
     "server",
