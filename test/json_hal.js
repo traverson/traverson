@@ -106,8 +106,37 @@ describe('The JSON-HAL walker\'s', function() {
       )
     })
 
+    it('should follow a single link by full rel URLs (instead of curies)',
+        function(done) {
+      api.follow('http://example.com/docs/rels/orders').get(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          expect(callback).to.have.been.calledWith(null, ordersResponse)
+          done()
+        }
+      )
+    })
+
     it('should follow multiple links', function(done) {
       api.follow('ea:orders', 'ea:find', 'ea:customer')
+         .withTemplateParameters({ id: 13 })
+         .get(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          expect(callback).to.have.been.calledWith(null, customerResponse)
+          done()
+        }
+      )
+    })
+
+    it('should follow multiple links by full rel URLs (instead of curies)',
+        function(done) {
+      api.follow(
+        'http://example.com/docs/rels/orders',
+        'http://example.com/docs/rels/find',
+        'http://example.com/docs/rels/customer')
          .withTemplateParameters({ id: 13 })
          .get(callback)
       waitFor(
@@ -145,7 +174,7 @@ describe('The JSON-HAL walker\'s', function() {
       )
     })
 
-    it('should follow a link specified by title from a link array',
+    it('should follow a link specified by secondary key (title)',
         function(done) {
       api.follow('ea:orders', 'ea:admin[title:Kate]')
          .get(callback)
@@ -158,9 +187,35 @@ describe('The JSON-HAL walker\'s', function() {
       )
     })
 
-    it('should follow a link specified by name from a link array',
+    it('should follow a link specified by secondary key (name)',
         function(done) {
       api.follow('ea:orders', 'ea:admin[name:boss]')
+         .get(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          expect(callback).to.have.been.calledWith(null, admin5Response)
+          done()
+        }
+      )
+    })
+
+    it('should follow a link specified by full URL (instead of curie) and ' +
+        'index', function(done) {
+      api.follow('ea:orders', 'http://example.com/docs/rels/admin[1]')
+         .get(callback)
+      waitFor(
+        function() { return callback.called },
+        function() {
+          expect(callback).to.have.been.calledWith(null, admin5Response)
+          done()
+        }
+      )
+    })
+
+    it('should follow a link specified by full URL (instead of curie) and ' +
+        'secondary key (title)', function(done) {
+      api.follow('ea:orders', 'http://example.com/docs/rels/admin[title:Kate]')
          .get(callback)
       waitFor(
         function() { return callback.called },
