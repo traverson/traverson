@@ -37,6 +37,6 @@ var _s = {
     if (str == null) return [];
     return String(str).split('');
   }
-}
+};
 
-module.exports = _s
+module.exports = _s;

@@ -1,11 +1,11 @@
 'use strict';
 
 module.exports = function(test, onSuccess, polling) {
-  polling = polling || 10
+  polling = polling || 10;
   var handle = setInterval(function() {
     if (test()) {
-      clearInterval(handle)
-      onSuccess()
+      clearInterval(handle);
+      onSuccess();
     }
-  }, polling)
-}
+  }, polling);
+};

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
 
-var testServer = require('../server/app')
-testServer.start()
+var testServer = require('../server/app');
+testServer.start();
 

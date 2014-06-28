@@ -1,13 +1,12 @@
 'use strict';
 
 var request = require('request')
-
-var testServerRootUri = 'http://127.0.0.1:2808'
-var testServerStatusUri = testServerRootUri + '/status'
-var testServerKillUri = testServerRootUri + '/quit'
-var mochaPhantomJsTestRunner = testServerRootUri +
+  , testServerRootUri = 'http://127.0.0.1:2808'
+  , testServerStatusUri = testServerRootUri + '/status'
+  , testServerKillUri = testServerRootUri + '/quit'
+  , mochaPhantomJsTestRunner = testServerRootUri +
     '/static/browser/test/index.html'
-var serverWasAlreadyRunning = false
+  , serverWasAlreadyRunning = false;
 
 /* jshint -W106 */
 module.exports = function(grunt) {
@@ -116,34 +115,34 @@ module.exports = function(grunt) {
       files: ['<%= jshint.files %>'],
       tasks: ['default']
     },
-  })
+  });
 
-  grunt.loadNpmTasks('grunt-contrib-clean')
-  grunt.loadNpmTasks('grunt-contrib-jshint')
-  grunt.loadNpmTasks('grunt-mocha-test')
-  grunt.loadNpmTasks('grunt-browserify')
-  grunt.loadNpmTasks('grunt-contrib-uglify')
-  grunt.loadNpmTasks('grunt-mocha-phantomjs')
-  grunt.loadNpmTasks('grunt-contrib-watch')
+  grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-mocha-test');
+  grunt.loadNpmTasks('grunt-browserify');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-mocha-phantomjs');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
   grunt.registerTask('start-test-server', 'Start the test server.',
       function() {
-    var done = this.async()
+    var done = this.async();
 
     function pingTestServer(callback) {
       request.get(testServerRootUri, function(error, response) {
         if (error) {
-          callback(error)
+          callback(error);
         } else if (response.statusCode === 200) {
-          callback()
+          callback();
         } else {
           callback(new Error('HTTP status code was not 200 (as expected), ' +
-              'but ' + response.statusCode))
+              'but ' + response.statusCode));
         }
-      })
+      });
     }
 
-    grunt.log.writeln('Starting test server from grunt.')
+    grunt.log.writeln('Starting test server from grunt.');
     pingTestServer(function(error) {
       // Only start a test server instance if none is running. Rationale:
       // If an instance is running via supervisor while watching changed files,
@@ -151,47 +150,47 @@ module.exports = function(grunt) {
       // instance.
       if (error) {
         if (error.message !== 'connect ECONNREFUSED') {
-          grunt.log.writeln('(Message from ping was: ' + error.message + ')')
+          grunt.log.writeln('(Message from ping was: ' + error.message + ')');
         }
         grunt.log.writeln('It seems the test server is currently not ' +
-            'running, will start a new instance to run mocha-phantomjs tests.')
-        require('./bin/start-test-server')
-        done()
+            'running, will start a new instance to run mocha-phantomjs tests.');
+        require('./bin/start-test-server');
+        done();
       } else {
-        serverWasAlreadyRunning = true
-        grunt.log.writeln('Test server is already running.')
-        done()
+        serverWasAlreadyRunning = true;
+        grunt.log.writeln('Test server is already running.');
+        done();
       }
-    })
-  })
+    });
+  });
 
   grunt.registerTask('stop-test-server', 'Stops the test server.',
       function() {
-    var done = this.async()
+    var done = this.async();
     if (serverWasAlreadyRunning) {
       grunt.log.writeln('Server was already running when Grunt build started,' +
-          ' thus it will not be shut down now from Grunt.')
-      return done()
+          ' thus it will not be shut down now from Grunt.');
+      return done();
     } else {
-      grunt.log.writeln('Stopping test server from grunt.')
+      grunt.log.writeln('Stopping test server from grunt.');
     }
     request.get(testServerKillUri, function(error, response) {
       if (error) {
         if (error.message !== 'connect ECONNREFUSED') {
           grunt.log.writeln('(Message from stop request was: ' + error.message +
-              ')')
+              ')');
         }
         grunt.log.writeln('It seems the test server is not running at all, ' +
-            'doing nothing')
-        return done()
+            'doing nothing');
+        return done();
       } else {
         grunt.log.writeln('Poison pill request has been send to test server, ' +
-            'test server should have been shut down.')
-        grunt.log.writeln('')
-        return done()
+            'test server should have been shut down.');
+        grunt.log.writeln('');
+        return done();
       }
-    })
-  })
+    });
+  });
 
   grunt.registerTask('default', [
     'jshint',
@@ -202,6 +201,6 @@ module.exports = function(grunt) {
     'start-test-server',
     'mocha_phantomjs',
     'stop-test-server'
-  ])
-}
+  ]);
+};
 /* jshint +W106 */

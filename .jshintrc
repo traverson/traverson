@@ -1,5 +1,5 @@
 {
-  "asi": true,
+  "asi": false,
   "bitwise": true,
   "boss": true,
   "camelcase": true,
@@ -11,6 +11,7 @@
   "immed": true,
   "indent": 2,
   "latedef": false,
+  "laxcomma": true,
   "maxcomplexity": 6,
   "maxdepth": 4,
   "maxlen": 80,

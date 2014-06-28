@@ -22,12 +22,12 @@ var embeddedOrders = [{
   'total': 20.00,
   'currency': 'USD',
   'status': 'processing'
-}]
+}];
 
 var embeddedWithoutSelfLink = {
   '_links': {
   },
-}
+};
 
 module.exports = {
   root: {
@@ -122,4 +122,4 @@ module.exports = {
       'ea:no_self_link': embeddedWithoutSelfLink
     }
   }
-}
+};

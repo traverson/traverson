@@ -1,12 +1,12 @@
 function baseUrl(req) {
-  return req.protocol + '://' + req.host + ':' + global.port
+  return req.protocol + '://' + req.host + ':' + global.port;
 }
 
 module.exports = {
 
   root: {
     get: function(req, res) {
-      var root = baseUrl(req)
+      var root = baseUrl(req);
       res.format({
 
         'application/json': function() {
@@ -25,7 +25,7 @@ module.exports = {
             'blind_alley': root + '/does/not/exist',
             'echo-headers': root + '/echo/headers',
             'garbage': root + '/junk'
-          })
+          });
         },
 
         'application/hal+json': function() {
@@ -35,9 +35,9 @@ module.exports = {
               'first': { 'href': '/first' }
             },
             'data': 'much'
-          })
+          });
         }
-      })
+      });
     }
   },
 
@@ -46,7 +46,7 @@ module.exports = {
       res.format({
 
         'application/json': function() {
-          res.json({ 'first': 'document' })
+          res.json({ 'first': 'document' });
         },
 
         'application/hal+json': function() {
@@ -65,9 +65,9 @@ module.exports = {
               }
             },
             'first': 'document'
-          })
+          });
         }
-      })
+      });
     }
   },
 
@@ -75,8 +75,8 @@ module.exports = {
     get: function(req, res) {
       res.format({
         'application/json': function() {
-          var root = baseUrl(req)
-          res.json({ 'doc': root + '/second/document' })
+          var root = baseUrl(req);
+          res.json({ 'doc': root + '/second/document' });
         },
 
         'application/hal+json': function() {
@@ -85,22 +85,22 @@ module.exports = {
               'inside_second': { 'more': 'data' }
             },
             'second': 'document'
-          })
+          });
         }
-      })
+      });
     },
 
     document: {
       get: function(req, res) {
-        res.json({ 'second': 'document' })
+        res.json({ 'second': 'document' });
       }
     }
   },
 
   third: {
     get: function(req, res) {
-      var root = baseUrl(req)
-      res.json({ 'third': 'document' })
+      var root = baseUrl(req);
+      res.json({ 'third': 'document' });
     }
   },
 
@@ -108,7 +108,7 @@ module.exports = {
     get:  function(req, res) {
       res.json({
         'user': 'authenticated'
-      })
+      });
     }
   },
 
@@ -118,59 +118,59 @@ module.exports = {
         'some': 'document',
         'param': req.params[0],
         'id': req.params[1]
-      })
+      });
     }
   },
 
   postings: {
     post: function(req, res) {
       if (req.body == null) {
-        return res.status(400).json({ message: 'bad request - no body?' })
+        return res.status(400).json({ message: 'bad request - no body?' });
       }
       res.status(201).json({
         'document': 'created',
         'received': req.body
-      })
+      });
     }
   },
 
   puttings: {
     put: function(req, res) {
       if (req.body == null) {
-        return res.status(400).json({ message: 'bad request - no body?' })
+        return res.status(400).json({ message: 'bad request - no body?' });
       }
       res.json({
         'document': 'overwritten',
         'received': req.body
-      })
+      });
     }
   },
 
   patchMe: {
     patch: function(req, res) {
       if (req.body == null) {
-        return res.status(400).json({ message: 'bad request - no body?' })
+        return res.status(400).json({ message: 'bad request - no body?' });
       }
       res.json({
         'document': 'patched',
         'received': req.body
-      })
+      });
     }
   },
 
   deleteMe: {
     del: function(req, res) {
-      res.status(204).end()
+      res.status(204).end();
     }
   },
 
   echoHeaders: {
     get: function(req, res) {
-      var echo = {}
+      var echo = {};
       Object.keys(req.headers).forEach(function(key) {
-        echo[key] = req.headers[key]
-      })
-      res.send(echo)
+        echo[key] = req.headers[key];
+      });
+      res.send(echo);
     }
   },
 
@@ -178,11 +178,11 @@ module.exports = {
   junk: {
     get: function(req, res) {
       // server syntacically incorrect JSON
-      res.send('{ this will :: not parse')
+      res.send('{ this will :: not parse');
     }
   },
 
   '404': function(req, res) {
-    res.status(404).send({ 'message': 'resource not found' })
+    res.status(404).send({ 'message': 'resource not found' });
   }
-}
+};

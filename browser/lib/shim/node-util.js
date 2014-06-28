@@ -3,8 +3,8 @@
 module.exports = {
   isArray: function(o) {
     if (o == null) {
-      return false
+      return false;
     }
-    return Object.prototype.toString.call(o) === '[object Array]'
+    return Object.prototype.toString.call(o) === '[object Array]';
   }
-}
+};
