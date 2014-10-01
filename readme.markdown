@@ -466,6 +466,8 @@ In the far future, Traverson might also support HTML APIs and/or XML APIs.
 Release Notes
 -------------
 
+* 0.10.0 2014-10-01:
+    * Add query string handling for client side (#16), thanks to @craigspaeth
 * 0.9.0 2014-06-27:
     *  Add HAL curie resolution (#12)
 * 0.8.3 2014-06-19:
