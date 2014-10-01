@@ -24,6 +24,7 @@ module.exports = {
             'delete_link': root + '/delete/me',
             'blind_alley': root + '/does/not/exist',
             'echo-headers': root + '/echo/headers',
+            'echo-query': root + '/echo/query',
             'garbage': root + '/junk'
           });
         },
@@ -174,6 +175,15 @@ module.exports = {
     }
   },
 
+  echoQuery: {
+    get: function(req, res) {
+      var echo = {};
+      Object.keys(req.query).forEach(function(key) {
+        echo[key] = req.query[key];
+      });
+      res.send(echo);
+    }
+  },
 
   junk: {
     get: function(req, res) {

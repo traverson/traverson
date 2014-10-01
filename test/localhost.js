@@ -411,6 +411,23 @@ describe('Traverson (when tested against a local server)', function() {
     );
   });
 
+  it('should use provided query string options', function(done) {
+    jsonApi.follow('echo-query').withRequestOptions({
+      qs: {
+        'token': 'foobar'
+      }
+    }).getResource(callback);
+    waitFor(
+      function() { return callback.called; },
+      function() {
+        var resultDoc = checkResultDoc();
+        expect(resultDoc.token).to.exist;
+        expect(resultDoc.token).to.equal('foobar');
+        done();
+      }
+    );
+  });
+
   function isNodeJs() {
     // can't use strict here
     if (typeof window !== 'undefined') {

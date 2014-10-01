@@ -58,6 +58,7 @@ exports.start = function() {
   app.del('/delete/me', json.deleteMe.del);
   app.get('/junk', json.junk.get);
   app.get('/echo/headers', json.echoHeaders.get);
+  app.get('/echo/query', json.echoQuery.get);
   app.get('/does/not/exist', json['404']);
 
   app.get('/quit', function(req, res) {

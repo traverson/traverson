@@ -48,10 +48,18 @@ Request.prototype.del = function(uri, options, callback) {
 };
 
 function mapRequest(superagentRequest, options, bodyOptions) {
+  mapQuery(superagentRequest, options);
   mapHeaders(superagentRequest, options);
   mapAuth(superagentRequest, options);
   mapBody(superagentRequest, options, bodyOptions);
   return superagentRequest;
+}
+
+function mapQuery(superagentRequest, options) {
+  var qs = options.qs;
+  if (qs != null) {
+    superagentRequest = superagentRequest.query(qs);
+  }
 }
 
 function mapHeaders(superagentRequest, options) {
