@@ -8,6 +8,7 @@ var minilog = require('minilog')
 // require('minilog').enable();
 
 module.exports = {
+  _Builder: Builder,
   json: {
     from: function(uri) {
       return {
