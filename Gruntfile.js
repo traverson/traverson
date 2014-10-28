@@ -51,7 +51,7 @@ module.exports = function(grunt) {
 
     // browserify everything
     browserify: {
-      // This browserify build be used by users of the module. It contains a
+      // This browserify build can be used by users of the module. It contains a
       // UMD (universal module definition) and can be used via an AMD module
       // loader like RequireJS or by simply placing a script tag in the page,
       // which registers the module as a global var. Look at the example in
