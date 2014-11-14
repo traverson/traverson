@@ -27,7 +27,7 @@ watchify \
   &
 
 watchify \
-  --entry browser/test/suite.js \
+  --entry test/browser_suite.js \
   --outfile browser/test/browserified_tests.js \
   --external ./traverson.js \
   --debug \
