@@ -339,7 +339,7 @@ templates.
 
 ### Headers, HTTP Basic Auth, OAuth and Whatnot
 
-Traverson uses Mikeal Rogers' [request](https://github.com/mikeal/request) module for all HTTP requests. You can use all options that `request` provides with Traverson by passing an options object into the `withRequestOptions` method, like this:
+Traverson uses Mikeal Rogers' [request](https://github.com/mikeal/request) module for all HTTP requests by default. You can use all options that `request` provides with Traverson by passing an options object into the `withRequestOptions` method, like this:
 
     api.follow('link_one', 'link_two', 'link_three')
       .withRequestOptions({ headers: { 'x-my-special-header': 'foo' } })
@@ -348,6 +348,16 @@ Traverson uses Mikeal Rogers' [request](https://github.com/mikeal/request) modul
     })
 
 This would add the header `x-my-special-header` to all requests issued for this three link walk. Check out the [request docs](https://github.com/mikeal/request#requestoptions-callback) to see which options to use. Among other things, you can set custom headers, do HTTP basic authentication, [OAuth](https://github.com/mikeal/request#oauth-signing) and other cool stuff.
+
+You can also pass in a custom request library, as long as it conforms to the same interface as [request](https://github.com/mikeal/request).
+
+    var customRequestLibrary = require('custom-request');
+
+    api.follow('link_one', 'link_two', 'link_three')
+      .withRequestLibrary(customRequestLibrary)
+      .getResource(function(error, document) {
+        ...
+    })
 
 ### HAL - hypertext application language
 
