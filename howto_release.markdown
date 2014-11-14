@@ -21,4 +21,4 @@ To release version x.y.z:
 - Why not just create a tag from the branch via git? Because we want to add the build artifacts to the GitHub relase as attachments (for users neither using npm or bower). This is only possible if the release was created via GitHub's web interface. Normal git tags show up as releases there too, but you can't add attachments or edit the release afterwards. Releases created via the web interface create a git tag automatically, however.
 - `git checkout master`
 - `git branch -D release-x.y.z`
-- `git push origin :release-branch-0.8.3`
+- `git push origin :release-branch-x.y.z`
