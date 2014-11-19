@@ -59,9 +59,9 @@ describe('The JSON client\'s', function() {
     callback = sinon.spy();
 
     get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-        1, null, rootResponse);
+        1, null, rootResponse, rootResponse.body);
     get.withArgs(getUri, sinon.match.func).callsArgWithAsync(1, null,
-        result);
+        result, result.body);
     get.withArgs(postUri, sinon.match.func).callsArgWithAsync(1,
         new Error('GET is not implemented for this URI, please POST ' +
         'something'));
