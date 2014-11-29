@@ -476,17 +476,23 @@ In the far future, Traverson might also support HTML APIs and/or XML APIs.
 Release Notes
 -------------
 
+* 0.12.0 2014-11-29
+   * Deal with cases where body comes as arg but not in response (#19) (thanks to @subvertnormality/@bbc-contentdiscovery)
+* 0.11.0 2014-11-14:
+    * Add ability to set a custom request library (#18) (thanks to @subvertnormality/@bbc-contentdiscovery)
 * 0.10.0 2014-10-01:
-    * Add query string handling for client side (#16), thanks to @craigspaeth
+    * Add query string handling for client side (#16) (thanks to @craigspaeth
 * 0.9.0 2014-06-27:
     *  Add HAL curie resolution (#12)
 * 0.8.3 2014-06-19:
     * Fix bower release (#11)
 * 0.8.2 2014-06-12:
     * Fix corrupted browser build (#10)
+    * Can now be installed via bower (thanks to @chadly)
 * 0.8.0 2014-04-30:
     * Support absolute URLs, absolute URL paths and relative URLs (#3)
     * Fix: Also resolve URI templates when no template params are given (makes sense for templates with optional components)
+    * Fix: Now works for cases where the entry point has a pathname other than `/`. (thanks to @eins78)
 * 0.7.0 2013-12-05:
     * Select HAL links by secondary key
 * 0.6.0 2013-11-25:
