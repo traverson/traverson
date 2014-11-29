@@ -8,10 +8,10 @@ To release version x.y.z:
 - `grunt` (to create a fresh browser build, also make sure all tests pass etc.)
 - `git commit -am"release x.y.z" && git push`
 - `npm publish`
-- `git checkout -b release-branch-x.y.z` (to create the release branch, required for bower)
+- `git checkout -b release-x.y.z` (to create the release branch, required for bower)
 - `git add -f browser/dist/traverson*` (to add the build artifacts to the release branch)
 - `git commit -m"add build artifacts for release"`
-- `git push origin release-branch-x.y.z`
+- `git push origin release-x.y.z`
 - [create a new release on github](https://github.com/basti1302/traverson/releases/new)
   - Tag version: `x.y.z` (without any prefix or suffix)
   - Target: The release branch that hast just been created
@@ -22,5 +22,5 @@ To release version x.y.z:
 - Why not just create a tag from the branch via git? Because we want to add the build artifacts to the GitHub relase as attachments (for users neither using npm or bower). This is only possible if the release was created via GitHub's web interface. Normal git tags show up as releases there too, but you can't add attachments or edit the release afterwards. Releases created via the web interface create a git tag automatically, however.
 - `git checkout master`
 - `git branch -D release-x.y.z`
-- `git push origin :release-branch-x.y.z`
+- `git push origin :release-x.y.z`
 

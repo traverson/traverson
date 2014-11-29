@@ -29,6 +29,7 @@ Table of Contents
 * [Installation](#installation)
     * [Node.js](#nodejs)
     * [Browser](#browser)
+    * [AngularJS](#angularjs)
 * [Documentation by Example](#documentation-by-example)
     * [Following Links](#following-links)
     * [Get Full HTTP Response](#more-control-receive-the-full-http-response)
@@ -61,6 +62,10 @@ Installation
     * `traverson.js`: Non-minified build with UMD. Same as above, just larger :-)
     * `traverson.external.min.js`: Minified require/external build. Created with browserify's `--require` parameter and intended to be used (required) from other browserified modules, which were created with `--external traverson`. This build could be used if you use browserify but do not want to bundle Traverson with your own browserify build but keep it as a separate file.
     * `traverson.external.js`: Non-minified require/external build, same as before, just larger.
+
+#### AngularJS
+
+There's an <a href="https://github.com/basti1302/traverson-angular">AngularJS plug-in for Traverson</a> which makes it possible to integrate the Traverson API seamlessly into an AngularJS app. If you want to use Traverson in an AngularJS app, this is the way to go.
 
 Documentation by Example
 ------------------------
