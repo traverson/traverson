@@ -23,4 +23,4 @@ To release version x.y.z:
 - `git checkout master`
 - `git branch -D release-x.y.z`
 - `git push origin :release-x.y.z`
-
+- Release a new, matching version of traverson-angular
