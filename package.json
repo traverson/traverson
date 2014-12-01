@@ -18,7 +18,7 @@
     "HAL"
   ],
   "dependencies": {
-    "JSONPath": "https://github.com/basti1302/JSONPath/tarball/master",
+    "JSONPath": "^0.10.0",
     "halfred": "^0.3.0",
     "minilog": "^2.0.2",
     "request": "^2.28.0",
