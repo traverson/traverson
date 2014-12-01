@@ -200,7 +200,7 @@ module.exports = function(grunt) {
     'uglify',
     'start-test-server',
     'mocha_phantomjs',
-    'stop-test-server'
+    'stop-test-server',
   ]);
 };
 /* jshint +W106 */
