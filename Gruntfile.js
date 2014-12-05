@@ -113,7 +113,7 @@ module.exports = function(grunt) {
 
     watch: {
       files: ['<%= jshint.files %>'],
-      tasks: ['default']
+      tasks: ['dev']
     },
   });
 
@@ -192,9 +192,13 @@ module.exports = function(grunt) {
     });
   });
 
-  grunt.registerTask('default', [
+  grunt.registerTask('dev', [
     'jshint',
     'mochaTest',
+  ]);
+
+  grunt.registerTask('default', [
+    'dev',
     'clean',
     'browserify',
     'uglify',

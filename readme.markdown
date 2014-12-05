@@ -469,7 +469,7 @@ Traverson supports the JSON dialect of [HAL](http://tools.ietf.org/id/draft-kell
 
 This will give you all posts that the account `traverson` posted to Mike Kelly's haltalk server. Note that we used `traverson.jsonHal` when creating the `api` object, instead of the usual `traverson.json`. When called in this way, Traverson will assume the resources it receives comply with the HAL specification and looks for links in the `_links` property. If there is no such link, Traverson will also look for an embedded resource with the given name.
 
-You can also pass strings like `'ht:post[name:foo]'` or `'ht:post[name:foo]'` to the `follow` method to select links which share the same link relation by a secondary key. Because multiple links with the same link relation type are represented as an array of link objects in HAL, you can also use an array indexing notation like `'ht:post[1]'` to select an individual elements from an array of link objects. However, this is not recommended and should only be used as a last resort if the API does not provide a secondary key to select the correct link, because it relies on the ordering of the links as returned from the server, which might not be guaranteed to be always the same.
+You can also pass strings like `'ht:post[name:foo]'` to the `follow` method to select links which share the same link relation by a secondary key. Because multiple links with the same link relation type are represented as an array of link objects in HAL, you can also use an array indexing notation like `'ht:post[1]'` to select an individual elements from an array of link objects. However, this is not recommended and should only be used as a last resort if the API does not provide a secondary key to select the correct link, because it relies on the ordering of the links as returned from the server, which might not be guaranteed to be always the same.
 
 You can also use the array indexing notation `'ht:post[1]'` to target individual elements in an array of embedded resources.
 
@@ -477,31 +477,13 @@ You can also use the array indexing notation `'ht:post[1]'` to target individual
 
 When working with HAL resources, for each link given to the `follow` method, Traverson checks the `_links` object. If the `_links` object does not have the property in question, Traverson also automatically checks the embedded document (the `_embedded` object). If there is an embedded document with the correct property key, this one will be used instead. If there is both a `_link` and an `_embedded` object with the same name, Traverson will always prefer the link, not the embedded object (reason: the spec says that an embedded resource may "be a full, partial, or inconsistent version of the representation served from the target URI", so to get the complete and up to date document your best bet is to follow the link to the actual resource, if available).
 
+Link relations can denote a single embedded document as well as an array of embedded documents. Therefore, the same mechanisms that are used to select an individual link from an array of link objects can also be used with embedded arrays. That is, you can always use `'ht:post[name:foo]'` or `'ht:post[1]'`, no matter if the link relation is present in the `_links` object or in the `_embedded` object.
+
+For embedded arrays you can additionally use the meta selector `$all`: If you pass `ht:post[$all]` to the `follow` method, you receive the complete array of posts, not an individual post resource. A link relation containing `$all` must only be passed as the last element to `follow` and it only works for embedded documents. Futhermore, it can only be used with `get` and `getResource`, not with `post`, `put`, `delete`, `patch` or `getUri`.
+
 #### HAL and JSONPath
 
 JSONPath is not supported when working with HAL resources. It would also make no sense because in a HAL resource there is only one place in the document that contains all the links.
-
-Features From the Future
-------------------------
-
-This section describes some ideas, that are not yet implemented, but might be included in future versions of Traversion.
-
-### Caching
-
-Currently, there is no caching implemented. There will be some sort of caching in future versions. When calling Traverson with the same start URI and the same path array, we would likely end up at the same final URI. The intermediate steps might be cached and not actually fetched from the server every time.
-
-### Customizing Traverson
-
-#### Enabling/Disabling Features
-
-There will be some simple on/off toggles for certain parts of Traverson behaviour. For example, it should be possible to
-* disable URI templates,
-* disable JSONPath,
-* disable caching (a feature yet to be implemented in the first place)
-
-### Other Media Types Besides JSON
-
-In the far future, Traverson might also support HTML APIs and/or XML APIs.
 
 Release Notes
 -------------

@@ -17,7 +17,7 @@ describe('The JSON-HAL walker\'s', function() {
   var rootUri = 'http://api.io';
   var rootDoc = halDocs.root;
   var ordersUri = rootUri + '/orders';
-  var embeddedOrderDocs = halDocs.embeddedOrders;
+  var embeddedOrdersDoc = halDocs.embeddedOrders;
   var ordersDoc = halDocs.orders;
   var admin2Uri = rootUri + '/admins/2';
   var admin2Doc = halDocs.admin2;
@@ -41,10 +41,10 @@ describe('The JSON-HAL walker\'s', function() {
   var basket1Response = mockResponse(basket1Doc);
   var basket2Response = mockResponse(basket2Doc);
   var singleOrderResponse = mockResponse(singleOrderDoc);
-  var embeddedOrdersResponse = mockResponse(embeddedOrderDocs);
+  var embeddedOrdersResponse = mockResponse(embeddedOrdersDoc);
   var embeddedOrderResponses = [
-    mockResponse(embeddedOrderDocs[0]),
-    mockResponse(embeddedOrderDocs[1]),
+    mockResponse(embeddedOrdersDoc[0]),
+    mockResponse(embeddedOrdersDoc[1]),
   ];
   var customerResponse = mockResponse(customerDoc);
   var basketResponse = mockResponse(basketDoc);
@@ -318,6 +318,25 @@ describe('The JSON-HAL walker\'s', function() {
         }
       );
     });
+
+    it('should yield the complete embedded array in the response',
+        function(done) {
+      api.follow('ea:orders', 'ea:order[$all]')
+         .get(callback);
+      waitFor(
+        function() { return callback.called; },
+        function() {
+          var error = callback.firstCall.args[0];
+          expect(error).to.not.exist;
+          var response = callback.firstCall.args[1];
+          expect(response).to.exist;
+          expect(response.body).to.equal(embeddedOrdersResponse.body);
+          expect(response.statusCode).to.equal(200);
+          expect(response.remark).to.exist;
+          done();
+        }
+      );
+    });
   });
 
   describe('getResource method', function() {
@@ -335,6 +354,20 @@ describe('The JSON-HAL walker\'s', function() {
       );
     });
 
+    it('should yield the complete embedded array as a resource',
+        function(done) {
+      api.follow('ea:orders', 'ea:order[$all]')
+         .getResource(callback);
+      waitFor(
+        function() { return callback.called; },
+        function() {
+          expect(callback).to.have.been.calledWith(null,
+            embeddedOrdersDoc);
+          done();
+        }
+      );
+    });
+
     it('should pass an embedded document into the callback',
         function(done) {
       api.follow('ea:orders', 'ea:order')
@@ -342,7 +375,7 @@ describe('The JSON-HAL walker\'s', function() {
       waitFor(
         function() { return callback.called; },
         function() {
-          expect(callback).to.have.been.calledWith(null, embeddedOrderDocs[0]);
+          expect(callback).to.have.been.calledWith(null, embeddedOrdersDoc[0]);
           done();
         }
       );
