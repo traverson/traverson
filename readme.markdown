@@ -11,6 +11,10 @@ A Hypermedia API/HATEOAS Client for Node.js and the Browser
 
 [![NPM](https://nodei.co/npm/traverson.png?downloads=true&stars=true)](https://nodei.co/npm/traverson/)
 
+| File Size (browser build) | KB |
+|---------------------------|---:|
+| minified & gzipped        | 12 |
+| minified                  | 37 |
 
 Introduction
 ------------
