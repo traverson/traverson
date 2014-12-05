@@ -43,6 +43,7 @@ Table of Contents
     * [JSONPath](#jsonpath)
     * [URI Templates](#uri-templates)
     * [Headers and Authentication](#headers-http-basic-auth-oauth-and-whatnot)
+    * [Custom JSON parser](#custom-json-parser)
     * [HAL](#hal---hypertext-application-language)
 * [Features From the Future](#features-from-the-future)
     * [Caching](#caching)
@@ -80,8 +81,8 @@ This section shows how to use Traverson's features with small examples.
 
 The most basic thing you can do with traverson is to let it start at the root URI of an API, follow some links and pass the resource that is found at the end of this journey back to you. Here's how:
 
-    var traverson = require('traverson')
-    var api = traverson.json.from('http://api.io')
+    var traverson = require('traverson');
+    var api = traverson.json.from('http://api.io');
 
     api.newRequest()
        .follow('link_to', 'resource')
@@ -92,7 +93,7 @@ The most basic thing you can do with traverson is to let it start at the root UR
         console.log('We have followed the path and reached our destination.')
         console.log(JSON.stringify(document))
       }
-    })
+    });
 
 Given this call, Traverson first fetches `http://api.io` (because that's what we specified in the from method when creating the `api` object). Let's say the response for this URI is
 
@@ -150,7 +151,7 @@ The example above chained the `getResource` method to the `follow` method. For t
         console.log('HTTP status code: ' + response.statusCode)
         console.log('Response Body: ' + response.body)
       }
-    })
+    });
 
 ### Pass a Link Array
 
@@ -158,13 +159,13 @@ You can also pass an array of strings to the follow method. Makes no difference.
 
     api.newRequest()
        .follow('first_link', 'second_link', 'third_link')
-       .getResource(callback)
+       .getResource(callback);
 
 is equivalent to
 
     api.newRequest()
        .follow(['first_link', 'second_link', 'third_link'])
-       .getResource(callback)
+       .getResource(callback);
 
 If the first argument to `follow` is an array, all remaining arguments will be ignored, though.
 
@@ -183,7 +184,7 @@ This looks very similar to using the `get` method:
         console.log('POST request sucessful')
         console.log('HTTP status code: ' + response.statusCode)
       }
-    })
+    });
 
 All methods except `getResource` (that is `get`, `post`, `put`, `del` and `patch` pass the full http response into the provided callback, so the callback's method signature always looks like `function(error, response)`. `post`, `put` and `patch` obviously have a body argument, `del` doesn't. Some more examples, just for completenss' sake:
 
@@ -191,19 +192,19 @@ All methods except `getResource` (that is `get`, `post`, `put`, `del` and `patch
        .follow('link_to', 'resource')
        .put({'some': 'data'}, function(error, response) {
        ...
-    })
+    });
 
     api.newRequest()
        .follow('link_to', 'resource')
        .patch({'some': 'data'}, function(error, response) {
        ...
-    })
+    });
 
     api.newRequest()
        .follow('link_to', 'resource')
        .del(function(error, response) {
        ...
-    })
+    });
 
 
 ### Error Handling
@@ -228,7 +229,7 @@ Traverson supports [JSONPath](http://goessner.net/articles/JsonPath/) expression
        .follow('$.deeply.nested.link')
        .getResource(function(error, document) {
        ...
-    })
+    });
 
 where the document at the root URI is
 
@@ -262,7 +263,7 @@ Traverson supports URI templates ([RFC 6570](http://tools.ietf.org/html/rfc6570)
         .withTemplateParameters({ user_name: 'basti1302', thing_id: 4711 })
         .getResource(function(error, document) {
       ...
-    })
+    });
 
 Again, Traverson first fetches `http://api.io`. This time, we assume a response with an URI template:
 
@@ -288,7 +289,7 @@ Let's assume the following call
         .withTemplateParameters({ user_name: 'basti1302', thing_id: 4711 })
         .getResource(function(error, document) {
       ...
-    })
+    });
 
 and the following documents, with their corresponding URIs:
 
@@ -317,7 +318,7 @@ Let's look at an example
         .withTemplateParameters([null, {id: "basti1302"}, null, {id: 4711} ])
         .getResource(function(error, document) {
       ...
-    })
+    });
 
 and the following documents, with their corresponding URIs:
 
@@ -354,7 +355,7 @@ Traverson uses Mikeal Rogers' [request](https://github.com/mikeal/request) modul
       .withRequestOptions({ headers: { 'x-my-special-header': 'foo' } })
       .getResource(function(error, document) {
         ...
-    })
+    });
 
 This would add the header `x-my-special-header` to all requests issued for this three link walk. Check out the [request docs](https://github.com/mikeal/request#requestoptions-callback) to see which options to use. Among other things, you can set custom headers, do HTTP basic authentication, [OAuth](https://github.com/mikeal/request#oauth-signing) and other cool stuff.
 
@@ -366,7 +367,27 @@ You can also pass in a custom request library, as long as it conforms to the sam
       .withRequestLibrary(customRequestLibrary)
       .getResource(function(error, document) {
         ...
-    })
+    });
+
+### Custom JSON parser
+
+JSON bodies are parsed with `JSON.parse` by default. If that does not suit you, you can inject your own custom parsing function with `parseResponseBodiesWith`. One use case for this would be if the server prepends some JSON vulnerability protection string to the JSON response (see for example the suggestion at <https://docs.angularjs.org/api/ng/service/$http>, section JSON Vulnerability Protection).
+
+Here is an example.
+
+```
+var jsonVulnerabilityProtection = ')]}\',\n';
+var protectionLength = jsonVulnerabilityProtection.length;
+
+api.follow('link-rel')
+  .parseResponseBodiesWith(function(body) {
+    body = body.slice(protectionLength);
+    return JSON.parse(body);
+  })
+  .getResource(function(error, document) {
+    ...
+  });
+```
 
 ### HAL - hypertext application language
 
@@ -384,7 +405,7 @@ Traverson supports the JSON dialect of [HAL](http://tools.ietf.org/id/draft-kell
       } else {
         console.log(JSON.stringify(document))
       }
-    })
+    });
 
     http://haltalk.herokuapp.com/
     {
