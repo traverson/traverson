@@ -21,6 +21,7 @@ Traverson could and should support HTML APIs and/or XML APIs, as well as other J
 
 ## More unsorted ideas
 
+* Testling is dead! Switch to zuul or something. Also for traverson-angular.
 * make it configurable if embedded resources or linked resources are to be preferred
 * clean up test server document and link structure
 * Builder#withLastRequestOptions({...}) - use the given options, but only in the last request (the one which get/post/put/getResource control)
