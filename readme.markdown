@@ -488,6 +488,9 @@ JSONPath is not supported when working with HAL resources. It would also make no
 Release Notes
 -------------
 
+* 0.14.0 2014-12-05
+   * `'link[$all]'` to retrieve the complete array of `_embedded` HAL resources instead of an individual resource (#14)
+   * Add ability to use a custom JSON parsing method (#13)
 * 0.13.0 2014-12-01
    * Reduce size of browser build by 33%. The minified version now has 37k instead of 55k (still too much, but also much better than before)
 * 0.12.0 2014-11-29
