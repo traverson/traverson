@@ -34,7 +34,7 @@ Table of Contents
     * [Node.js](#nodejs)
     * [Browser](#browser)
     * [AngularJS](#angularjs)
-* [Documentation by Example](#documentation-by-example)
+* [Documentation](#documentation)
     * [Following Links](#following-links)
     * [Get Full HTTP Response](#more-control-receive-the-full-http-response)
     * [Pass Links as Array](#pass-a-link-array)
@@ -45,11 +45,8 @@ Table of Contents
     * [Headers and Authentication](#headers-http-basic-auth-oauth-and-whatnot)
     * [Custom JSON parser](#custom-json-parser)
     * [HAL](#hal---hypertext-application-language)
-* [Features From the Future](#features-from-the-future)
-    * [Caching](#caching)
-    * [Customizing Traverson](#customizing-traverson)
-        * [Enabling/Disabling Features](#enablingdisabling-features)
-    * [Other Media Types](#other-media-types-besides-json)
+    * [Content Negotiation](#content-negotiation)
+* [Release Notes](#release-notes)
 
 Installation
 ------------
@@ -72,8 +69,8 @@ Installation
 
 There's an <a href="https://github.com/basti1302/traverson-angular">AngularJS plug-in for Traverson</a> which makes it possible to integrate the Traverson API seamlessly into an AngularJS app. If you want to use Traverson in an AngularJS app, this is the way to go.
 
-Documentation by Example
-------------------------
+Documentation
+-------------
 
 This section shows how to use Traverson's features with small examples.
 
@@ -141,31 +138,35 @@ Different APIs use different flavours of links in their responses. Traverson can
 
 The example above chained the `getResource` method to the `follow` method. For this method, Traverson will parse the JSON from the last HTTP response and pass the resulting JavaScript object to your callback. In certain situations you might want more control and would like to receive the full HTTP response object instead of the body, already parsed to an object. This is what the `get` method is for:
 
-    api.newRequest()
-       .follow('link_to', 'resource')
-       .get(function(error, response) {
-      if (error) {
-        console.error('No luck :-)')
-      } else {
-        console.log('We have followed the path and reached our destination.')
-        console.log('HTTP status code: ' + response.statusCode)
-        console.log('Response Body: ' + response.body)
-      }
-    });
+<pre>
+api.newRequest()
+   .follow('link_to', 'resource')
+   <b>.get(function(error, response) {</b>
+  if (error) {
+    console.error('No luck :-)')
+  } else {
+    console.log('We have followed the path and reached our destination.')
+    console.log('HTTP status code: ' + response.statusCode)
+    console.log('Response Body: ' + response.body)
+  }
+});
+</pre>
 
 ### Pass a Link Array
 
 You can also pass an array of strings to the follow method. Makes no difference.
 
-    api.newRequest()
-       .follow('first_link', 'second_link', 'third_link')
-       .getResource(callback);
-
+<pre>
+api.newRequest()
+   .follow(<b>'first_link', 'second_link', 'third_link'</b>)
+   .getResource(callback);
+</pre>
 is equivalent to
-
-    api.newRequest()
-       .follow(['first_link', 'second_link', 'third_link'])
-       .getResource(callback);
+<pre>
+api.newRequest()
+   .follow(<b>['first_link', 'second_link', 'third_link']</b>)
+   .getResource(callback);
+</pre>
 
 If the first argument to `follow` is an array, all remaining arguments will be ignored, though.
 
@@ -175,37 +176,40 @@ So far we only have concerned ourselves with fetching information from a REST AP
 
 This looks very similar to using the `get` method:
 
-    api.newRequest()
-       .follow('link_to', 'resource')
-       .post({'some': 'data'}, function(error, response) {
-      if (error) {
-        console.error('No luck :-)')
-      } else {
-        console.log('POST request sucessful')
-        console.log('HTTP status code: ' + response.statusCode)
-      }
-    });
+<pre>
+api.newRequest()
+   .follow('link_to', 'resource')
+   .<b>post</b>({'some': 'data'}, function(error, response) {
+  if (error) {
+    console.error('No luck :-)')
+  } else {
+    console.log('POST request sucessful')
+    console.log('HTTP status code: ' + response.statusCode)
+  }
+});
+</pre>
 
 All methods except `getResource` (that is `get`, `post`, `put`, `del` and `patch` pass the full http response into the provided callback, so the callback's method signature always looks like `function(error, response)`. `post`, `put` and `patch` obviously have a body argument, `del` doesn't. Some more examples, just for completenss' sake:
 
-    api.newRequest()
-       .follow('link_to', 'resource')
-       .put({'some': 'data'}, function(error, response) {
-       ...
-    });
+<pre>
+api.newRequest()
+   .follow('link_to', 'resource')
+   .<b>put</b>({'some': 'data'}, function(error, response) {
+   ...
+});
 
-    api.newRequest()
-       .follow('link_to', 'resource')
-       .patch({'some': 'data'}, function(error, response) {
-       ...
-    });
+api.newRequest()
+   .follow('link_to', 'resource')
+   .<b>patch</b>({'some': 'data'}, function(error, response) {
+   ...
+});
 
-    api.newRequest()
-       .follow('link_to', 'resource')
-       .del(function(error, response) {
-       ...
-    });
-
+api.newRequest()
+   .follow('link_to', 'resource')
+   .<b>del</b>(function(error, response) {
+   ...
+});
+</pre>
 
 ### Error Handling
 
@@ -225,11 +229,13 @@ Reasons for failure could be:
 
 Traverson supports [JSONPath](http://goessner.net/articles/JsonPath/) expressions in the path array. This will come in handy if the link you want to follow from a given document is not a direct property of that document. Consider the following example:
 
-    api.newRequest()
-       .follow('$.deeply.nested.link')
-       .getResource(function(error, document) {
-       ...
-    });
+<pre>
+api.newRequest()
+   .follow(<b>'$.deeply.nested.link'</b>)
+   .getResource(function(error, document) {
+   ...
+});
+</pre>
 
 where the document at the root URI is
 
@@ -259,18 +265,22 @@ If a JSONPath expressions yields no match or more than one match, an error will 
 
 Traverson supports URI templates ([RFC 6570](http://tools.ietf.org/html/rfc6570)). Let's modify our inital example to make use of this feature:
 
-    api.follow('user_thing_lookup')
-        .withTemplateParameters({ user_name: 'basti1302', thing_id: 4711 })
-        .getResource(function(error, document) {
-      ...
-    });
+<pre>
+api.follow('user_thing_lookup')
+    <b>.withTemplateParameters({ user_name: 'basti1302', thing_id: 4711 })</b>
+    .getResource(function(error, document) {
+  ...
+});
+</pre>
 
 Again, Traverson first fetches `http://api.io`. This time, we assume a response with an URI template:
 
-    http://api.io
-    {
-      "user_thing_lookup": "http://api.io/users/{user_name}/things{/thing_id}"
-    }
+<pre>
+http://api.io
+{
+  "user_thing_lookup": <b>"http://api.io/users/{user_name}/things{/thing_id}"</b>
+}
+</pre>
 
 Traverson recognizes that this is an URI template and resolves the template with the template parameters provided via the `withTemplateParameters` method (`{user_name: "basti1302", thing_id: 4711}` in this case). The resulting URI is `http://api.io/users/basti1302/things/4711`. Traverson now fetches the document from this URI and passes the resulting document into the provided callback.
 
@@ -351,23 +361,27 @@ templates.
 
 Traverson uses Mikeal Rogers' [request](https://github.com/mikeal/request) module for all HTTP requests by default. You can use all options that `request` provides with Traverson by passing an options object into the `withRequestOptions` method, like this:
 
-    api.follow('link_one', 'link_two', 'link_three')
-      .withRequestOptions({ headers: { 'x-my-special-header': 'foo' } })
-      .getResource(function(error, document) {
-        ...
-    });
+<pre>
+api.follow('link_one', 'link_two', 'link_three')
+  <b>.withRequestOptions({ headers: { 'x-my-special-header': 'foo' } })</b>
+  .getResource(function(error, document) {
+    ...
+});
+</pre>
 
 This would add the header `x-my-special-header` to all requests issued for this three link walk. Check out the [request docs](https://github.com/mikeal/request#requestoptions-callback) to see which options to use. Among other things, you can set custom headers, do HTTP basic authentication, [OAuth](https://github.com/mikeal/request#oauth-signing) and other cool stuff.
 
 You can also pass in a custom request library, as long as it conforms to the same interface as [request](https://github.com/mikeal/request).
 
-    var customRequestLibrary = require('custom-request');
+<pre>
+var customRequestLibrary = require('custom-request');
 
-    api.follow('link_one', 'link_two', 'link_three')
-      .withRequestLibrary(customRequestLibrary)
-      .getResource(function(error, document) {
-        ...
-    });
+api.follow('link_one', 'link_two', 'link_three')
+  <b>.withRequestLibrary(customRequestLibrary)</b>
+  .getResource(function(error, document) {
+    ...
+});
+</pre>
 
 ### Custom JSON parser
 
@@ -375,97 +389,99 @@ JSON bodies are parsed with `JSON.parse` by default. If that does not suit you, 
 
 Here is an example.
 
-```
+<pre>
 var jsonVulnerabilityProtection = ')]}\',\n';
 var protectionLength = jsonVulnerabilityProtection.length;
 
 api.follow('link-rel')
-  .parseResponseBodiesWith(function(body) {
+  <b>.parseResponseBodiesWith(function(body) {
     body = body.slice(protectionLength);
     return JSON.parse(body);
-  })
+  })</b>
   .getResource(function(error, document) {
     ...
   });
-```
+</pre>
 
 ### HAL - hypertext application language
 
 Traverson supports the JSON dialect of [HAL](http://tools.ietf.org/id/draft-kelly-json-hal-06.txt), the hypertext application language via [Halfred](https://github.com/basti1302/halfred). While in theory you could use Traverson even without special support for HAL by specifying each link relation with JSONPath (like `$._links.linkName`) that would be quite cumbersome. Instead, do the following:
 
-    var traverson = require('traverson')
-    var api = traverson.jsonHal.from('http://haltalk.herokuapp.com/')
+<pre>
+var traverson = require('traverson')
+var api = traverson.<b>jsonHal</b>.from('http://haltalk.herokuapp.com/')
 
-    api.newRequest()
-       .follow('ht:me', 'ht:posts')
-       .withTemplateParameters({name: 'traverson'})
-       .getResource(function(error, document) {
-      if (error) {
-        console.error('No luck :-)')
-      } else {
-        console.log(JSON.stringify(document))
-      }
-    });
+api.newRequest()
+   .follow('ht:me', 'ht:posts')
+   .withTemplateParameters({name: 'traverson'})
+   .getResource(function(error, document) {
+  if (error) {
+    console.error('No luck :-)')
+  } else {
+    console.log(JSON.stringify(document))
+  }
+});
 
-    http://haltalk.herokuapp.com/
-    {
-      "_links": {
-        "self": {
-          "href": "/"
-        },
-        "curies": [ ... ],
-        "ht:users": {
-          "href": "/users"
-        },
-        "ht:me": {
-          "href": "/users/{name}",
-          "templated": true
-        }
-      }
+http://haltalk.herokuapp.com/
+{
+  "_links": {
+    "self": {
+      "href": "/"
+    },
+    "curies": [ ... ],
+    "ht:users": {
+      "href": "/users"
+    },
+    "ht:me": {
+      "href": "/users/{name}",
+      "templated": true
     }
+  }
+}
 
-    http://haltalk.herokuapp.com/users/traverson
-    {
-      "_links": {
-        "self": {
-          "href": "/users/traverson"
+http://haltalk.herokuapp.com/users/traverson
+{
+  "_links": {
+    "self": {
+      "href": "/users/traverson"
+    },
+    "curies": [ ... ],
+    "ht:posts": {
+      "href": "/users/traverson/posts"
+    }
+  },
+  "username": "traverson",
+  "real_name": "Bastian Krol"
+}
+
+http://haltalk.herokuapp.com/users/traverson/posts
+{
+  "_links": {
+    "self": { "href": "/users/traverson/posts" },
+    "curies": [ ... ],
+    "ht:author": { "href": "/users/traverson" }
+  },
+  "_embedded": {
+    "ht:post": [
+      {
+        "_links": { "self": { "href": "/posts/526a56454136280002000015" },
+          "ht:author": { "href": "/users/traverson", "title": "Bastian Krol" }
         },
-        "curies": [ ... ],
-        "ht:posts": {
-          "href": "/users/traverson/posts"
-        }
+        "content": "Hello! I'm Traverson, the Node.js module to work with hypermedia APIs. ...",
+        "created_at": "2013-10-25T11:30:13+00:00"
       },
-      "username": "traverson",
-      "real_name": "Bastian Krol"
-    }
-
-    http://haltalk.herokuapp.com/users/traverson/posts
-    {
-      "_links": {
-        "self": { "href": "/users/traverson/posts" },
-        "curies": [ ... ],
-        "ht:author": { "href": "/users/traverson" }
+      {
+        "_links": { "self": { "href": "/posts/526a58034136280002000016" },
+          "ht:author": { "href": "/users/traverson", "title": "Bastian Krol" }
+        },
+        "content": "Hello! I'm Traverson, the Node.js module to work with hypermedia APIs. You can find out more about me at https://github.com/basti1302/traverson. This is just a test post. @mikekelly: Don't worry, this tests will only be run manually a few times here and there, I'll promise to not spam your haltalk server too much :-)",
+        "created_at": "2013-10-25T11:37:39+00:00"
       },
-      "_embedded": {
-        "ht:post": [
-          {
-            "_links": { "self": { "href": "/posts/526a56454136280002000015" },
-              "ht:author": { "href": "/users/traverson", "title": "Bastian Krol" }
-            },
-            "content": "Hello! I'm Traverson, the Node.js module to work with hypermedia APIs. ...",
-            "created_at": "2013-10-25T11:30:13+00:00"
-          },
-          {
-            "_links": { "self": { "href": "/posts/526a58034136280002000016" },
-              "ht:author": { "href": "/users/traverson", "title": "Bastian Krol" }
-            },
-            "content": "Hello! I'm Traverson, the Node.js module to work with hypermedia APIs. You can find out more about me at https://github.com/basti1302/traverson. This is just a test post. @mikekelly: Don't worry, this tests will only be run manually a few times here and there, I'll promise to not spam your haltalk server too much :-)",
-            "created_at": "2013-10-25T11:37:39+00:00"
-          },
-          ...
-        ]
-      }
-    }
+      ...
+    ]
+  }
+}
+</pre>
 
 This will give you all posts that the account `traverson` posted to Mike Kelly's haltalk server. Note that we used `traverson.jsonHal` when creating the `api` object, instead of the usual `traverson.json`. When called in this way, Traverson will assume the resources it receives comply with the HAL specification and looks for links in the `_links` property. If there is no such link, Traverson will also look for an embedded resource with the given name.
 
@@ -485,20 +501,43 @@ For embedded arrays you can additionally use the meta selector `$all`: If you pa
 
 JSONPath is not supported when working with HAL resources. It would also make no sense because in a HAL resource there is only one place in the document that contains all the links.
 
+### Content Negotiation
+
+In the examples so far, we always explicitly specified the media type the API would use. 
+
+With <code>var api = traverson.<b>json</b>.from('http://api.io');</code>, Traverson only assumes that the API uses a generic JSON media type. The server will probably set the `Content-Type` header to `application/json`, but this is not even checked by Traverson. With <code>var api = traverson.<b>jsonHal</b>.from('http://api.io');</code>, Traverson assumes that the API complies with the HAL specification. The server would probably set the `Content-Type` header to `application/hal+json`, again, this is not checked by Traverson.
+
+You can also let Traverson figure out the media by itself. Just omit the `json`/`jsonHal` from the call and Traverson will use the `Content-Type` header to decide how to interpret each response. Currently this is limited to `application/json` and `application/hal+json`, though.
+
+Here is a complete example:
+<pre>
+var traverson = require('traverson');
+var api = <b>traverson.from('http://api.io')</b>;
+
+api.newRequest()
+   .follow('link_to', 'resource')
+   .getResource(function(error, document) {
+     // Traverson will interpret the response as generic JSON or HAL, depending
+     // on the Content-Type header.
+});
+</pre>
+
 Release Notes
 -------------
 
-* 0.14.0 2014-12-05
+* 0.15.0 2014-12-06:
+   * Content negotiation (#6)
+* 0.14.0 2014-12-05:
    * `'link[$all]'` to retrieve the complete array of `_embedded` HAL resources instead of an individual resource (#14)
    * Add ability to use a custom JSON parsing method (#13)
-* 0.13.0 2014-12-01
+* 0.13.0 2014-12-01:
    * Reduce size of browser build by 33%. The minified version now has 37k instead of 55k (still too much, but also much better than before)
-* 0.12.0 2014-11-29
+* 0.12.0 2014-11-29:
    * Deal with cases where body comes as arg but not in response (#19) (thanks to @subvertnormality/@bbc-contentdiscovery)
 * 0.11.0 2014-11-14:
     * Add ability to set a custom request library (#18) (thanks to @subvertnormality/@bbc-contentdiscovery)
 * 0.10.0 2014-10-01:
-    * Add query string handling for client side (#16) (thanks to @craigspaeth
+    * Add query string handling for client side (#16) (thanks to @craigspaeth)
 * 0.9.0 2014-06-27:
     *  Add HAL curie resolution (#12)
 * 0.8.3 2014-06-19:
