@@ -1,7 +1,23 @@
+>>> Separate HAL support into a separate, optional plug-in. This would be quite a breaking change, so version 1.0.0 would be in order!
+
+
 # Ideas
 
 This section describes some ideas, that are not yet implemented, but might be included in future versions of Traversion.
 
+## Gather responses
+
+api.gather('some', 'link', 'relations').get(function(err, responses) => yields an array of all responses.
+api.gather('some', 'link', 'relations').getResource(function(err, responses) => yields an array of all resources.
+api.gather('some', 'tree', ['like', 'structure', ['as', 'nested'], 'arrays']).get => yields nested arrays with the same structure as the input parameter. For this example, at the server side, the link rel structure would look like this:
+
+/-+-some-+-tree-+-like
+                |
+                +-structure-+-as
+                |           |
+                |           +-nested
+                |
+                +-arrays
 ## Caching
 
 Currently, there is no caching implemented. There will be some sort of caching in future versions. When calling Traverson with the same start URI and the same path array, we would likely end up at the same final URI. The intermediate steps might be cached and not actually fetched from the server every time.
