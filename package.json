@@ -19,7 +19,7 @@
   ],
   "dependencies": {
     "JSONPath": "^0.10.0",
-    "halfred": "^0.3.0",
+    "halfred": "0.4.0",
     "minilog": "^2.0.2",
     "request": "^2.28.0",
     "resolve-url": "^0.2.1",

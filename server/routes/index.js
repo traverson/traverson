@@ -187,7 +187,7 @@ module.exports = {
 
   junk: {
     get: function(req, res) {
-      // server syntacically incorrect JSON
+      // serve syntacically incorrect JSON
       res.send('{ this will :: not parse');
     }
   },

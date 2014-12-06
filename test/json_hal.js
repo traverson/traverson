@@ -2,7 +2,7 @@
 
 var traverson = require('../traverson')
   , halDocs = require('./hal_docs.js')
-  , mockResponse =  require('./util/mock_response')
+  , mockResponse =  require('./util/mock_response')('application/hal+json')
   , waitFor = require('./util/wait_for')
   , chai = require('chai')
   , sinon = require('sinon')

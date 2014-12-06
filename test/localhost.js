@@ -42,7 +42,8 @@ describe('Traverson (when tested against a local server)', function() {
         'Content-Type': 'application/json'
       }
     });
-    jsonHalApi = traverson.jsonHal
+    jsonHalApi = traverson
+      .jsonHal
       .from(rootUri)
       .newRequest()
       .withRequestOptions({

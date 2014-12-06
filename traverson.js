@@ -9,6 +9,13 @@ var minilog = require('minilog')
 
 module.exports = {
   _Builder: Builder,
+  from: function(uri) {
+    return {
+      newRequest: function() {
+        return new Builder(mediaTypes.CONTENT_NEGOTIATION, uri);
+      }
+    };
+  },
   json: {
     from: function(uri) {
       return {
