@@ -1,7 +1,7 @@
 'use strict';
 
 var traverson = require('../traverson')
-  , waitFor = require('./util/wait_for')
+  , waitFor = require('poll-forever')
   , chai = require('chai')
   , sinon = require('sinon')
   , sinonChai = require('sinon-chai')
@@ -13,14 +13,13 @@ chai.use(sinonChai);
 describe('Traverson (when tested against a local server)', function() {
 
   var jsonApi;
-  var jsonHalApi;
   var testServer;
   var callback;
   var rootUri = 'http://127.0.0.1:2808/';
 
   before(function() {
     if (isNodeJs()) {
-      testServer = require('../server/app');
+      testServer = require('traverson-test-server');
       testServer.start();
     }
   });
@@ -42,17 +41,7 @@ describe('Traverson (when tested against a local server)', function() {
         'Content-Type': 'application/json'
       }
     });
-    jsonHalApi = traverson
-      .jsonHal
-      .from(rootUri)
-      .newRequest()
-      .withRequestOptions({
-      headers: {
-        'Accept': 'application/hal+json',
-        'Content-Type': 'application/json'
-      }
-    });
-    callback = sinon.spy();
+   callback = sinon.spy();
   });
 
   it('should fetch the root response', function(done) {
@@ -102,54 +91,6 @@ describe('Traverson (when tested against a local server)', function() {
         var resultDoc = checkResponseWithBody();
         expect(resultDoc.second).to.exist;
         expect(resultDoc.second).to.equal('document');
-        done();
-      }
-    );
-  });
-
-  it('should follow a multi-element path in hal+json', function(done) {
-    jsonHalApi.follow('first', 'second').get(callback);
-    waitFor(
-      function() { return callback.called; },
-      function() {
-        var resultDoc = checkResponseWithBody();
-        expect(resultDoc.second).to.exist;
-        expect(resultDoc.second).to.equal('document');
-        done();
-      }
-    );
-  });
-
-  it('should follow a multi-element path in hal+json using an embedded ' +
-      'resource along the way', function(done) {
-    jsonHalApi.follow('first',
-        'contained_resource',
-        'embedded_link_to_second')
-      .get(callback);
-    waitFor(
-      function() { return callback.called; },
-      function() {
-        var resultDoc = checkResponseWithBody();
-        expect(resultDoc.second).to.exist;
-        expect(resultDoc.second).to.equal('document');
-        done();
-      }
-    );
-  });
-
-  it('should follow a multi-element path in hal+json yielding an embedded ' +
-      'resource to the callback',
-      function(done) {
-    jsonHalApi.follow('first',
-        'second',
-        'inside_second')
-      .get(callback);
-    waitFor(
-      function() { return callback.called; },
-      function() {
-        var resultDoc = checkResponseWithBody();
-        expect(resultDoc.more).to.exist;
-        expect(resultDoc.more).to.equal('data');
         done();
       }
     );

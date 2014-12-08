@@ -1,8 +1,8 @@
 'use strict';
 
 var traverson = require('../traverson')
-  , mockResponse =  require('./util/mock_response')()
-  , waitFor = require('./util/wait_for')
+  , mockResponse =  require('traverson-mock-response')()
+  , waitFor = require('poll-forever')
   , chai = require('chai')
   , sinon = require('sinon')
   , sinonChai = require('sinon-chai')

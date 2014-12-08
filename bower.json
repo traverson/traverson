@@ -24,7 +24,6 @@
     "**/.*",
     "bin",
     "bower_components",
-    "haltalk_test",
     "howto_release.markdown",
     "lib",
     "node_modules",

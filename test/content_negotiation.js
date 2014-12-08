@@ -1,13 +1,12 @@
 'use strict';
 
 var traverson = require('../traverson')
-  , waitFor = require('./util/wait_for')
+  , waitFor = require('poll-forever')
   , chai = require('chai')
   , sinon = require('sinon')
   , sinonChai = require('sinon-chai')
   , assert = chai.assert
-  , expect = chai.expect
-  , _s = require('underscore.string');
+  , expect = chai.expect;
 
 chai.use(sinonChai);
 
@@ -25,6 +24,17 @@ describe('Content negotiation', function() {
     , secondUri
     , thirdResponse;
 
+  before(function() {
+    traverson.registerMediaType(FoobarAdapter.mediaType, FoobarAdapter);
+  });
+
+  after(function() {
+    // de-register plug-in to leave Traverson in a clean state for other
+    // tests
+    traverson.registerMediaType(FoobarAdapter.mediaType, null);
+  });
+
+
   beforeEach(function() {
     api = client.newRequest();
     get = sinon.stub();
@@ -37,7 +47,7 @@ describe('Content negotiation', function() {
 
     beforeEach(function() {
       mockResponse =
-        require('./util/mock_response')('application/json ; charset=utf-8');
+        require('traverson-mock-response')('application/json ; charset=utf-8');
       firstUri = rootUri + '/first';
       secondUri = rootUri + '/second';
       rootResponse = mockResponse({ first: firstUri, });
@@ -68,20 +78,17 @@ describe('Content negotiation', function() {
     });
   });
 
-  describe('with application/hal+json', function() {
+  describe('with a different media type', function() {
     beforeEach(function() {
-      mockResponse = require('./util/mock_response')('application/hal+json');
+      mockResponse =
+        require('traverson-mock-response')('application/foobar+json');
       firstUri = rootUri + '/first';
       secondUri = rootUri + '/second';
       rootResponse = mockResponse({
-        _links: {
-          first: { href: firstUri },
-        }
+        foobar: firstUri,
       });
       secondResponse = mockResponse({
-        _links: {
-          second: { href: secondUri },
-        }
+        foobar: secondUri,
       });
       thirdResponse = mockResponse({ content: 'awesome' });
 
@@ -93,10 +100,10 @@ describe('Content negotiation', function() {
           1, null, thirdResponse, thirdResponse.body);
     });
 
-    it('should recognize the media type as application/hal+json',
+    it('should recognize the media type and use the adapter',
         function(done) {
       api
-      .follow('first', 'second')
+      .follow('what', 'ever')
       .getResource(callback);
       waitFor(
         function() { return callback.called; },
@@ -109,5 +116,15 @@ describe('Content negotiation', function() {
       );
     });
   });
+
+  function FoobarAdapter() {}
+
+  FoobarAdapter.mediaType = 'application/foobar+json';
+
+  FoobarAdapter.prototype.findNextStep = function(doc, key) {
+    return {
+      uri: doc.foobar,
+    };
+  };
 
 });

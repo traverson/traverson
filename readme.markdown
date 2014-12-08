@@ -11,10 +11,10 @@ A Hypermedia API/HATEOAS Client for Node.js and the Browser
 
 [![NPM](https://nodei.co/npm/traverson.png?downloads=true&stars=true)](https://nodei.co/npm/traverson/)
 
-| File Size (browser build) | KB |
-|---------------------------|---:|
-| minified & gzipped        | 12 |
-| minified                  | 38 |
+| File Size (browser build) | KB   |
+|---------------------------|-----:|
+| minified & gzipped        |  9.7 |
+| minified                  | 31   |
 
 Introduction
 ------------
@@ -25,7 +25,12 @@ To follow a path of links you typically start at one URI (most often the root UR
 
 Traverson does that for you. You just need to tell Traverson where it can find the link to follow in each consecutive document and Traverson will happily execute the hops from document to document for you and when it's done, hand you the final http response or document, the one you really wanted to have in the first place.
 
-Traverson works in Node.js and in the browser. For now, Traverson only supports JSON APIs (including JSON-HAL).
+Traverson works in Node.js and in the browser. For now, Traverson only supports JSON APIs. Support for other specialized JSON hypermedia types can be added with plug-ins (for example JSON-HAL).
+
+Breaking Change As Of Version 1.0.0
+-----------------------------------
+
+From version 1.0.0 onwards, support for HAL is no longer included in Traverson. instead, it has been moved to a separate plug-in. If you have used Traverson to work with HAL APIs, you will need some (trivial) changes in your code. See [Using Plug-ins](#using-plug-ins) and [traverson-hal](https://github.com/basti1302/traverson-hal).
 
 Table of Contents
 -----------------
@@ -44,7 +49,7 @@ Table of Contents
     * [URI Templates](#uri-templates)
     * [Headers and Authentication](#headers-http-basic-auth-oauth-and-whatnot)
     * [Custom JSON parser](#custom-json-parser)
-    * [HAL](#hal---hypertext-application-language)
+    * [Using Plug-ins](#using-plug-ins)
     * [Content Negotiation](#content-negotiation)
 * [Release Notes](#release-notes)
 
@@ -403,115 +408,88 @@ api.follow('link-rel')
   });
 </pre>
 
-### HAL - hypertext application language
+### Using Plug-ins
 
-Traverson supports the JSON dialect of [HAL](http://tools.ietf.org/id/draft-kelly-json-hal-06.txt), the hypertext application language via [Halfred](https://github.com/basti1302/halfred). While in theory you could use Traverson even without special support for HAL by specifying each link relation with JSONPath (like `$._links.linkName`) that would be quite cumbersome. Instead, do the following:
+Out of the box, Traverson works with generic JSON APIs. There are a lot of media types out there that support hypermedia APIs better, among others
+* [HAL (application/hal+json)](),
+* [Mason (application/vnd.mason+json)](), 
+* [Collection+JSON (application/vnd.collection+json)](http://amundsen.com/media-types/collection/),
+* [Siren (application/vnd.siren+json)](https://github.com/kevinswiber/siren)
+* [Uber (application/vnd.amundsen-uber+json)](https://rawgit.com/mamund/media-types/master/uber-hypermedia.html),
 
-<pre>
-var traverson = require('traverson')
-var api = traverson.<b>jsonHal</b>.from('http://haltalk.herokuapp.com/')
+If you want to leverage the power of a specialized media type, you can use the concept of Traverson's media type plug-ins.
 
-api.newRequest()
-   .follow('ht:me', 'ht:posts')
-   .withTemplateParameters({name: 'traverson'})
-   .getResource(function(error, document) {
-  if (error) {
-    console.error('No luck :-)')
-  } else {
-    console.log(JSON.stringify(document))
-  }
-});
+Here is an example on how to register a media type plug-in with Traverson.
 
-http://haltalk.herokuapp.com/
-{
-  "_links": {
-    "self": {
-      "href": "/"
-    },
-    "curies": [ ... ],
-    "ht:users": {
-      "href": "/users"
-    },
-    "ht:me": {
-      "href": "/users/{name}",
-      "templated": true
-    }
-  }
+```
+var traverson = require('traverson');
+traverson.registerMediaType('application/vnd.mason+json', MasonAdapter);
+```
+
+This would register `MasonAdapter` as a plug-in for the media type `application/vnd.mason+json`. `MasonAdapter` would need to be a constructor function adhering to the constraints given in [the next subsection](#implementing-media-type-plug-ins).
+
+Once registered, a media type plug-in is automatically eligible for [content negotiation](#content-negotiation).
+
+Usually, a media type plug-in should also provide a `mediaType` property containing the registered media type it is intended for. Thus, the example above could be simplified to 
+
+```
+var traverson = require('traverson');
+traverson.registerMediaType(MasonAdapter.mediaType, MasonAdapter);
+```
+
+(Note that there currently is no MasonAdapter, this is just an example.)
+
+#### Implementing Media Type Plug-ins
+
+Here is an implementation stub for Traverson media type plug-ins:
+
+```
+'use strict';
+
+function MediaTypeAdapter(contentNegotiation, log) {
+  this.contentNegotiation = contentNegotiation;
+  this.log = log;
 }
 
-http://haltalk.herokuapp.com/users/traverson
-{
-  "_links": {
-    "self": {
-      "href": "/users/traverson"
-    },
-    "curies": [ ... ],
-    "ht:posts": {
-      "href": "/users/traverson/posts"
-    }
-  },
-  "username": "traverson",
-  "real_name": "Bastian Krol"
+MediaTypeAdapter.mediaType = 'application/whatever+json';
+
+MediaTypeAdapter.prototype.findNextStep = function(doc, key) {
+  // parse incoming doc to determine the next step for Traverson
+  ...
+
+  // return next step as an object
+  return {
+    uri: ...,
+
+
+  };
 }
+```
 
-http://haltalk.herokuapp.com/users/traverson/posts
-{
-  "_links": {
-    "self": { "href": "/users/traverson/posts" },
-    "curies": [ ... ],
-    "ht:author": { "href": "/users/traverson" }
-  },
-  "_embedded": {
-    "ht:post": [
-      {
-        "_links": { "self": { "href": "/posts/526a56454136280002000015" },
-          "ht:author": { "href": "/users/traverson", "title": "Bastian Krol" }
-        },
-        "content": "Hello! I'm Traverson, the Node.js module to work with hypermedia APIs. ...",
-        "created_at": "2013-10-25T11:30:13+00:00"
-      },
-      {
-        "_links": { "self": { "href": "/posts/526a58034136280002000016" },
-          "ht:author": { "href": "/users/traverson", "title": "Bastian Krol" }
-        },
-        "content": "Hello! I'm Traverson, the Node.js module to work with hypermedia APIs. You can find out more about me at https://github.com/basti1302/traverson. This is just a test post. @mikekelly: Don't worry, this tests will only be run manually a few times here and there, I'll promise to not spam your haltalk server too much :-)",
-        "created_at": "2013-10-25T11:37:39+00:00"
-      },
-      ...
-    ]
-  }
-}
-</pre>
+A media type plug-in is always a constructor function taking two arguments, a boolean content negotiation flag and a log object. The `contentNegotiation` flag needs to be stored with that exact name. The log object can be used by the plug-in to log messages, if required.
 
-This will give you all posts that the account `traverson` posted to Mike Kelly's haltalk server. Note that we used `traverson.jsonHal` when creating the `api` object, instead of the usual `traverson.json`. When called in this way, Traverson will assume the resources it receives comply with the HAL specification and looks for links in the `_links` property. If there is no such link, Traverson will also look for an embedded resource with the given name.
+Every media type plug-in *should* provide a propery `mediaType` that represents the registered content type for this plug-in.
 
-You can also pass strings like `'ht:post[name:foo]'` to the `follow` method to select links which share the same link relation by a secondary key. Because multiple links with the same link relation type are represented as an array of link objects in HAL, you can also use an array indexing notation like `'ht:post[1]'` to select an individual elements from an array of link objects. However, this is not recommended and should only be used as a last resort if the API does not provide a secondary key to select the correct link, because it relies on the ordering of the links as returned from the server, which might not be guaranteed to be always the same.
+Every media type plug-in *must* provide a method `findNextStep`, which takes two parameters. The incoming `doc` is the resource retrieved from the response of the last HTTP request. This is already a parsed JavaScript object, not raw JSON content. The `key` is the link relation that has been specified for this step in the `follow` method. The responsibility of the `findNextStep` method is to return a step object, that tells Traverson what to do next.
 
-You can also use the array indexing notation `'ht:post[1]'` to target individual elements in an array of embedded resources.
+A step object can be as simple as this `{ uri: '/next/uri/to/call' }`. This would make Traverson make an HTTP request to the given URI. Some media types (like HAL) contain embeddeded resources. For those, the next step is not an HTTP request. Instead, you can put the part of `doc` that represents the embedded resource into the returned step object, like this: `{ doc: { ... } }`.
 
-#### Embedded Documents
-
-When working with HAL resources, for each link given to the `follow` method, Traverson checks the `_links` object. If the `_links` object does not have the property in question, Traverson also automatically checks the embedded document (the `_embedded` object). If there is an embedded document with the correct property key, this one will be used instead. If there is both a `_link` and an `_embedded` object with the same name, Traverson will always prefer the link, not the embedded object (reason: the spec says that an embedded resource may "be a full, partial, or inconsistent version of the representation served from the target URI", so to get the complete and up to date document your best bet is to follow the link to the actual resource, if available).
-
-Link relations can denote a single embedded document as well as an array of embedded documents. Therefore, the same mechanisms that are used to select an individual link from an array of link objects can also be used with embedded arrays. That is, you can always use `'ht:post[name:foo]'` or `'ht:post[1]'`, no matter if the link relation is present in the `_links` object or in the `_embedded` object.
-
-For embedded arrays you can additionally use the meta selector `$all`: If you pass `ht:post[$all]` to the `follow` method, you receive the complete array of posts, not an individual post resource. A link relation containing `$all` must only be passed as the last element to `follow` and it only works for embedded documents. Futhermore, it can only be used with `get` and `getResource`, not with `post`, `put`, `delete`, `patch` or `getUri`.
-
-#### HAL and JSONPath
-
-JSONPath is not supported when working with HAL resources. It would also make no sense because in a HAL resource there is only one place in the document that contains all the links.
+If you want to implement your own media type plug-in, having a look at the existing HAL plug-in might be helpful: <https://github.com/basti1302/traverson-hal/blob/master/index.js>
 
 ### Content Negotiation
 
 In the examples so far, we always explicitly specified the media type the API would use. 
 
-With <code>var api = traverson.<b>json</b>.from('http://api.io');</code>, Traverson only assumes that the API uses a generic JSON media type. The server will probably set the `Content-Type` header to `application/json`, but this is not even checked by Traverson. With <code>var api = traverson.<b>jsonHal</b>.from('http://api.io');</code>, Traverson assumes that the API complies with the HAL specification. The server would probably set the `Content-Type` header to `application/hal+json`, again, this is not checked by Traverson.
+With <code>var api = traverson.<b>json</b>.from('http://api.io');</code>, Traverson only assumes that the API uses a generic JSON media type. The server will probably set the `Content-Type` header to `application/json`, but this is not even checked by Traverson. With the [traverson-hal](https://github.com/basti1302/traverson-hal) plug-in installed you can to <code>var api = traverson.<b>jsonHal</b>.from('http://api.io');</code>, to make Traverson assume that the API complies with the HAL specification. The server would probably set the `Content-Type` header to `application/hal+json`, again, this is not checked by Traverson.
 
-You can also let Traverson figure out the media by itself. Just omit the `json`/`jsonHal` from the call and Traverson will use the `Content-Type` header to decide how to interpret each response. Currently this is limited to `application/json` and `application/hal+json`, though.
+You can also let Traverson figure out the media by itself. Just omit the `json`/`jsonHal` from the call and Traverson will use the `Content-Type` header to decide how to interpret each response. However, for each content type an appropriate media type plug-in needs to be registered. Without any plug-ins, Traverson will only be able to process `application/json` and will fail if it receives a different content type header. 
 
 Here is a complete example:
 <pre>
 var traverson = require('traverson');
+var JsonHalAdapter = require('traverson-hal');
+traverson.registerMediaType(JsonHalAdapter.mediaType, JsonHalAdapter);
+
 var api = <b>traverson.from('http://api.io')</b>;
 
 api.newRequest()
@@ -525,15 +503,18 @@ api.newRequest()
 Release Notes
 -------------
 
+* 1.0.0 2014-12-??: 
+    * Media Type Plug-ins. You can now register your own media types and plug-ins to process them.
+    * HAL is no longer supported by Traverson out of the box. If you want to use HAL, you now have to use the [traverson-hal](https://github.com/basti1302/traverson-hal) plug-in.
 * 0.15.0 2014-12-06:
-   * Content negotiation (#6)
+    * Content negotiation (#6)
 * 0.14.0 2014-12-05:
-   * `'link[$all]'` to retrieve the complete array of `_embedded` HAL resources instead of an individual resource (#14)
-   * Add ability to use a custom JSON parsing method (#13)
+    * `'link[$all]'` to retrieve the complete array of `_embedded` HAL resources instead of an individual resource (#14)
+    * Add ability to use a custom JSON parsing method (#13)
 * 0.13.0 2014-12-01:
-   * Reduce size of browser build by 33%. The minified version now has 37k instead of 55k (still too much, but also much better than before)
+    * Reduce size of browser build by 33%. The minified version now has 37k instead of 55k (still too much, but also much better than before)
 * 0.12.0 2014-11-29:
-   * Deal with cases where body comes as arg but not in response (#19) (thanks to @subvertnormality/@bbc-contentdiscovery)
+    * Deal with cases where body comes as arg but not in response (#19) (thanks to @subvertnormality/@bbc-contentdiscovery)
 * 0.11.0 2014-11-14:
     * Add ability to set a custom request library (#18) (thanks to @subvertnormality/@bbc-contentdiscovery)
 * 0.10.0 2014-10-01:
