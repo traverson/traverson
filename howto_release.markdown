@@ -6,6 +6,7 @@ To release version x.y.z:
 - bump version in package.json to x.y.z
 - bump version in bower.json to x.y.z
 - `grunt` (to create a fresh browser build, also make sure all tests pass etc.)
+- First release? Then `bower register package-name git://github.com/user/repo.git`
 - `git commit -am"release x.y.z" && git push`
 - `npm publish`
 - `git checkout -b release-x.y.z` (to create the release branch, required for bower)

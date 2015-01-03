@@ -1,6 +1,6 @@
 'use strict';
 
-var superagent = require('../third-party/superagent');
+var superagent = require('superagent');
 
 function Request() {
   this.options = {};

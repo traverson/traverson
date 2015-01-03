@@ -22,6 +22,7 @@
     "minilog": "^2.0.2",
     "request": "^2.28.0",
     "resolve-url": "^0.2.1",
+    "superagent": "^0.21.0",
     "underscore.string": "^2.3.3",
     "url-template": "^2.0.4"
   },
@@ -52,7 +53,6 @@
     "indexof": false,
     "emitter": false,
     "reduce": false,
-    "superagent": false,
     "url": "./browser/lib/shim/url-resolve.js"
   },
   "testling": {
