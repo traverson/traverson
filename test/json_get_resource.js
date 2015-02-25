@@ -16,13 +16,11 @@ describe('getResource for JSON', function() {
   var get;
   var callback;
   var rootUri = 'http://api.io';
-  var client = traverson.json.from(rootUri);
-  var api;
+  var api = traverson.from(rootUri).json();
 
   var result = mockResponse({ foo: 'bar' });
 
   beforeEach(function() {
-    api = client.newRequest();
     get = sinon.stub();
     api.walker.request = { get: get };
     callback = sinon.spy();
@@ -227,10 +225,7 @@ describe('getResource for JSON', function() {
         { we: 'can haz use uri templates for root doc, yo!' });
       var startUriTemplate = rootUri + '/{param}/whatever';
       var startUri = rootUri + '/substituted/whatever';
-      var api = traverson
-          .json
-          .from(startUriTemplate)
-          .newRequest();
+      var api = traverson.from(startUriTemplate).json();
       get = sinon.stub();
       api.walker.request = { get: get };
       get.withArgs(startUri, sinon.match.func).callsArgWithAsync(

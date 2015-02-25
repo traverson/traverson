@@ -50,7 +50,7 @@ Table of Contents
     * [Headers and Authentication](#headers-http-basic-auth-oauth-and-whatnot)
     * [Custom JSON parser](#custom-json-parser)
     * [Using Plug-ins](#using-plug-ins)
-    * [Content Negotiation](#content-negotiation)
+    * [Content Type Detection Versus Forcing Media Types](#content-type-detection-versus-forcing-media-types)
 * [Release Notes](#release-notes)
 
 Installation
@@ -81,55 +81,69 @@ This section shows how to use Traverson's features with small examples.
 
 ### Following Links
 
-The most basic thing you can do with traverson is to let it start at the root URI of an API, follow some links and pass the resource that is found at the end of this journey back to you. Here's how:
+The most basic thing you can do with traverson is to let it start at the root URL of an API, follow some links and pass the resource that is found at the end of this journey back to you. Here's how:
 
-    var traverson = require('traverson');
-    var api = traverson.json.from('http://api.io');
+```
+var traverson = require('traverson');
 
-    api.newRequest()
-       .follow('link_to', 'resource')
-       .getResource(function(error, document) {
-      if (error) {
-        console.error('No luck :-)')
-      } else {
-        console.log('We have followed the path and reached our destination.')
-        console.log(JSON.stringify(document))
-      }
-    });
+traverson
+.from('http://api.example.com')
+.follow('link_to', 'resource')
+.getResource(function(error, document) {
+  if (error) {
+    console.error('No luck :-)')
+  } else {
+    console.log('We have followed the path and reached the target resource.')
+    console.log(JSON.stringify(document))
+  }
+});
+```
 
-Given this call, Traverson first fetches `http://api.io` (because that's what we specified in the from method when creating the `api` object). Let's say the response for this URI is
+Given this call, Traverson first fetches `http://api.example.com` (because that's what we specified in the `from` method).
 
-    http://api.io
-    {
-      "some": "stuff we do not care about",
-      ...
-      "link_to": "http://api.io/follow/me"
-    }
+Let's say the response for this URL is
+
+```
+http://api.example.com
+{
+  "some": "stuff we do not care about",
+  ...
+  "link_to": "http://api.example.com/follow/me"
+}
+```
 
 (To make the examples easier to read, we note the URI corresponding to the document above each document. The URI is of course not part of the JSON response body.)
 
-After receiving the document from the start URI, Traverson starts to follow the links provided via the `follow` method. Since the first link is `link_to`, it looks for a property with this name in the JSON response. In this case, this yields the next URI to access: `http://api.io/follow/me`. Traverson will fetch the document from there now. Let's assume this document looks like to this:
+By the way, we forced Traverson to interpret the response as `application/json` by using the `json()` method. We could have omitted the `json()` method and let Traverson figure out the content type. For this, the server would need to send the `Content-Type` header with the value `application/json`.
 
-    https://api.io/follow/me
-    {
-      "more_stuff": "that we ignore",
-      ...
-      "resource": "http://api.io/follow/me/to/the/stars"
-    }
+After receiving the document from the start URL, Traverson starts to follow the links provided via the `follow` method. Since the first link is `link_to`, it looks for a property with this name in the JSON response. In this case, this yields the next URL to access: `http://api.example.com/follow/me`. Traverson will fetch the document from there now. Let's assume this document looks like to this:
 
-Now, since the next link given to `follow` is `resource`, Traverson will look for the property `resource`. Finding that, Traverson will finally fetch the JSON document from `http://api.io/follow/me/to/the/stars`:
+```
+https://api.example.com/follow/me
+{
+  "more_stuff": "that we ignore",
+  ...
+  "resource": "http://api.example.com/follow/me/to/the/stars"
+}
+```
 
-    http://api.io/follow/me/to/the/stars
-    {
-      "the_resource": "that we really wanted to have",
-      "with": "lots of interesting and valuable content",
-      ...
-    }
+Now, since the next link given to `follow` is `resource`, Traverson will look for the property `resource`. Finding that, Traverson will finally fetch the JSON document from `http://api.example.com/follow/me/to/the/stars`:
 
-Because the list of links given to `follow` is exhausted now (`resource` was the last element), this document will be passed into to the callback you provided when calling the `getResource` method. Coming back to the example from the top, the output would be
+```
+http://api.example.com/follow/me/to/the/stars
+{
+  "the_resource": "that we really wanted to have",
+  "with": "lots of interesting and valuable content",
+  ...
+}
+```
 
-    We have followed the path and reached the final resource.
-    { "the_document": "that we really wanted to have", "with": "lots of interesting and valuable content", ...  }
+Because the list of links given to `follow` is exhausted now (`resource` was the last element), this document, called the target resource, will be passed into to the callback you provided when calling the `getResource` method. Coming back to the example from the top, the output would be
+
+```
+We have followed the path and reached the target resource.
+{ "the_document": "that we really wanted to have", "with": "lots of interesting and valuable content", ...  }
+```
 
 #### On Absolute URLs, Absolute URL Paths and Relative URL Paths
 
@@ -144,9 +158,10 @@ Different APIs use different flavours of links in their responses. Traverson can
 The example above chained the `getResource` method to the `follow` method. For this method, Traverson will parse the JSON from the last HTTP response and pass the resulting JavaScript object to your callback. In certain situations you might want more control and would like to receive the full HTTP response object instead of the body, already parsed to an object. This is what the `get` method is for:
 
 <pre>
-api.newRequest()
-   .follow('link_to', 'resource')
-   <b>.get(function(error, response) {</b>
+traverson
+.from('http://api.example.com')
+.follow('link_to', 'resource')
+<b>.get(function(error, response) {</b>
   if (error) {
     console.error('No luck :-)')
   } else {
@@ -162,14 +177,16 @@ api.newRequest()
 You can also pass an array of strings to the follow method. Makes no difference.
 
 <pre>
-api.newRequest()
-   .follow(<b>'first_link', 'second_link', 'third_link'</b>)
-   .getResource(callback);
+traverson
+.from('http://api.example.com')
+.follow(<b>'first_link', 'second_link', 'third_link'</b>)
+.getResource(callback);
 </pre>
 is equivalent to
 <pre>
-api.newRequest()
-   .follow(<b>['first_link', 'second_link', 'third_link']</b>)
+traverson
+.from('http://api.example.com')
+.follow(<b>['first_link', 'second_link', 'third_link']</b>)
    .getResource(callback);
 </pre>
 
@@ -182,9 +199,10 @@ So far we only have concerned ourselves with fetching information from a REST AP
 This looks very similar to using the `get` method:
 
 <pre>
-api.newRequest()
-   .follow('link_to', 'resource')
-   .<b>post</b>({'some': 'data'}, function(error, response) {
+traverson
+.from('http://api.example.com')
+.follow('link_to', 'resource')
+.<b>post</b>({'some': 'data'}, function(error, response) {
   if (error) {
     console.error('No luck :-)')
   } else {
@@ -197,22 +215,25 @@ api.newRequest()
 All methods except `getResource` (that is `get`, `post`, `put`, `del` and `patch` pass the full http response into the provided callback, so the callback's method signature always looks like `function(error, response)`. `post`, `put` and `patch` obviously have a body argument, `del` doesn't. Some more examples, just for completenss' sake:
 
 <pre>
-api.newRequest()
-   .follow('link_to', 'resource')
-   .<b>put</b>({'some': 'data'}, function(error, response) {
-   ...
+traverson
+.from('http://api.example.com')
+.follow('link_to', 'resource')
+.<b>put</b>({'some': 'data'}, function(error, response) {
+  ...
 });
 
-api.newRequest()
-   .follow('link_to', 'resource')
-   .<b>patch</b>({'some': 'data'}, function(error, response) {
-   ...
+traverson
+.from('http://api.example.com')
+.follow('link_to', 'resource')
+.<b>patch</b>({'some': 'data'}, function(error, response) {
+  ...
 });
 
-api.newRequest()
-   .follow('link_to', 'resource')
-   .<b>del</b>(function(error, response) {
-   ...
+traverson
+.from('http://api.example.com')
+.follow('link_to', 'resource')
+.<b>del</b>(function(error, response) {
+  ...
 });
 </pre>
 
@@ -220,12 +241,14 @@ api.newRequest()
 
 If anything goes wrong during this journey from resource to resource, Traverson will stop and call your callback with the appropriate error as the first parameter. In the examples above, the output would be
 
-    No luck :-)
+```
+No luck :-)
+```
 
 Reasons for failure could be:
-* The start URI, one of the intermediate URIs, or the final URI is not reachable.
+* The start URL, one of the intermediate URLs, or the final URL is not reachable.
 * One of the documents can not be parsed as JSON, that is, it is not syntactically well formed.
-* One of the intermediate documents does not contain the property given in the path array.
+* One of the intermediate documents does not contain the property (link relation) specified via `follow`.
 * If JSONPath (see below) is used:
     * One of the JSONPath expressions in the path array does not yield a match for the corresponding document.
     * One of the JSONPath expressions in the path array yields more than one match for the corresponding document.
@@ -235,30 +258,33 @@ Reasons for failure could be:
 Traverson supports [JSONPath](http://goessner.net/articles/JsonPath/) expressions in the path array. This will come in handy if the link you want to follow from a given document is not a direct property of that document. Consider the following example:
 
 <pre>
-api.newRequest()
-   .follow(<b>'$.deeply.nested.link'</b>)
-   .getResource(function(error, document) {
+traverson
+.from('http://api.example.com')
+.follow(<b>'$.deeply.nested.link'</b>)
+.getResource(function(error, document) {
    ...
 });
 </pre>
 
-where the document at the root URI is
+where the documents are
 
-    http://api.io
-    {
-      "deeply": {
-        "nested": {
-          "link: "http://api.io/congrats/you/have/found/me"
-        }
-      }
+```
+http://api.example.com
+{
+  "deeply": {
+    "nested": {
+      "link: "http://api.example.com/congrats/you/have/found/me"
     }
+  }
+}
 
-    http://api.io/congrats/you/have/found/me
-    {
-      "the_document": "we wanted to have"
-    }
+http://api.example.com/congrats/you/have/found/me
+{
+  "the_document": "we wanted to have"
+}
+```
 
-Upon loading the document from the start URI `http://api.io`, Traverson will recognize that the first (and only) link to `follow` is a JSONPath expression and evaluate it against the given document, which results in the URI `http://api.io/congrats/you/have/found/me`. Of course you can also use path arrays with more than one element with JSONPath and you can freely mix JSONPath expressions with plain vanilla properties.
+Upon loading the document from the start URL `http://api.example.com`, Traverson will recognize that the first (and only) link to `follow` is a JSONPath expression and evaluate it against the given document, which results in the URL `http://api.example.com/congrats/you/have/found/me`. Of course you can also call `follow` with more than one element with JSONPath and you can freely mix JSONPath expressions with plain vanilla properties.
 
 Any element of the path array that begins with `$.` or `$[` is assumed to be a JSONPath expression, otherwise the element is interpreted as a plain object property.
 
@@ -271,119 +297,140 @@ If a JSONPath expressions yields no match or more than one match, an error will 
 Traverson supports URI templates ([RFC 6570](http://tools.ietf.org/html/rfc6570)). Let's modify our inital example to make use of this feature:
 
 <pre>
-api.follow('user_thing_lookup')
-    <b>.withTemplateParameters({ user_name: 'basti1302', thing_id: 4711 })</b>
-    .getResource(function(error, document) {
+traverson
+.from('http://api.example.com')
+.follow('user_thing_lookup')
+<b>.withTemplateParameters({ user_name: 'basti1302', thing_id: 4711 })</b>
+.getResource(function(error, document) {
   ...
 });
 </pre>
 
-Again, Traverson first fetches `http://api.io`. This time, we assume a response with an URI template:
+Again, Traverson first fetches `http://api.example.com`. This time, we assume a response with an URI template:
 
 <pre>
-http://api.io
+http://api.example.com
 {
-  "user_thing_lookup": <b>"http://api.io/users/{user_name}/things{/thing_id}"</b>
+  "user_thing_lookup": <b>"http://api.example.com/users/{user_name}/things{/thing_id}"</b>
 }
 </pre>
 
-Traverson recognizes that this is an URI template and resolves the template with the template parameters provided via the `withTemplateParameters` method (`{user_name: "basti1302", thing_id: 4711}` in this case). The resulting URI is `http://api.io/users/basti1302/things/4711`. Traverson now fetches the document from this URI and passes the resulting document into the provided callback.
+Traverson recognizes that this is an URI template and resolves the template with the template parameters provided via the `withTemplateParameters` method (`{user_name: "basti1302", thing_id: 4711}` in this case). The resulting URL is `http://api.example.com/users/basti1302/things/4711`. Traverson now fetches the document from this URL and passes the resulting document into the provided callback.
 
-    http://api.io/users/basti1302/things/4711
-    {
-      "the_document": "we wanted to have"
-    }
+```
+http://api.example.com/users/basti1302/things/4711
+{
+  "the_document": "we wanted to have"
+}
+```
 
-To find out if URI templating is necessary, Traverson simply checks if the URI contains the character `{`.
+To find out if template resolution is necessary, Traverson simply checks if the URL contains the character `{`.
 
-Of course, URI templating also works if the path from the start URI to the final document involves multiple hops.
+Of course, URI templating also works if the path from the start URL to the target resource involves multiple hops.
 
 Let's assume the following call
 
-    api.follow('user_lookup', 'thing_lookup')
-        .withTemplateParameters({ user_name: 'basti1302', thing_id: 4711 })
-        .getResource(function(error, document) {
-      ...
-    });
+```
+traverson
+.from('http://api.example.com')
+.follow('user_lookup', 'thing_lookup')
+.withTemplateParameters({ user_name: 'basti1302', thing_id: 4711 })
+.getResource(function(error, document) {
+  ...
+});
+```
 
-and the following documents, with their corresponding URIs:
+and the following documents, with their corresponding URLs:
 
-    http://api.io
-    {
-      "user_lookup": "http://api.io/users/{user_name}"
-    }
+```
+http://api.example.com
+{
+  "user_lookup": "http://api.example.com/users/{user_name}"
+}
 
-    http://api.io/users/basti1302
-    {
-      "thing_lookup": "http://api.io/users/basti1302/things/{thing_id}"
-    }
+http://api.example.com/users/basti1302
+{
+  "thing_lookup": "http://api.example.com/users/basti1302/things/{thing_id}"
+}
 
-    http://api.io/users/basti1302/things/4711
-    {
-      "the_document": "we wanted to have"
-    }
+http://api.example.com/users/basti1302/things/4711
+{
+  "the_document": "we wanted to have"
+}
+```
 
-Traverson will resolve the URI templates in the first and second document and finally reach the document at `http://api.io/users/basti1302/things/4711`.
+Traverson will resolve the URI templates in the first and second document and finally reach the document at `http://api.example.com/users/basti1302/things/4711`.
 
-Instead of using a single object to provide the template parameters for each step, you can also provide an array of objects. Each element of the array will only be used for the corresponding step in the path array. This is useful if there are template parameters with identical names which are to be used in different steps.
+Instead of using a single object to provide the template parameters for each step, you can also provide an array of objects. Each element of the array will only be used for the corresponding step in the link traversal process. This is useful if there are template parameters with identical names which are to be used in different steps.
 
 Let's look at an example
 
-    api.follow('user_lookup', 'things', 'thing_lookup')
-        .withTemplateParameters([null, {id: "basti1302"}, null, {id: 4711} ])
-        .getResource(function(error, document) {
-      ...
-    });
+```
+traverson
+.from('http://api.example.com')
+.follow('user_lookup', 'things', 'thing_lookup')
+.withTemplateParameters([null, {id: "basti1302"}, null, {id: 4711} ])
+.getResource(function(error, document) {
+  ...
+});
+```
 
-and the following documents, with their corresponding URIs:
+and the following documents, with their corresponding URLs:
 
-    http://api.io
-    {
-      "user_lookup": "http://api.io/users/{id}"
-    }
+```
+http://api.example.com
+{
+  "user_lookup": "http://api.example.com/users/{id}"
+}
 
-    http://api.io/users/basti1302
-    {
-      "things": "http://api.io/users/basti1302/things
-    }
+http://api.example.com/users/basti1302
+{
+  "things": "http://api.example.com/users/basti1302/things
+}
 
-    http://api.io/users/basti1302/things
-    {
-      "thing_lookup": "http://api.io/users/basti1302/things{/id}"
-    }
+http://api.example.com/users/basti1302/things
+{
+  "thing_lookup": "http://api.example.com/users/basti1302/things{/id}"
+}
 
-    http://api.io/users/basti1302/things/4711:
-    {
-      "the_document": "we wanted to have"
-    }
+http://api.example.com/users/basti1302/things/4711:
+{
+  "the_document": "we wanted to have"
+}
+```
 
-The first element of the template parameter array (`null`) will actually be used for the start URI (the one you passed to `from` when creating `api`). Thus, if our start URI `http://api.io` would have been a URI template, we could provide template parameters for it. Since the start URI is fixed, we just use `null`. The second element `{id: "basti1302"}` will then be used to resolve `http://api.io/users/{id}` to `http://api.io/users/basti1302`. The next URI is not a template, so the template parameter array contains `null` at this position again. The final link yields a URI template again, which will be resolved with `{id: '4711'}` to `http://api.io/users/basti1302/things/4711`. Since both templates contained the placeholder `id` but required different values, this would not have been possible with a single object holding all template substitutions.
+The first element of the template parameter array (`null`) will actually be used for the start URL (the one you passed to the `from` method). Thus, if our start URL `http://api.example.com` would have been a URI template, we could provide template parameters for it. Since the start URL is fixed, we just use `null`. The second element `{id: "basti1302"}` will then be used to resolve `http://api.example.com/users/{id}` to `http://api.example.com/users/basti1302`. The next URL is not a template, so the template parameter array contains `null` at this position again. The final link yields a URI template again, which will be resolved with `{id: '4711'}` to `http://api.example.com/users/basti1302/things/4711`. Since both templates contained the placeholder `id` but required different values, this would not have been possible with a single object holding all template substitutions.
 
-More information on URI templates: [RFC 6570](http://tools.ietf.org/html/rfc6570). Traverson uses the module [uri-templates](https://github.com/grncdr/uri-template) to resolve URI
-templates.
+More information on URI templates: [RFC 6570](http://tools.ietf.org/html/rfc6570). Traverson uses the module [url-template](https://github.com/bramstein/url-template) to resolve URI templates.
 
 ### Headers, HTTP Basic Auth, OAuth and Whatnot
 
 Traverson uses Mikeal Rogers' [request](https://github.com/mikeal/request) module for all HTTP requests by default. You can use all options that `request` provides with Traverson by passing an options object into the `withRequestOptions` method, like this:
 
 <pre>
-api.follow('link_one', 'link_two', 'link_three')
-  <b>.withRequestOptions({ headers: { 'x-my-special-header': 'foo' } })</b>
-  .getResource(function(error, document) {
+traverson
+.from('http://api.example.com')
+.follow('link_one', 'link_two', 'link_three')
+<b>.withRequestOptions({ headers: { 'x-my-special-header': 'foo' } })</b>
+.getResource(function(error, document) {
     ...
 });
 </pre>
 
 This would add the header `x-my-special-header` to all requests issued for this three link walk. Check out the [request docs](https://github.com/mikeal/request#requestoptions-callback) to see which options to use. Among other things, you can set custom headers, do HTTP basic authentication, [OAuth](https://github.com/mikeal/request#oauth-signing) and other cool stuff.
 
+A word of warning: When running in the browser and not in Node.js, the request library is shimmed by [SuperAgent](https://github.com/visionmedia/superagent) to shim the request module. Most request options are mapped to appropriate superagent options. If you use Traverson in the browser and you notice odd behaviour regarding to `withRequestOptions`, please file an [issue](https://github.com/basti1302/traverson/issues).
+
 You can also pass in a custom request library, as long as it conforms to the same interface as [request](https://github.com/mikeal/request).
 
 <pre>
 var customRequestLibrary = require('custom-request');
 
-api.follow('link_one', 'link_two', 'link_three')
-  <b>.withRequestLibrary(customRequestLibrary)</b>
-  .getResource(function(error, document) {
+traverson
+.from('http://api.example.com')
+.follow('link_one', 'link_two', 'link_three')
+<b>.withRequestLibrary(customRequestLibrary)</b>
+.getResource(function(error, document) {
     ...
 });
 </pre>
@@ -398,21 +445,23 @@ Here is an example.
 var jsonVulnerabilityProtection = ')]}\',\n';
 var protectionLength = jsonVulnerabilityProtection.length;
 
-api.follow('link-rel')
-  <b>.parseResponseBodiesWith(function(body) {
-    body = body.slice(protectionLength);
-    return JSON.parse(body);
-  })</b>
-  .getResource(function(error, document) {
-    ...
-  });
+traverson
+.from('http://api.example.com')
+.follow('link-rel')
+<b>.parseResponseBodiesWith(function(body) {
+  body = body.slice(protectionLength);
+  return JSON.parse(body);
+})</b>
+.getResource(function(error, document) {
+  ...
+});
 </pre>
 
 ### Using Plug-ins
 
 Out of the box, Traverson works with generic JSON APIs. There are a lot of media types out there that support hypermedia APIs better, among others
 * [HAL (application/hal+json)](),
-* [Mason (application/vnd.mason+json)](), 
+* [Mason (application/vnd.mason+json)](),
 * [Collection+JSON (application/vnd.collection+json)](http://amundsen.com/media-types/collection/),
 * [Siren (application/vnd.siren+json)](https://github.com/kevinswiber/siren)
 * [Uber (application/vnd.amundsen-uber+json)](https://rawgit.com/mamund/media-types/master/uber-hypermedia.html),
@@ -428,26 +477,27 @@ traverson.registerMediaType('application/vnd.mason+json', MasonAdapter);
 
 This would register `MasonAdapter` as a plug-in for the media type `application/vnd.mason+json`. `MasonAdapter` would need to be a constructor function adhering to the constraints given in [the next subsection](#implementing-media-type-plug-ins).
 
-Once registered, a media type plug-in is automatically eligible for [content negotiation](#content-negotiation).
+Once registered, a media type plug-in is automatically eligible for [content negotiation](#content-negotiation). You can also force Traverson to use a media type by calling `setMediaType`. To force Traverson to use the `MasonAdapter` no matter which `Content-Type` header the server sets, you would call `setMediaType(application/vnd.mason+json)`.
 
-Usually, a media type plug-in should also provide a `mediaType` property containing the registered media type it is intended for. Thus, the example above could be simplified to 
+Usually, a media type plug-in should also provide a `mediaType` property containing the registered media type it is intended for. Thus, the example above could be simplified to
 
 ```
 var traverson = require('traverson');
 traverson.registerMediaType(MasonAdapter.mediaType, MasonAdapter);
 ```
 
+The `setMediaType` call could be changed to `setMediaType(MasonAdapter.mediaType)`, accordingly.
+
 (Note that there currently is no MasonAdapter, this is just an example.)
 
 #### Implementing Media Type Plug-ins
 
-Here is an implementation stub for Traverson media type plug-ins:
+Here is an implementation stub for new Traverson media type plug-ins:
 
 ```
 'use strict';
 
-function MediaTypeAdapter(contentNegotiation, log) {
-  this.contentNegotiation = contentNegotiation;
+function MediaTypeAdapter(log) {
   this.log = log;
 }
 
@@ -466,23 +516,27 @@ MediaTypeAdapter.prototype.findNextStep = function(doc, key) {
 }
 ```
 
-A media type plug-in is always a constructor function taking two arguments, a boolean content negotiation flag and a log object. The `contentNegotiation` flag needs to be stored with that exact name. The log object can be used by the plug-in to log messages, if required.
+A media type plug-in is always a constructor function. It is passed one argument, a log object. This log object can be used by the plug-in to log messages, if required (it offers the methods `debug(message)`, `info(message)`, `warn(message)` and `error(message)`).
 
 Every media type plug-in *should* provide a propery `mediaType` that represents the registered content type for this plug-in.
 
-Every media type plug-in *must* provide a method `findNextStep`, which takes two parameters. The incoming `doc` is the resource retrieved from the response of the last HTTP request. This is already a parsed JavaScript object, not raw JSON content. The `key` is the link relation that has been specified for this step in the `follow` method. The responsibility of the `findNextStep` method is to return a step object, that tells Traverson what to do next.
+Every media type plug-in *must* provide a method `findNextStep`, which takes two parameters, `doc` and `key`. The incoming `doc` is the resource retrieved from the response of the last HTTP request. This is already a parsed JavaScript object, not raw JSON content. The `key` is the link relation that has been specified for this step in the `follow` method. The responsibility of the `findNextStep` method is to return a step object, that tells Traverson what to do next.
 
 A step object can be as simple as this `{ uri: '/next/uri/to/call' }`. This would make Traverson make an HTTP request to the given URI. Some media types (like HAL) contain embeddeded resources. For those, the next step is not an HTTP request. Instead, you can put the part of `doc` that represents the embedded resource into the returned step object, like this: `{ doc: { ... } }`.
 
 If you want to implement your own media type plug-in, having a look at the existing HAL plug-in might be helpful: <https://github.com/basti1302/traverson-hal/blob/master/index.js>
 
-### Content Negotiation
+### Content Type Detection Versus Forcing Media Types
 
-In the examples so far, we always explicitly specified the media type the API would use. 
+In the examples so far, we never explicitly specified the media type the API would use. Traverson usually figures that out by itself by looking at the `Content-Type` header. If the `Content-Type` header of the server's response is `application/json`, Traverson will interpret the response as a plain JSON resource. However, you can force Traverson to interpret the server's response as a certain media type.
 
-With <code>var api = traverson.<b>json</b>.from('http://api.io');</code>, Traverson only assumes that the API uses a generic JSON media type. The server will probably set the `Content-Type` header to `application/json`, but this is not even checked by Traverson. With the [traverson-hal](https://github.com/basti1302/traverson-hal) plug-in installed you can to <code>var api = traverson.<b>jsonHal</b>.from('http://api.io');</code>, to make Traverson assume that the API complies with the HAL specification. The server would probably set the `Content-Type` header to `application/hal+json`, again, this is not checked by Traverson.
+With <code>traverson.from('http://api.example.com').<b>json()</b></code>, Traverson assumes that the API uses a generic JSON media type. The server will probably set the `Content-Type` header to `application/json`, but because we forced the media type, this is not even checked by Traverson. With the [traverson-hal](https://github.com/basti1302/traverson-hal) plug-in installed you can do <code>traverson.from('http://api.example.com').<b>jsonHal()</b></code>, to make Traverson assume that the API complies with the HAL specification. The server would probably set the `Content-Type` header to `application/hal+json`, again, this is not checked by Traverson. Finally, with <code>traverson.from('http://api.example.com').<b>setMediaType('application/whatever+json')</b></code> you can force Traverson to use an arbitrary media type (as long as a matching media type plug-in is registered).
 
-You can also let Traverson figure out the media by itself. Just omit the `json`/`jsonHal` from the call and Traverson will use the `Content-Type` header to decide how to interpret each response. However, for each content type an appropriate media type plug-in needs to be registered. Without any plug-ins, Traverson will only be able to process `application/json` and will fail if it receives a different content type header. 
+Instead of forcing a specific media type, you can also let Traverson figure out the media by itself. Actually, as already mentioned, that is the default behaviour. Just omit the `json()`/`jsonHal()/setMediaType()` and Traverson will use the `Content-Type` header coming from the server to decide how to interpret each response. However, for each content type an appropriate media type plug-in needs to be registered. That is, if the server sets a `Content-Type` of `application/hal+json` and the HAL plug-in is registered, the response will automatically be interpreted as HAL.
+
+Without any plug-ins, Traverson will only be able to process `application/json` and will fail if it receives a different content type header.
+
+Content type detection happens for each request/response. If each response in a link traversal process has a different Content-Type header, Traverson will pick a different media type plug-in to process these responses.
 
 Here is a complete example:
 <pre>
@@ -490,24 +544,24 @@ var traverson = require('traverson');
 var JsonHalAdapter = require('traverson-hal');
 traverson.registerMediaType(JsonHalAdapter.mediaType, JsonHalAdapter);
 
-var api = <b>traverson.from('http://api.io')</b>;
-
-api.newRequest()
-   .follow('link_to', 'resource')
-   .getResource(function(error, document) {
-     // Traverson will interpret the response as generic JSON or HAL, depending
-     // on the Content-Type header.
+traverson
+.from('http://api.example.com')
+<b>// no call to json(), jsonHal() or setMediaType</b>
+.follow('link_to', 'resource')
+.getResource(function(error, document) {
+   // Traverson will interpret the responses as generic JSON or HAL, depending
+   // on the Content-Type header.
 });
 </pre>
 
 Release Notes
 -------------
 
-* 1.0.0 2014-12-??: 
+* 1.0.0 2015-03-??:
     * Media Type Plug-ins. You can now register your own media types and plug-ins to process them.
     * HAL is no longer supported by Traverson out of the box. If you want to use HAL, you now have to use the [traverson-hal](https://github.com/basti1302/traverson-hal) plug-in.
 * 0.15.0 2014-12-06:
-    * Content negotiation (#6)
+    * Content type detection (#6)
 * 0.14.0 2014-12-05:
     * `'link[$all]'` to retrieve the complete array of `_embedded` HAL resources instead of an individual resource (#14)
     * Add ability to use a custom JSON parsing method (#13)

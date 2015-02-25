@@ -1,5 +1,6 @@
 >>> Separate HAL support into a separate, optional plug-in. This would be quite a breaking change, so version 1.0.0 would be in order!
 
+* JSDoc
 
 # Ideas
 

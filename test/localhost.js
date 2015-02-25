@@ -1,6 +1,9 @@
 'use strict';
 
 var traverson = require('../traverson')
+  , environment = require('./environment')
+  , isNodeJs = environment.isNodeJs
+  , isPhantomJs = environment.isPhantomJs
   , waitFor = require('poll-forever')
   , chai = require('chai')
   , sinon = require('sinon')
@@ -12,7 +15,7 @@ chai.use(sinonChai);
 
 describe('Traverson (when tested against a local server)', function() {
 
-  var jsonApi;
+  var api;
   var testServer;
   var callback;
   var rootUri = 'http://127.0.0.1:2808/';
@@ -31,11 +34,10 @@ describe('Traverson (when tested against a local server)', function() {
   });
 
   beforeEach(function() {
-    jsonApi = traverson
-      .json
-      .from(rootUri)
-      .newRequest()
-      .withRequestOptions({
+    api = traverson
+    .from(rootUri)
+    .json()
+    .withRequestOptions({
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
@@ -45,7 +47,7 @@ describe('Traverson (when tested against a local server)', function() {
   });
 
   it('should fetch the root response', function(done) {
-    jsonApi.follow().get(callback);
+    api.follow().get(callback);
     waitFor(
       function() { return callback.called; },
       function() {
@@ -58,7 +60,7 @@ describe('Traverson (when tested against a local server)', function() {
   });
 
   it('should fetch the root document', function(done) {
-    jsonApi.follow().getResource(callback);
+    api.follow().getResource(callback);
     waitFor(
       function() { return callback.called; },
       function() {
@@ -71,7 +73,7 @@ describe('Traverson (when tested against a local server)', function() {
   });
 
   it('should follow a single element path', function(done) {
-    jsonApi.follow('first').getResource(callback);
+    api.follow('first').getResource(callback);
     waitFor(
       function() { return callback.called; },
       function() {
@@ -84,7 +86,7 @@ describe('Traverson (when tested against a local server)', function() {
   });
 
   it('should follow a multi-element path', function(done) {
-    jsonApi.follow('second', 'doc').get(callback);
+    api.follow('second', 'doc').get(callback);
     waitFor(
       function() { return callback.called; },
       function() {
@@ -97,7 +99,7 @@ describe('Traverson (when tested against a local server)', function() {
   });
 
   it('should follow a multi-element path to a resource', function(done) {
-    jsonApi.follow('second', 'doc').getResource(callback);
+    api.follow('second', 'doc').getResource(callback);
     waitFor(
       function() { return callback.called; },
       function() {
@@ -110,7 +112,7 @@ describe('Traverson (when tested against a local server)', function() {
   });
 
   it('should authenticate', function(done) {
-    jsonApi
+    api
       .withRequestOptions({
         auth: {
           user: 'traverson',
@@ -131,7 +133,7 @@ describe('Traverson (when tested against a local server)', function() {
   });
 
   it('should leverage JSONPath', function(done) {
-    jsonApi.follow('$.jsonpath.nested.key').getResource(callback);
+    api.follow('$.jsonpath.nested.key').getResource(callback);
     waitFor(
       function() { return callback.called; },
       function() {
@@ -144,7 +146,7 @@ describe('Traverson (when tested against a local server)', function() {
   });
 
   it('should leverage URI templates', function(done) {
-    jsonApi.follow('uri_template')
+    api.follow('uri_template')
        .withTemplateParameters({param: 'foobar', id: 13})
        .getResource(callback);
     waitFor(
@@ -160,7 +162,7 @@ describe('Traverson (when tested against a local server)', function() {
   });
 
   it('should fail gracefully on 404 with get()', function(done) {
-    jsonApi.follow('blind_alley', 'more', 'links').get(callback);
+    api.follow('blind_alley', 'more', 'links').get(callback);
     waitFor(
       function() { return callback.called; },
       function() {
@@ -187,7 +189,7 @@ describe('Traverson (when tested against a local server)', function() {
 
   it('should just deliver the last response of get(), even when it\'s 404',
       function(done) {
-    jsonApi.follow('blind_alley').get(callback);
+    api.follow('blind_alley').get(callback);
     waitFor(
       function() { return callback.called; },
       function() {
@@ -201,7 +203,7 @@ describe('Traverson (when tested against a local server)', function() {
   });
 
   it('should fail gracefully on 404 with getResource()', function(done) {
-    jsonApi.follow('blind_alley').getResource(callback);
+    api.follow('blind_alley').getResource(callback);
     waitFor(
       function() { return callback.called; },
       function() {
@@ -225,7 +227,7 @@ describe('Traverson (when tested against a local server)', function() {
 
   it('should fail gracefully on syntactically incorrect JSON',
       function(done) {
-    jsonApi.follow('garbage').getResource(callback);
+    api.follow('garbage').getResource(callback);
     waitFor(
       function() { return callback.called; },
       function() {
@@ -246,7 +248,7 @@ describe('Traverson (when tested against a local server)', function() {
   });
 
   it('should yield the last URI', function(done) {
-    jsonApi.follow('second', 'doc').getUri(callback);
+    api.follow('second', 'doc').getUri(callback);
     waitFor(
       function() { return callback.called; },
       function() {
@@ -261,7 +263,7 @@ describe('Traverson (when tested against a local server)', function() {
 
   it('should post', function(done) {
     var payload = {'new': 'document'};
-    jsonApi.follow('post_link').post(payload, callback);
+    api.follow('post_link').post(payload, callback);
     waitFor(
       function() { return callback.called; },
       function() {
@@ -277,7 +279,7 @@ describe('Traverson (when tested against a local server)', function() {
 
   it('should put', function(done) {
     var payload = {'updated': 'document'};
-    jsonApi.follow('put_link').put(payload, callback);
+    api.follow('put_link').put(payload, callback);
     waitFor(
       function() { return callback.called; },
       function() {
@@ -307,7 +309,7 @@ describe('Traverson (when tested against a local server)', function() {
     }
 
     var payload = {'patched': 'document'};
-    jsonApi.follow('patch_link').patch(payload, callback);
+    api.follow('patch_link').patch(payload, callback);
     waitFor(
       function() { return callback.called; },
       function() {
@@ -322,7 +324,7 @@ describe('Traverson (when tested against a local server)', function() {
   });
 
   it('should delete', function(done) {
-    jsonApi.follow('delete_link').del(callback);
+    api.follow('delete_link').del(callback);
     waitFor(
       function() { return callback.called; },
       function() {
@@ -333,7 +335,7 @@ describe('Traverson (when tested against a local server)', function() {
   });
 
   it('should use provided request options', function(done) {
-    jsonApi.follow('echo-headers').withRequestOptions({
+    api.follow('echo-headers').withRequestOptions({
       headers: {
         'Accept': 'application/json',
         'X-Traverson-Test-Header': 'Traverson rocks!'
@@ -354,7 +356,7 @@ describe('Traverson (when tested against a local server)', function() {
   });
 
   it('should use provided query string options', function(done) {
-    jsonApi.follow('echo-query').withRequestOptions({
+    api.follow('echo-query').withRequestOptions({
       qs: {
         'token': 'foobar'
       }
@@ -369,22 +371,6 @@ describe('Traverson (when tested against a local server)', function() {
       }
     );
   });
-
-  function isNodeJs() {
-    // can't use strict here
-    if (typeof window !== 'undefined') {
-      return false;
-    } else if (typeof process !== 'undefined') {
-      return true;
-    } else {
-      throw new Error('Can\'t figure out environment. ' +
-          'Seems it\'s neither Node.js nor a browser.');
-    }
-  }
-
-  function isPhantomJs() {
-    return typeof window !== 'undefined' && window.mochaPhantomJS;
-  }
 
   function checkResponseWithBody(httpStatus) {
     var response = checkResponse(httpStatus);

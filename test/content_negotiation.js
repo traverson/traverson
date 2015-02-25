@@ -22,7 +22,11 @@ describe('Content negotiation', function() {
     , client = traverson.from(rootUri)
     , secondResponse
     , secondUri
-    , thirdResponse;
+    , thirdResponse
+    , thirdUri
+    , fourthResponse
+    , fourthUri
+    , fifthResponse;
 
   before(function() {
     traverson.registerMediaType(FoobarAdapter.mediaType, FoobarAdapter);
@@ -40,7 +44,6 @@ describe('Content negotiation', function() {
     get = sinon.stub();
     api.walker.request = { get: get };
     callback = sinon.spy();
-
   });
 
   describe('with application/json', function() {
@@ -117,12 +120,70 @@ describe('Content negotiation', function() {
     });
   });
 
-  function FoobarAdapter() {}
+  describe('with alternating media types', function() {
+    beforeEach(function() {
+      var mockResponseApplicationJson =
+        require('traverson-mock-response')('application/json');
+      var mockResponseOther =
+        require('traverson-mock-response')('application/foobar+json');
+      firstUri = rootUri + '/first';
+      secondUri = rootUri + '/second';
+      thirdUri = rootUri + '/third';
+      fourthUri = rootUri + '/fourth';
+      rootResponse = mockResponseApplicationJson({
+        one: firstUri,
+      });
+      secondResponse = mockResponseOther({
+        foobar: secondUri,
+      });
+      thirdResponse = mockResponseApplicationJson({
+        'three': thirdUri,
+      });
+      fourthResponse = mockResponseOther({
+        foobar: fourthUri,
+      });
+      fifthResponse = mockResponseApplicationJson({ content: 'awesome' });
+
+      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
+          1, null, rootResponse, rootResponse.body);
+      get.withArgs(firstUri, sinon.match.func).callsArgWithAsync(
+          1, null, secondResponse, secondResponse.body);
+      get.withArgs(secondUri, sinon.match.func).callsArgWithAsync(
+          1, null, thirdResponse, thirdResponse.body);
+      get.withArgs(thirdUri, sinon.match.func).callsArgWithAsync(
+          1, null, fourthResponse, fourthResponse.body);
+      get.withArgs(fourthUri, sinon.match.func).callsArgWithAsync(
+          1, null, fifthResponse, fifthResponse.body);
+    });
+
+    it('should switch the media type on every request',
+        function(done) {
+      api
+      .follow('one', 'two', 'three', 'four')
+      .getResource(callback);
+      waitFor(
+        function() { return callback.called; },
+        function() {
+          expect(callback).to.have.been.calledWith(null, {
+            content: 'awesome'
+          });
+          done();
+        }
+      );
+    });
+  });
+
+  function FoobarAdapter(log) {
+    this.log = log;
+  }
 
   FoobarAdapter.mediaType = 'application/foobar+json';
 
   FoobarAdapter.prototype.findNextStep = function(doc, key) {
+    this.log.debug('logging something');
     return {
+      // No matter what has been specified in the follow method, this adaapter
+      // always returns the link relation foobar from the doc.
       uri: doc.foobar,
     };
   };

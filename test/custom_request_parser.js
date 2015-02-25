@@ -18,8 +18,7 @@ describe('Traverson using a custom request parser', function() {
 
   var callback;
   var rootUri = 'http://api.io';
-  var client = traverson.json.from(rootUri);
-  var api;
+  var api = traverson.from(rootUri);
 
   var getUri = rootUri + '/link/to/resource';
 
@@ -33,7 +32,6 @@ describe('Traverson using a custom request parser', function() {
   secondResponse.body = jsonVulnerabilityProtection + secondResponse.body;
 
   beforeEach(function() {
-    api = client.newRequest();
     get = sinon.stub();
     api.walker.request = { get: get };
     callback = sinon.spy();
@@ -48,6 +46,7 @@ describe('Traverson using a custom request parser', function() {
   it('should use the custom request parser to strip JSON vulnerability ' +
       'protection', function(done) {
     api
+    .json()
     .follow('get_link')
     .parseResponseBodiesWith(function(body) {
       if (_s.startsWith(body, jsonVulnerabilityProtection)) {
@@ -70,6 +69,4 @@ describe('Traverson using a custom request parser', function() {
       }
     );
   });
-
 });
-

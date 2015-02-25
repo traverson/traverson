@@ -7,24 +7,27 @@
   </head>
   <body>
 
-    <div id="response"/>
+    <p>
+      Talking to GitHub API, please stand by...
+    <p>
+    <p id="response"><p>
 
     <script>
-      var api = traverson.json.from('https://api.github.com/')
-      api.newRequest()
-        .follow('repository_url', 'commits_url', 'comments_url')
-        .withTemplateParameters({
-          owner: 'basti1302',
-          repo: 'traverson',
-          sha: '5c82c74583ee67eae727466179dd66c91592dd4a'
-        }).getResource(function(err, resource) {
+      traverson
+      .from('https://api.github.com/')
+      .follow('repository_url', 'commits_url', 'comments_url')
+      .withTemplateParameters({
+        owner: 'basti1302',
+        repo: 'traverson',
+        sha: '5c82c74583ee67eae727466179dd66c91592dd4a'
+      }).getResource(function(err, resource) {
         if (err) {
           $('#response').html(JSON.stringify(err))
           return
         }
         $('#response').html('Hooray! The commit comment is <br/>"' +
             resource[0].body + '"')
-      })
+      });
     </script>
   </body>
 </html>

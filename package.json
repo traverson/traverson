@@ -41,8 +41,8 @@
     "poll-forever": "^1.0.0",
     "sinon": "^1.9.1",
     "sinon-chai": "^2.5.0",
-    "traverson-mock-response": "^1.0.0",
-    "traverson-test-server": "^1.0.0"
+    "traverson-mock-response": "1.0.0",
+    "traverson-test-server": "1.0.1"
   },
   "browser": {
     "minilog": "./browser/lib/shim/log.js",
