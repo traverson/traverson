@@ -96,6 +96,7 @@ describe('Using newRequest() after configuring', function() {
     expect(oldRequest.walker.links).to.exist();
     expect(oldRequest.walker.links.length).to.equal(1);
     expect(oldRequest.walker.links[0]).to.equal('link');
-    expect(newRequest.walker.links).to.be.undefined;
+    expect(newRequest.walker.links).to.exist();
+    expect(newRequest.walker.links.length).to.equal(0);
   }
 });
