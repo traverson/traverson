@@ -13,38 +13,28 @@ Request.prototype.defaults = function(options) {
 };
 
 Request.prototype.get = function(uri, callback) {
-  mapRequest(superagent.get(uri), this.options)
-    .end(function(response) {
-    callback(null, mapResponse(response));
-  });
+	mapRequest(superagent.get(uri), this.options)
+		.end(handleResponse(callback));
 };
 
 Request.prototype.post = function(uri, options, callback) {
   mapRequest(superagent.post(uri), this.options, options)
-    .end(function(response) {
-    callback(null, mapResponse(response));
-  });
+		.end(handleResponse(callback));
 };
 
 Request.prototype.put = function(uri, options, callback) {
   mapRequest(superagent.put(uri), this.options, options)
-    .end(function(response) {
-    callback(null, mapResponse(response));
-  });
+		.end(handleResponse(callback));
 };
 
 Request.prototype.patch = function(uri, options, callback) {
   mapRequest(superagent.patch(uri), this.options, options)
-    .end(function(response) {
-    callback(null, mapResponse(response));
-  });
+		.end(handleResponse(callback));
 };
 
 Request.prototype.del = function(uri, options, callback) {
   mapRequest(superagent.del(uri), this.options)
-    .end(function(response) {
-    callback(null, mapResponse(response));
-  });
+		.end(handleResponse(callback));
 };
 
 function mapRequest(superagentRequest, options, bodyOptions) {
@@ -95,5 +85,16 @@ function mapResponse(response) {
   response.statusCode = response.status;
   return response;
 }
+
+function handleResponse(callback) {
+	return function(error, response) {
+			if (error) {
+				return callback(error);
+			} else {
+				callback(null, mapResponse(response));
+			}
+		};
+}
+
 
 module.exports = new Request();
