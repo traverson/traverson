@@ -599,7 +599,7 @@ traverson
 Release Notes
 -------------
 
-* 1.0.0 2015-03-??:
+* 1.0.0 2015-02-27:
     * Media Type Plug-ins. You can now register your own media types and plug-ins to process them.
     * HAL is no longer supported by Traverson out of the box. If you want to use HAL, you now have to use the [traverson-hal](https://github.com/basti1302/traverson-hal) plug-in.
     * Traverson uses content type detection by default now. You can still force media types by calling `setMediaType` or shortcuts like `json()`/`jsonHal()` on the request builder.
