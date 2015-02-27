@@ -295,7 +295,8 @@ describe('getResource for JSON', function() {
 
   describe('with absolute and relative urls', function() {
 
-    it('should follow links with absolute urls with protocol', function(done) {
+    it('should follow links with absolute urls with protocol http',
+        function(done) {
       var path1 = rootUri + '/path/1';
       var path2 = rootUri + '/path/2';
 
@@ -319,6 +320,38 @@ describe('getResource for JSON', function() {
         }
       );
     });
+
+    it('should follow links with absolute urls with protocol https',
+        function(done) {
+      // also test case insensitive matching
+      var httpsRootUri = 'HttPs://api.io';
+      var path1 = httpsRootUri + '/path/1';
+      var path2 = httpsRootUri + '/path/2';
+
+      var response1 = mockResponse({ link1: path1 });
+      var response2 = mockResponse({ link2: path2 });
+
+      get.withArgs(httpsRootUri, sinon.match.func).callsArgWithAsync(
+          1, null, response1);
+      get.withArgs(path1, sinon.match.func).callsArgWithAsync(
+          1, null, response2);
+      get.withArgs(path2, sinon.match.func).callsArgWithAsync(
+          1, null, result);
+
+      api
+      .newRequest()
+      .from(httpsRootUri)
+      .follow(['link1', 'link2'])
+      .getResource(callback);
+      waitFor(
+        function() { return callback.called; },
+        function() {
+          expect(callback).to.have.been.calledWith(null, result.doc);
+          done();
+        }
+      );
+    });
+
 
     it('should follow links with absolute urls without protocol',
       function(done) {
