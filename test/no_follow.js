@@ -16,7 +16,7 @@ describe('getResource without preceding follow()', function() {
   var get;
   var callback;
   var rootUri = 'http://api.io';
-  var api = traverson.from(rootUri);
+  var api = traverson.from(rootUri).json();
   var result = mockResponse({ foo: 'bar' });
 
   beforeEach(function() {

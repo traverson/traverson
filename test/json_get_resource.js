@@ -37,13 +37,13 @@ describe('getResource for JSON', function() {
     });
 
     it('should access the root URI', function() {
-      api.follow().getResource(callback);
+      api.newRequest().getResource(callback);
       expect(get).to.have.been.calledWith(rootUri, sinon.match.func);
     });
 
     it('should call callback with the root doc', function(done) {
       get.callsArgWithAsync(1, null, rootResponse);
-      api.follow().getResource(callback);
+      api.newRequest().getResource(callback);
       waitFor(
         function() { return callback.called; },
         function() {
@@ -56,7 +56,7 @@ describe('getResource for JSON', function() {
     it('should call callback with err', function(done) {
       var err = new Error('test error');
       get.callsArgWithAsync(1, err);
-      api.follow().getResource(callback);
+      api.newRequest().getResource(callback);
       waitFor(
         function() { return callback.called; },
         function() {
@@ -71,7 +71,7 @@ describe('getResource for JSON', function() {
           1, null, rootResponse);
       get.withArgs(rootUri + '/link/to/thing',
           sinon.match.func).callsArgWithAsync(1, null, result);
-      api.follow('link').getResource(callback);
+      api.newRequest().follow('link').getResource(callback);
       waitFor(
         function() { return callback.called; },
         function() {
@@ -86,7 +86,7 @@ describe('getResource for JSON', function() {
           1, null, rootResponse);
       get.withArgs(rootUri + '/link/to/thing',
           sinon.match.func).callsArgWithAsync(1, null, result);
-      api.follow(['link']).getResource(callback);
+      api.newRequest().follow(['link']).getResource(callback);
       waitFor(
         function() { return callback.called; },
         function() {
@@ -99,7 +99,7 @@ describe('getResource for JSON', function() {
     it('should call callback with err if link is not found', function(done) {
       get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
           1, null, rootResponse);
-      api.follow('non-existing-link').getResource(callback);
+      api.newRequest().follow('non-existing-link').getResource(callback);
       waitFor(
         function() { return callback.called; },
         function() {
@@ -119,7 +119,7 @@ describe('getResource for JSON', function() {
           1, null, mockResponse({ firstLink: rootUri + '/first' }));
       get.withArgs(rootUri + '/first', sinon.match.func).
           callsArgWithAsync(1, err);
-      api.follow('firstLink').getResource(callback);
+      api.newRequest().follow('firstLink').getResource(callback);
       waitFor(
         function() { return callback.called; },
         function() {
@@ -144,7 +144,7 @@ describe('getResource for JSON', function() {
           1, null, rootResponse);
       get.withArgs(uri, sinon.match.func).callsArgWithAsync(1, null,
           result);
-      api.follow('$.deeply.nested.link').getResource(callback);
+      api.newRequest().follow('$.deeply.nested.link').getResource(callback);
       waitFor(
         function() { return callback.called; },
         function() {
@@ -158,7 +158,7 @@ describe('getResource for JSON', function() {
         function(done) {
       get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
           1, null, rootResponse);
-      api.follow('$.deeply.nested.blink').getResource(callback);
+      api.newRequest().follow('$.deeply.nested.blink').getResource(callback);
       waitFor(
         function() { return callback.called; },
         function() {
@@ -178,7 +178,7 @@ describe('getResource for JSON', function() {
       });
       get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
           1, null, rootResponseMulti);
-      api.follow('$.arr[*].foo').getResource(callback);
+      api.newRequest().follow('$.arr[*].foo').getResource(callback);
       waitFor(
         function() { return callback.called; },
         function() {
@@ -208,9 +208,11 @@ describe('getResource for JSON', function() {
           sinon.match.func).callsArgWithAsync(1, null, next);
       get.withArgs(rootUri + '/another/42',
           sinon.match.func).callsArgWithAsync(1, null, result);
-      api.follow('firstTemplate', 'secondTemplate')
-         .withTemplateParameters({user: 'basti1302', thing: 4711, id: 42})
-         .getResource(callback);
+      api
+      .newRequest()
+      .withTemplateParameters({user: 'basti1302', thing: 4711, id: 42})
+      .follow('firstTemplate', 'secondTemplate')
+      .getResource(callback);
       waitFor(
         function() { return callback.called; },
         function() {
@@ -231,9 +233,11 @@ describe('getResource for JSON', function() {
       get.withArgs(startUri, sinon.match.func).callsArgWithAsync(
           1, null, rootUriTemplate);
 
-      api.follow()
-          .withTemplateParameters({param: 'substituted'})
-          .getResource(callback);
+      api
+      .newRequest()
+      .withTemplateParameters({param: 'substituted'})
+      .follow()
+      .getResource(callback);
       waitFor(
         function() { return callback.called; },
         function() {
@@ -281,8 +285,10 @@ describe('getResource for JSON', function() {
           1, null, responseUriTemplate);
       get.withArgs(rootUri + '/users',
           sinon.match.func).callsArgWithAsync(1, null, result);
-      api.follow('template')
-         .getResource(callback);
+      api
+      .newRequest()
+      .follow('template')
+      .getResource(callback);
       waitFor(
         function() { return callback.called; },
         function() {
@@ -310,8 +316,10 @@ describe('getResource for JSON', function() {
       get.withArgs(path2, sinon.match.func).callsArgWithAsync(
           1, null, result);
 
-      api.follow(['link1', 'link2'])
-         .getResource(callback);
+      api
+      .newRequest()
+      .follow(['link1', 'link2'])
+      .getResource(callback);
       waitFor(
         function() { return callback.called; },
         function() {
@@ -368,8 +376,10 @@ describe('getResource for JSON', function() {
       get.withArgs(rootUri + path2, sinon.match.func).callsArgWithAsync(
           1, null, result);
 
-      api.follow(['link1', 'link2'])
-         .getResource(callback);
+      api
+      .newRequest()
+      .follow(['link1', 'link2'])
+      .getResource(callback);
       waitFor(
         function() { return callback.called; },
         function() {
@@ -393,9 +403,11 @@ describe('getResource for JSON', function() {
       get.withArgs(rootUri + path1 + path2, sinon.match.func).callsArgWithAsync(
           1, null, result);
 
-      api.follow(['link1', 'link2'])
-         .resolveRelative()
-         .getResource(callback);
+      api
+      .newRequest()
+      .resolveRelative()
+      .follow(['link1', 'link2'])
+      .getResource(callback);
       waitFor(
         function() { return callback.called; },
         function() {
@@ -439,9 +451,11 @@ describe('getResource for JSON', function() {
       get.withArgs(path4, sinon.match.func).callsArgWithAsync(
           1, null, result);
 
-      api.follow(['link1', 'link2', '$[nested][array][1].link', 'link4'])
-         .withTemplateParameters({ param: 'gizmo' })
-         .getResource(callback);
+      api
+      .newRequest()
+      .withTemplateParameters({ param: 'gizmo' })
+      .follow(['link1', 'link2', '$[nested][array][1].link', 'link4'])
+      .getResource(callback);
       waitFor(
         function() { return callback.called; },
         function() {
@@ -450,7 +464,6 @@ describe('getResource for JSON', function() {
         }
       );
     });
-
 
   });
 });

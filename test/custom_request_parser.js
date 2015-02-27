@@ -18,7 +18,7 @@ describe('Traverson using a custom request parser', function() {
 
   var callback;
   var rootUri = 'http://api.io';
-  var api = traverson.from(rootUri);
+  var api = traverson.from(rootUri).json();
 
   var getUri = rootUri + '/link/to/resource';
 
@@ -46,7 +46,7 @@ describe('Traverson using a custom request parser', function() {
   it('should use the custom request parser to strip JSON vulnerability ' +
       'protection', function(done) {
     api
-    .json()
+    .newRequest()
     .follow('get_link')
     .parseResponseBodiesWith(function(body) {
       if (_s.startsWith(body, jsonVulnerabilityProtection)) {
