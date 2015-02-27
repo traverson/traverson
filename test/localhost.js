@@ -448,8 +448,8 @@ describe('Traverson (when tested against a local server)', function() {
       function() {
         var resultDoc = checkResultDoc();
         var responseAcceptHeader =
-            resultDoc.headers['Accept'] ||
-            resultDoc.headers['accept'];
+            resultDoc.headers.Accept ||
+            resultDoc.headers.accept;
         var responseTestHeader =
             resultDoc.headers['X-Traverson-Test-Header'] ||
             resultDoc.headers['x-traverson-test-header'];
