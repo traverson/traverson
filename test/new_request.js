@@ -87,7 +87,8 @@ describe('Using newRequest() after configuring', function() {
     var templateParams = newRequest.walker.templateParameters;
     expect(templateParams.abc).to.equal('def');
     expect(templateParams.ghi).to.equal(4711);
-    // TODO check request options for header x-my-special-header. How?
+    expect(newRequest.requestOptions.headers['x-my-special-header'])
+      .to.equal('foo');
     expect(newRequest.walker.parseJson).to.be.equal(customParser);
     expect(newRequest.walker.resolveRelative).to.be.true;
   }
