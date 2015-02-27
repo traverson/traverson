@@ -30,7 +30,9 @@ Traverson works in Node.js and in the browser. For now, Traverson only supports 
 Breaking Change As Of Version 1.0.0
 -----------------------------------
 
-From version 1.0.0 onwards, support for HAL is no longer included in Traverson. instead, it has been moved to a separate plug-in. If you have used Traverson to work with HAL APIs, you will need some (trivial) changes in your code. See [Using Plug-ins](#using-plug-ins) and [traverson-hal](https://github.com/basti1302/traverson-hal). Also see the [release notes](#release-notes) for more details on the changes in version 1.0.0.
+* From version 1.0.0 onwards, support for HAL is no longer included in Traverson. instead, it has been moved to a separate plug-in. If you have used Traverson to work with HAL APIs, you will need some (trivial) changes in your code. See [Using Plug-ins](#using-plug-ins) and [traverson-hal](https://github.com/basti1302/traverson-hal).
+* The properties `traverson.json` and `traverson.jsonHal` (that is, using *properties* `json`/`jsonHal` on the `traverson` object) are deprecated as of 1.0.0 (but they still work). Instead, use the methods `json()`/`jsonHal()` on the request builder object. Thus, `traverson.json.from(url)` becomes `traverson.from(url).json()` and `traverson.jsonHal.from(url)` becomes `traverson.from(url).jsonHal()`. You can also omit `json()`/`jsonHal()` completely and use content negotiation.
+* See the [release notes](#release-notes) for more details on the changes in version 1.0.0.
 
 Table of Contents
 -----------------
@@ -603,9 +605,8 @@ Release Notes
     * Traverson uses content type detection by default now. You can still force media types by calling `setMediaType` or shortcuts like `json()`/`jsonHal()` on the request builder.
     * New method `setMediaType` to force arbitrary media types (as long as a matching media type plug-in is registered).
     * New methods `json()`/`jsonHal()` as shortcuts for `setMediaType('application/json')`/`setMediaType('application/hal+json')`.
-    * The form `traverson.json.from()` and `traverson.jsonHal.from()` (that is, using  properties `json`/`jsonHal` on the `traverson` object instead of the methods `json()`/`jsonHal()` on the request builder object) are deprecated as of 1.0.0 (but they still work).
+    * The properties `traverson.json` and `traverson.jsonHal` (that is, using *properties* `json`/`jsonHal` on the `traverson` object) are deprecated as of 1.0.0 (but they still work). Instead, use the methods `json()`/`jsonHal()` on the request builder object. Thus, `traverson.json.from(url)` becomes `traverson.from(url).json()` and `traverson.jsonHal.from(url)` becomes `traverson.from(url).jsonHal()`. You can also omit `json()`/`jsonHal()` completely and use content negotiation.
     * Entry points (methods on the traverson object) have been restructured (see api.markdown for details).
-    *
     * Cloning a request builder (to share configuration between link traversals) is now more explicit (method `newRequest()` on a request builder instance).
     * `del()` has been renamed to `delete()`. `del()` is kept as an alias for backward compatibility.
     * Lots of documenation updates. Also new [API reference documentation](https://github.com/basti1302/traverson/blob/master/api.markdown).
