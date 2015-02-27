@@ -43,12 +43,12 @@ Table of Contents
     * [AngularJS](#angularjs)
 * [Documentation](#documentation)
     * [Following Links](#following-links)
-    * [Configuring Traverson](#configuring-traverson-the-request-builder-object)
+    * [Configuring Traverson](#configuring-traverson--the-request-builder-object)
     * [Get Full HTTP Response](#more-control-receive-the-full-http-response)
     * [Pass Links as Array](#pass-a-link-array)
     * [POST, PUT, DELETE and PATCH](#post-put-delete-and-patch)
     * [Error Handling](#error-handling)
-    * [Absolute Versus Relative URLs](on-absolute-urls-absolute-url-paths-and-relative-url-paths)
+    * [Absolute Versus Relative URLs](#on-absolute-urls-absolute-url-paths-and-relative-url-paths)
     * [JSONPath](#jsonpath)
     * [URI Templates](#uri-templates)
     * [Headers and Authentication](#headers-http-basic-auth-oauth-and-whatnot)
@@ -519,7 +519,7 @@ traverson.registerMediaType('application/vnd.mason+json', MasonAdapter);
 
 This would register `MasonAdapter` as a plug-in for the media type `application/vnd.mason+json`. `MasonAdapter` would need to be a constructor function adhering to the constraints given in [the next subsection](#implementing-media-type-plug-ins).
 
-Once registered, a media type plug-in is automatically eligible for [content negotiation](#content-negotiation). You can also force Traverson to use a media type by calling `setMediaType`. To force Traverson to use the `MasonAdapter` no matter which `Content-Type` header the server sets, you would call `setMediaType(application/vnd.mason+json)`.
+Once registered, a media type plug-in is automatically eligible for [content negotiation](#content-type-detection-versus-forcing-media-types). You can also force Traverson to use a media type by calling `setMediaType`. To force Traverson to use the `MasonAdapter` no matter which `Content-Type` header the server sets, you would call `setMediaType(application/vnd.mason+json)`.
 
 Usually, a media type plug-in should also provide a `mediaType` property containing the registered media type it is intended for. Thus, the example above could be simplified to
 
