@@ -5,3 +5,4 @@ require('./json_requests');
 require('./localhost');
 require('./merge_recursive');
 require('./new_request');
+require('./no_follow');
