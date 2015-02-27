@@ -463,6 +463,42 @@ describe('Traverson (when tested against a local server)', function() {
     );
   });
 
+  it('should use provided request options with post', function(done) {
+    var payload = { what: 'ever' };
+    api
+    .newRequest()
+    .withRequestOptions({
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-Traverson-Test-Header': 'Traverson rocks!'
+      },
+      qs: { 'token': 'foobar' }
+    })
+    .follow('echo-all')
+    .post(payload, callback);
+    waitFor(
+      function() { return callback.called; },
+      function() {
+        var resultDoc = checkResponseWithBody(201);
+        var responseAcceptHeader =
+            resultDoc.headers.Accept ||
+            resultDoc.headers.accept;
+        var responseTestHeader =
+            resultDoc.headers['X-Traverson-Test-Header'] ||
+            resultDoc.headers['x-traverson-test-header'];
+        expect(responseAcceptHeader).to.exist;
+        expect(responseAcceptHeader).to.equal('application/json');
+        expect(responseTestHeader).to.exist;
+        expect(responseTestHeader).to.equal('Traverson rocks!');
+        expect(resultDoc.query.token).to.equal('foobar');
+        expect(resultDoc.received).to.exist;
+        expect(resultDoc.received).to.deep.equal(payload);
+        done();
+      }
+    );
+  });
+
   function checkResponseWithBody(httpStatus) {
     var response = checkResponse(httpStatus);
     var body = response.body;
