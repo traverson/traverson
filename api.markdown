@@ -1,6 +1,8 @@
 Traverson API
 =============
 
+This is the reference documenation for the Traverson API. It is rather technical and concise. Also see the [readme](https://github.com/basti1302/traverson/blob/master/readme.markdown), which explains the concepts behind Traverson in greater depths and has a lot of examples for the various features.
+
 Traverson
 ---------
 
@@ -17,6 +19,8 @@ This methods are available on the Traverson object - the object acquired by `var
 `registerMediaType(contentType, constructor)`: Registers a new media type plug-in. `contentType` should be the RFC2046 media type and `constructor` is ought to be a constructor function that can be used to create new instances of the plug-in.
 
 ### Properties
+
+This properties are available on the Traverson object - the object acquired by `var traverson = require('traverson')` or the global `traverson` object when using the browser build with a script tag.
 
 `mediaTypes`: A map of media types that can be used with `setMediaType` (see below).
 
