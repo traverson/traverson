@@ -33,14 +33,14 @@ describe('Using newRequest() after configuring', function() {
     client.withTemplateParameters({
       abc: 'def',
       ghi: 4711,
-    });
-    client.withRequestOptions({
+    })
+    .withRequestOptions({
       headers: {
         'x-my-special-header': 'foo'
       }
-    });
-    client.parseResponseBodiesWith(customParser);
-    client.resolveRelative();
+    })
+    .parseResponseBodiesWith(customParser)
+    .resolveRelative();
     request = client.newRequest();
     get = sinon.stub();
     request.walker.request = { get: get };
