@@ -499,6 +499,35 @@ describe('Traverson (when tested against a local server)', function() {
     );
   });
 
+  it.only('should use provided Content-Type with post', function(done) {
+    var payload = { what: 'ever' };
+    traverson
+    .from(rootUri)
+    .withRequestOptions({
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      }
+    })
+    .follow('echo-all')
+    .post(payload, callback);
+    waitFor(
+      function() { return callback.called; },
+      function() {
+        var resultDoc = checkResponseWithBody(201);
+        var responseAcceptHeader =
+            resultDoc.headers.Accept ||
+            resultDoc.headers.accept;
+        expect(responseAcceptHeader).to.exist;
+        expect(responseAcceptHeader).to.equal('application/x-www-form-urlencoded');
+        expect(resultDoc.received).to.exist;
+        expect(resultDoc.received).to.deep.equal(payload);
+        done();
+      }
+    );
+  });
+
+
   function checkResponseWithBody(httpStatus) {
     var response = checkResponse(httpStatus);
     var body = response.body;
