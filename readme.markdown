@@ -609,6 +609,7 @@ Release Notes
     * Entry points (methods on the traverson object) have been restructured (see api.markdown for details).
     * Cloning a request builder (to share configuration between link traversals) is now more explicit (method `newRequest()` on a request builder instance).
     * `del()` has been renamed to `delete()`. `del()` is kept as an alias for backward compatibility.
+    * New method `addRequestOptions` to add request options (HTTP headers etc.) without resetting the ones that have been set already (#33) (thanks to @xogeny)
     * Lots of documenation updates. Also new [API reference documentation](https://github.com/basti1302/traverson/blob/master/api.markdown).
 * 0.15.0 2014-12-06:
     * Content type detection (#6)
