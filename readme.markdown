@@ -13,8 +13,8 @@ A Hypermedia API/HATEOAS Client for Node.js and the Browser
 
 | File Size (browser build) | KB   |
 |---------------------------|-----:|
-| minified & gzipped        |  9.7 |
-| minified                  | 31   |
+| minified & gzipped        |  9.6 |
+| minified                  | 30   |
 
 Introduction
 ------------
@@ -30,7 +30,7 @@ Traverson works in Node.js and in the browser. For now, Traverson only supports 
 Breaking Change As Of Version 1.0.0
 -----------------------------------
 
-From version 1.0.0 onwards, support for HAL is no longer included in Traverson. instead, it has been moved to a separate plug-in. If you have used Traverson to work with HAL APIs, you will need some (trivial) changes in your code. See [Using Plug-ins](#using-plug-ins) and [traverson-hal](https://github.com/basti1302/traverson-hal).
+From version 1.0.0 onwards, support for HAL is no longer included in Traverson. instead, it has been moved to a separate plug-in. If you have used Traverson to work with HAL APIs, you will need some (trivial) changes in your code. See [Using Plug-ins](#using-plug-ins) and [traverson-hal](https://github.com/basti1302/traverson-hal). Also see the [release notes](#release-notes) for more details on the changes in version 1.0.0.
 
 Table of Contents
 -----------------
@@ -41,15 +41,18 @@ Table of Contents
     * [AngularJS](#angularjs)
 * [Documentation](#documentation)
     * [Following Links](#following-links)
+    * [Configuring Traverson](#configuring-traverson-the-request-builder-object)
     * [Get Full HTTP Response](#more-control-receive-the-full-http-response)
     * [Pass Links as Array](#pass-a-link-array)
     * [POST, PUT, DELETE and PATCH](#post-put-delete-and-patch)
     * [Error Handling](#error-handling)
+    * [Absolute Versus Relative URLs](on-absolute-urls-absolute-url-paths-and-relative-url-paths)
     * [JSONPath](#jsonpath)
     * [URI Templates](#uri-templates)
     * [Headers and Authentication](#headers-http-basic-auth-oauth-and-whatnot)
     * [Custom JSON parser](#custom-json-parser)
-    * [Using Plug-ins](#using-plug-ins)
+    * [Using Media Type Plug-ins](#using-media-type-plug-ins)
+        * [Implementing Media Type Plug-ins](#implementing-media-type-plug-ins)
     * [Content Type Detection Versus Forcing Media Types](#content-type-detection-versus-forcing-media-types)
 * [Release Notes](#release-notes)
 
@@ -72,22 +75,23 @@ Installation
 
 #### AngularJS
 
-There's an <a href="https://github.com/basti1302/traverson-angular">AngularJS plug-in for Traverson</a> which makes it possible to integrate the Traverson API seamlessly into an AngularJS app. If you want to use Traverson in an AngularJS app, this is the way to go.
+There's an [AngularJS plug-in for Traverson](https://github.com/basti1302/traverson-angular) which makes it possible to integrate the Traverson API seamlessly into an AngularJS app. If you want to use Traverson in an AngularJS app, this is the way to go.
 
 Documentation
 -------------
 
-This section shows how to use Traverson's features with small examples.
+This section shows how to use Traverson's features, one example at a time. There is also the [API reference documentation](https://github.com/basti1302/traverson/blob/master/api.markdown).
 
 ### Following Links
 
-The most basic thing you can do with traverson is to let it start at the root URL of an API, follow some links and pass the resource that is found at the end of this journey back to you. Here's how:
+The most basic thing you can do with traverson is to let it start at the root URL of an API, follow some links and pass the resource that is found at the end of this journey back to you. We call this procedure a *"link traversal process"*. Here's how:
 
-```
+```javascript
 var traverson = require('traverson');
 
 traverson
 .from('http://api.example.com')
+.json()
 .follow('link_to', 'resource')
 .getResource(function(error, document) {
   if (error) {
@@ -114,9 +118,9 @@ http://api.example.com
 
 (To make the examples easier to read, we note the URI corresponding to the document above each document. The URI is of course not part of the JSON response body.)
 
-By the way, we forced Traverson to interpret the response as `application/json` by using the `json()` method. We could have omitted the `json()` method and let Traverson figure out the content type. For this, the server would need to send the `Content-Type` header with the value `application/json`.
+By the way, we forced Traverson to interpret the response as `application/json` by using the `json()` method. We could have omitted the `json()` method and let Traverson figure out the content type. For this, the server would need to send the `Content-Type` header with the value `application/json`. (see [Content Type Detection](#content-type-detection-versus-forcing-media-types)).
 
-After receiving the document from the start URL, Traverson starts to follow the links provided via the `follow` method. Since the first link is `link_to`, it looks for a property with this name in the JSON response. In this case, this yields the next URL to access: `http://api.example.com/follow/me`. Traverson will fetch the document from there now. Let's assume this document looks like to this:
+After receiving the document from the start URL, Traverson starts to follow the link relations provided via the `follow` method. Since the first link relation is `link_to`, it looks for a property with this name in the JSON response. In this case, this yields the next URL to access: `http://api.example.com/follow/me`. Traverson will fetch the document from there now. Let's assume this document looks like to this:
 
 ```
 https://api.example.com/follow/me
@@ -127,7 +131,7 @@ https://api.example.com/follow/me
 }
 ```
 
-Now, since the next link given to `follow` is `resource`, Traverson will look for the property `resource`. Finding that, Traverson will finally fetch the JSON document from `http://api.example.com/follow/me/to/the/stars`:
+Now, since the next link relation given to `follow` is `resource`, Traverson will look for the property `resource`. Finding that, Traverson will finally fetch the JSON document from `http://api.example.com/follow/me/to/the/stars`:
 
 ```
 http://api.example.com/follow/me/to/the/stars
@@ -138,26 +142,53 @@ http://api.example.com/follow/me/to/the/stars
 }
 ```
 
-Because the list of links given to `follow` is exhausted now (`resource` was the last element), this document, called the target resource, will be passed into to the callback you provided when calling the `getResource` method. Coming back to the example from the top, the output would be
+Because the list of link relations given to `follow` is exhausted now (`resource` was the last element), this document, called the *target resource*, will be passed into to the callback you provided when calling the `getResource` method. Coming back to the example from the top, the output would be
 
 ```
 We have followed the path and reached the target resource.
 { "the_document": "that we really wanted to have", "with": "lots of interesting and valuable content", ...  }
 ```
 
-#### On Absolute URLs, Absolute URL Paths and Relative URL Paths
+### Configuring Traverson &mdash; the Request Builder Object
 
-Different APIs use different flavours of links in their responses. Traverson can handle the following cases:
+Calling `traverson.newRequest()` gives you a new *request builder* instance, which you can use to configure how Traverson behaves during the link traversal. The convenience method `traverson.from(url)` (which we used in the example above) also gives you a new request builder which already has the root URL of your API configured. The request builder offers a number of configuration methods to prepare the link traversal, among others:
 
-* Absolute URLs (URLs that start with the a scheme/protocol, that is http(s)). Those are always used as is to retrieve the next resource representation (except for resolving URI templates).
-* Absolute URL paths, that is, URLs that omit the http(s) part and start with a slash (`/`) and ought to be interpreted relative to the host part of the root URL. Example: If the root URL is `https://api.example.com/home` and a link contains `/customers/1302` this will be resolved to `https://api.example.com/customers/1302`. If following a link `/orders` from there, this would be resolved to `https://api.example.com/orders`. This is how most browsers behave and what node's `url.resolve` does, and also what most APIs expect you to do.
-* Relative URL paths, that is, URLs that also omit the protocol, start with a slash (like absolute URL paths) but are to be interpreted relative to the current location. If you want this behaviour, you need to call `resolveRelative()` on the `api` object. Example: If the root URL is `https://api.example.com/home` and the first link contains `/customers/1302` this will be resolved to `https://api.example.com/home/customers/1302`. If this has a link `/orders`, this would be resolved to `https://api.example.com/home/customers/1302/orders`. This feature should be rarely needed.
+* `from`: Sets the API root URL. (You do not need to call this if you created the request builder with `traverson.from(url)`, that is, `traverson.from(url)` is equivalent to `traverson.newRequest().from(url)`.)
+* `follow`: Sets the link relations to follow.
+* `withTemplateParameters`: Sets parameters for URI template resolution.
+* `withRequestOptions`: Sets options for the `request` library that is used to execute HTTP requests (like special HTTP headers or OAuth stuff).
+
+There are more configuration options available. Most are explained in more detail in the remainder of this document. A comprehensive list can be found in the [API reference documentation](https://github.com/basti1302/traverson/blob/master/api.markdown#configuration-methods).
+
+#### Reusing Configuration Between Link Traversals
+
+One request builder should only be used for one link traversal process. That is, after you called one of the methods that actually start the link traversal process (`get`, `getResource`, `getUri`, `post`, `put`, `patch` or `delete`) on the request builder instance, you should not use it again for another link traversal process. If you want to set up a common configuration to be used in every link traversal, you can clone the request builder by calling `newRequest()` on it. Like this:
+
+<pre lang="javascript">
+// set some common configuration options for all link traversals
+var api = traverson
+.from('http://api.example.com') // set root URL
+.json() // force media type to application/json
+.withRequestOptions({ headers: { 'x-my-special-header': 'foo' } }); // set HTTP header
+
+// first link traversal, using the configuration from above
+api
+<b>.newRequest()</b> // clone the request builder, to keep the original one pristine
+.follow(<b>'first_link', 'second_link'</b>)
+.getResource(...);
+
+// second link traversal, root URL, media type and HTTP header are still configured
+api
+<b>.newRequest()</b> // clone the request builder again, to keep the original one pristine
+.follow(<b>'another_link', 'yet_another_link'</b>) // this time we use different link relations
+.getResource(...);
+</pre>
 
 ### More Control: Receive the Full HTTP Response
 
 The example above chained the `getResource` method to the `follow` method. For this method, Traverson will parse the JSON from the last HTTP response and pass the resulting JavaScript object to your callback. In certain situations you might want more control and would like to receive the full HTTP response object instead of the body, already parsed to an object. This is what the `get` method is for:
 
-<pre>
+<pre lang="javascript">
 traverson
 .from('http://api.example.com')
 .follow('link_to', 'resource')
@@ -176,14 +207,14 @@ traverson
 
 You can also pass an array of strings to the follow method. Makes no difference.
 
-<pre>
+<pre lang="javascript">
 traverson
 .from('http://api.example.com')
 .follow(<b>'first_link', 'second_link', 'third_link'</b>)
 .getResource(callback);
 </pre>
 is equivalent to
-<pre>
+<pre lang="javascript">
 traverson
 .from('http://api.example.com')
 .follow(<b>['first_link', 'second_link', 'third_link']</b>)
@@ -198,7 +229,7 @@ So far we only have concerned ourselves with fetching information from a REST AP
 
 This looks very similar to using the `get` method:
 
-<pre>
+<pre lang="javascript">
 traverson
 .from('http://api.example.com')
 .follow('link_to', 'resource')
@@ -212,9 +243,9 @@ traverson
 });
 </pre>
 
-All methods except `getResource` (that is `get`, `post`, `put`, `del` and `patch` pass the full http response into the provided callback, so the callback's method signature always looks like `function(error, response)`. `post`, `put` and `patch` obviously have a body argument, `del` doesn't. Some more examples, just for completenss' sake:
+All methods except `getResource` (that is `get`, `post`, `put`, `delete` and `patch` pass the full http response into the provided callback, so the callback's method signature always looks like `function(error, response)`. `post`, `put` and `patch` obviously have a body argument, `delete` doesn't. Some more examples, just for completenss' sake:
 
-<pre>
+<pre lang="javascript">
 traverson
 .from('http://api.example.com')
 .follow('link_to', 'resource')
@@ -232,7 +263,7 @@ traverson
 traverson
 .from('http://api.example.com')
 .follow('link_to', 'resource')
-.<b>del</b>(function(error, response) {
+.<b>delete</b>(function(error, response) {
   ...
 });
 </pre>
@@ -253,11 +284,19 @@ Reasons for failure could be:
     * One of the JSONPath expressions in the path array does not yield a match for the corresponding document.
     * One of the JSONPath expressions in the path array yields more than one match for the corresponding document.
 
+### On Absolute URLs, Absolute URL Paths and Relative URL Paths
+
+Different APIs use different flavours of links in their responses. Traverson can handle the following cases:
+
+* Absolute URLs (URLs that start with the a scheme/protocol, that is http(s)). Those are always used as is to retrieve the next resource representation (except for resolving URI templates).
+* Absolute URL paths, that is, URLs that omit the http(s) part and start with a slash (`/`) and ought to be interpreted relative to the host part of the root URL. Example: If the root URL is `https://api.example.com/home` and a link contains `/customers/1302` this will be resolved to `https://api.example.com/customers/1302`. If following a link `/orders` from there, this would be resolved to `https://api.example.com/orders`. This is how most browsers behave and what node's `url.resolve` does, and also what most APIs expect you to do.
+* Relative URL paths, that is, URLs that also omit the protocol, start with a slash (like absolute URL paths) but are to be interpreted relative to the current location. If you want this behaviour, you need to call `resolveRelative()` on the `api` object. Example: If the root URL is `https://api.example.com/home` and the first link contains `/customers/1302` this will be resolved to `https://api.example.com/home/customers/1302`. If this has a link `/orders`, this would be resolved to `https://api.example.com/home/customers/1302/orders`. This feature should be rarely needed.
+
 ### JSONPath
 
 Traverson supports [JSONPath](http://goessner.net/articles/JsonPath/) expressions in the path array. This will come in handy if the link you want to follow from a given document is not a direct property of that document. Consider the following example:
 
-<pre>
+<pre lang="javascript">
 traverson
 .from('http://api.example.com')
 .follow(<b>'$.deeply.nested.link'</b>)
@@ -296,7 +335,7 @@ If a JSONPath expressions yields no match or more than one match, an error will 
 
 Traverson supports URI templates ([RFC 6570](http://tools.ietf.org/html/rfc6570)). Let's modify our inital example to make use of this feature:
 
-<pre>
+<pre lang="javascript">
 traverson
 .from('http://api.example.com')
 .follow('user_thing_lookup')
@@ -330,7 +369,7 @@ Of course, URI templating also works if the path from the start URL to the targe
 
 Let's assume the following call
 
-```
+```javascript
 traverson
 .from('http://api.example.com')
 .follow('user_lookup', 'thing_lookup')
@@ -365,7 +404,7 @@ Instead of using a single object to provide the template parameters for each ste
 
 Let's look at an example
 
-```
+```javascript
 traverson
 .from('http://api.example.com')
 .follow('user_lookup', 'things', 'thing_lookup')
@@ -407,7 +446,7 @@ More information on URI templates: [RFC 6570](http://tools.ietf.org/html/rfc6570
 
 Traverson uses Mikeal Rogers' [request](https://github.com/mikeal/request) module for all HTTP requests by default. You can use all options that `request` provides with Traverson by passing an options object into the `withRequestOptions` method, like this:
 
-<pre>
+<pre lang="javascript">
 traverson
 .from('http://api.example.com')
 .follow('link_one', 'link_two', 'link_three')
@@ -423,7 +462,7 @@ A word of warning: When running in the browser and not in Node.js, the request l
 
 You can also pass in a custom request library, as long as it conforms to the same interface as [request](https://github.com/mikeal/request).
 
-<pre>
+<pre lang="javascript">
 var customRequestLibrary = require('custom-request');
 
 traverson
@@ -441,7 +480,7 @@ JSON bodies are parsed with `JSON.parse` by default. If that does not suit you, 
 
 Here is an example.
 
-<pre>
+<pre lang="javascript">
 var jsonVulnerabilityProtection = ')]}\',\n';
 var protectionLength = jsonVulnerabilityProtection.length;
 
@@ -457,9 +496,10 @@ traverson
 });
 </pre>
 
-### Using Plug-ins
+### Using Media Type Plug-ins
 
 Out of the box, Traverson works with generic JSON APIs. There are a lot of media types out there that support hypermedia APIs better, among others
+
 * [HAL (application/hal+json)](),
 * [Mason (application/vnd.mason+json)](),
 * [Collection+JSON (application/vnd.collection+json)](http://amundsen.com/media-types/collection/),
@@ -470,7 +510,7 @@ If you want to leverage the power of a specialized media type, you can use the c
 
 Here is an example on how to register a media type plug-in with Traverson.
 
-```
+```javascript
 var traverson = require('traverson');
 traverson.registerMediaType('application/vnd.mason+json', MasonAdapter);
 ```
@@ -481,7 +521,7 @@ Once registered, a media type plug-in is automatically eligible for [content neg
 
 Usually, a media type plug-in should also provide a `mediaType` property containing the registered media type it is intended for. Thus, the example above could be simplified to
 
-```
+```javascript
 var traverson = require('traverson');
 traverson.registerMediaType(MasonAdapter.mediaType, MasonAdapter);
 ```
@@ -494,7 +534,7 @@ The `setMediaType` call could be changed to `setMediaType(MasonAdapter.mediaType
 
 Here is an implementation stub for new Traverson media type plug-ins:
 
-```
+```javascript
 'use strict';
 
 function MediaTypeAdapter(log) {
@@ -539,7 +579,7 @@ Without any plug-ins, Traverson will only be able to process `application/json` 
 Content type detection happens for each request/response. If each response in a link traversal process has a different Content-Type header, Traverson will pick a different media type plug-in to process these responses.
 
 Here is a complete example:
-<pre>
+<pre lang="javascript">
 var traverson = require('traverson');
 var JsonHalAdapter = require('traverson-hal');
 traverson.registerMediaType(JsonHalAdapter.mediaType, JsonHalAdapter);
@@ -560,6 +600,15 @@ Release Notes
 * 1.0.0 2015-03-??:
     * Media Type Plug-ins. You can now register your own media types and plug-ins to process them.
     * HAL is no longer supported by Traverson out of the box. If you want to use HAL, you now have to use the [traverson-hal](https://github.com/basti1302/traverson-hal) plug-in.
+    * Traverson uses content type detection by default now. You can still force media types by calling `setMediaType` or shortcuts like `json()`/`jsonHal()` on the request builder.
+    * New method `setMediaType` to force arbitrary media types (as long as a matching media type plug-in is registered).
+    * New methods `json()`/`jsonHal()` as shortcuts for `setMediaType('application/json')`/`setMediaType('application/hal+json')`.
+    * The form `traverson.json.from()` and `traverson.jsonHal.from()` (that is, using  properties `json`/`jsonHal` on the `traverson` object instead of the methods `json()`/`jsonHal()` on the request builder object) are deprecated as of 1.0.0 (but they still work).
+    * Entry points (methods on the traverson object) have been restructured (see api.markdown for details).
+    *
+    * Cloning a request builder (to share configuration between link traversals) is now more explicit (method `newRequest()` on a request builder instance).
+    * `del()` has been renamed to `delete()`. `del()` is kept as an alias for backward compatibility.
+    * Lots of documenation updates. Also new [API reference documentation](https://github.com/basti1302/traverson/blob/master/api.markdown).
 * 0.15.0 2014-12-06:
     * Content type detection (#6)
 * 0.14.0 2014-12-05:
