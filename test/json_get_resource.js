@@ -15,7 +15,7 @@ describe('getResource for JSON', function() {
 
   var get;
   var callback;
-  var rootUri = 'http://api.io';
+  var rootUri = 'http://api.example.org';
   var api = traverson.from(rootUri).json();
 
   var result = mockResponse({ foo: 'bar' });
@@ -297,6 +297,85 @@ describe('getResource for JSON', function() {
         }
       );
     });
+  });
+
+  describe('with request options', function() {
+
+    var response = mockResponse({
+      link: rootUri + '/link',
+    });
+
+    it('should use request options provided as object', function(done) {
+      var options = { qs: { a: 'b' } };
+      runTest(
+        function(requestBuilder) {
+          return requestBuilder.withRequestOptions(options);
+        },
+        options,
+        done
+      );
+    });
+
+    it('should use request options from withRequestOptions and ' +
+        'addRequestOptions', function(done) {
+      runTest(
+        function(requestBuilder) {
+          return requestBuilder
+          .withRequestOptions({ qs: { a: 'b' } })
+          .addRequestOptions({ auth: { user: 'fred' } });
+        },
+        { qs: { a: 'b' }, auth: { user: 'fred' } },
+        done
+      );
+    });
+
+    it('should use request options from two addRequestOptions', function(done) {
+      runTest(
+        function(requestBuilder) {
+          return requestBuilder
+          .addRequestOptions({ qs: { a: 'b' } })
+          .addRequestOptions({ auth: { user: 'fred' } });
+        },
+        { qs: { a: 'b' }, auth: { user: 'fred' } },
+        done
+      );
+    });
+
+    it('should overwrite request options with second withRequestOptions call',
+        function(done) {
+      runTest(
+        function(requestBuilder) {
+          return requestBuilder
+          .withRequestOptions({ qs: { a: 'b' } })
+          .withRequestOptions({ auth: { user: 'fred' } });
+        },
+        { auth: { user: 'fred' } },
+        done
+      );
+    });
+
+
+    function runTest(configure, expectedOptions, done) {
+      get
+      .withArgs(rootUri, expectedOptions, sinon.match.func)
+      .callsArgWithAsync(2, null, response);
+      get
+      .withArgs(rootUri + '/link', expectedOptions, sinon.match.func)
+      .callsArgWithAsync(2, null, result);
+
+      configure(api.newRequest())
+      .follow('link')
+      .getResource(callback);
+
+      waitFor(
+        function() { return callback.called; },
+        function() {
+          // get.withArgs.calls already check if options are used
+          expect(callback).to.have.been.calledWith(null, result.doc);
+          done();
+        }
+      );
+    }
   });
 
   describe('with absolute and relative urls', function() {
