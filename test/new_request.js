@@ -76,21 +76,21 @@ describe('Using newRequest() after configuring', function() {
   // TODO Builder should have getter methods to query its configuration
 
   function checkConfiguredValuesAreStillIntact(newRequest) {
-    // check if it uses the same media type
+    expect(newRequest.getMediaType()).to.equal(traverson.mediaTypes.JSON);
     // This does not work in the browser when the minified Traverson lib is used
     // because the constructor name has been minified to 'c' :-(
     if (isNodeJs()) {
       expect(newRequest.walker.adapter.constructor.name)
         .to.equal('JsonAdapter');
     }
-    expect(newRequest.walker.startUri).to.equal(rootUrl);
-    var templateParams = newRequest.walker.templateParameters;
+    expect(newRequest.getFrom()).to.equal(rootUrl);
+    var templateParams = newRequest.getTemplateParameters();
     expect(templateParams.abc).to.equal('def');
     expect(templateParams.ghi).to.equal(4711);
-    expect(newRequest.requestOptions.headers['x-my-special-header'])
+    expect(newRequest.getRequestOptions().headers['x-my-special-header'])
       .to.equal('foo');
-    expect(newRequest.walker.parseJson).to.be.equal(customParser);
-    expect(newRequest.walker.resolveRelative).to.be.true;
+    expect(newRequest.getJsonParser()).to.equal(customParser);
+    expect(newRequest.doesResolveRelative()).to.be.true;
   }
 
   function checkNoLeaksFromFollowProcess(oldRequest, newRequest) {

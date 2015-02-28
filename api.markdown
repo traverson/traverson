@@ -51,15 +51,34 @@ A request builder can be obtained by `traverson.newRequest()` or `traverson.from
 
 `withTemplateParameters(parameters)`: Provide template parameters for URI template substitution. Returns the request builder instance to allow for method chaining.
 
-`withRequestOptions(options)`: Provide options for HTTP requests (additional HTTP headers, for example). Returns the request builder instance to allow for method chaining.
+`withRequestOptions(options)`: Provide options for HTTP requests (additional HTTP headers, for example). This function resets any request options, that had been set previously, that is, multiple calls to `withRequestOptions` are not cumulative. Use `addRequestOptions` to add request options in a cumulative way. Returns the request builder instance to allow for method chaining.
+
+`addRequestOptions(options)`: Adds options for HTTP requests (additional HTTP headers, for example) on top of existing options, if any. To reset all request options and set new ones without keeping the old ones, you can use `withRequestOptions`. Returns the request builder instance to allow for method chaining.
 
 `withRequestLibrary(request)`: Injects a custom request library. Returns the request builder instance to allow for method chaining.
 
 `parseResponseBodiesWith(parser)`: Injects a custom JSON parser. Returns the request builder instance to allow for method chaining.
 
-`resolveRelative()`: Switches URL resolution to relative (default is absolute). This is for relative URL paths, that is, URLs that omit the protocol (http/https), but start with a slash and that need to be interpreted relative to the current location. Example: If the root URL is `https://api.example.com/home` and the first link contains `/customers/1302` this would usually (without `resolveRelative()`) be resolved to `https://api.example.com/customers/1302`. If this has a link `/orders`, this would be resolved to `https://api.example.com/orders`. When `resolveRelative()` has been called on the request builder instance, the URLs will be resolved differently: From `https://api.example.com/home` the link `/customers/1302` will be resolved to `https://api.example.com/home/customers/1302`. From there, the link `/orders` will be resolved to `https://api.example.com/home/customers/1302/orders`. This feature should be rarely needed. This method returns the request builder instance to allow for method chaining.
+`resolveRelative(flag)`: Switches URL resolution to relative (default is absolute). This is for relative URL paths, that is, URLs that omit the protocol (http/https), but start with a slash and that need to be interpreted relative to the current location. Example: If the root URL is `https://api.example.com/home` and the first link contains `/customers/1302` this would usually (without `resolveRelative()`) be resolved to `https://api.example.com/customers/1302`. If this has a link `/orders`, this would be resolved to `https://api.example.com/orders`. When `resolveRelative()` has been called on the request builder instance, the URLs will be resolved differently: From `https://api.example.com/home` the link `/customers/1302` will be resolved to `https://api.example.com/home/customers/1302`. From there, the link `/orders` will be resolved to `https://api.example.com/home/customers/1302/orders`. This feature should be rarely needed. This method returns the request builder instance to allow for method chaining.
+
+If the method is called without arguments (or the first argument is undefined or null), URL resolution is switched to relative, otherwise the argument is interpreted as a boolean flag. If it is a truthy value, URL resolution is switched to relative, if it is a falsy value, URL resolution is switched to absolute.
 
 `newRequest()`: Returns a clone of the request builder with the same configuration. This method can be called before or after any of the action methods. All configuration options that have been set on the original request builder will also be set on the returned instance, with the exception of the parameter(s) given to the `follow` method which are not copied to the new instance. Also, if an action method has called before calling `newRequest()` on the original request builder, no state from the execution of the action method will be known to the new request builder instance.
+
+`getMediaType()`:  Returns the current media type. If no media type is enforced but content type detection is used, the string `content-negotiation` is returned.
+
+
+`getFrom`: Returns the URL set by the `from(url)` method, that is, the root URL of the API.
+
+`getTemplateParameters`: Returns the template parameters set by the `withTemplateParameters`.
+
+`getRequestOptions`: Returns the request options set by the `withRequestOptions` or `addRequestOptions`.
+
+`getRequestLibrary`: Returns the custom request library instance set by `withRequestLibrary` or the standard request library instance, if a custom one has not been set.
+
+`getJsonParser`: Returns the custom JSON parser function set by `parseResponseBodiesWith` or the standard parser function, if a custom one has not been set.
+
+`doesResolveRelative`: Returns the flag controlling if URLs are resolved relative or absolute. A return value of `true` means that URLs are resolved relative, `false` means absolute.
 
 ### Action Methods
 
