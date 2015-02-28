@@ -66,17 +66,16 @@ describe('Using newRequest() after configuring', function() {
       function() {
         expect(callback).to.have.been.calledWith(null, result.doc);
         var newRequest = client.newRequest();
-        checkConfiguredValuesAreStillIntact(newRequest);
+        checkConfiguredValuesAreStillTheSame(newRequest);
         checkNoLeaksFromFollowProcess(request, newRequest);
         done();
       }
     );
   });
 
-  // TODO Builder should have getter methods to query its configuration
-
-  function checkConfiguredValuesAreStillIntact(newRequest) {
+  function checkConfiguredValuesAreStillTheSame(newRequest) {
     expect(newRequest.getMediaType()).to.equal(traverson.mediaTypes.JSON);
+    expect(newRequest.doesContentNegotiation()).to.be.false;
     // This does not work in the browser when the minified Traverson lib is used
     // because the constructor name has been minified to 'c' :-(
     if (isNodeJs()) {
