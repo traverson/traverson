@@ -3,45 +3,39 @@
 var superagent = require('superagent');
 
 function Request() {
-  this.options = {};
 }
 
-Request.prototype.defaults = function(options) {
-  var newRequest = new Request();
-  newRequest.options = options;
-  return newRequest;
-};
-
-Request.prototype.get = function(uri, callback) {
-  mapRequest(superagent.get(uri), this.options)
+Request.prototype.get = function(uri, options, callback) {
+  mapRequest(superagent.get(uri), options)
     .end(handleResponse(callback));
 };
 
 Request.prototype.post = function(uri, options, callback) {
-  mapRequest(superagent.post(uri), this.options, options)
+  mapRequest(superagent.post(uri), options)
     .end(handleResponse(callback));
 };
 
 Request.prototype.put = function(uri, options, callback) {
-  mapRequest(superagent.put(uri), this.options, options)
+  mapRequest(superagent.put(uri), options)
     .end(handleResponse(callback));
 };
 
 Request.prototype.patch = function(uri, options, callback) {
-  mapRequest(superagent.patch(uri), this.options, options)
+  mapRequest(superagent.patch(uri), options)
     .end(handleResponse(callback));
 };
 
 Request.prototype.del = function(uri, options, callback) {
-  mapRequest(superagent.del(uri), this.options)
+  mapRequest(superagent.del(uri), options)
     .end(handleResponse(callback));
 };
 
-function mapRequest(superagentRequest, options, bodyOptions) {
+function mapRequest(superagentRequest, options) {
+  options = options || {};
   mapQuery(superagentRequest, options);
   mapHeaders(superagentRequest, options);
   mapAuth(superagentRequest, options);
-  mapBody(superagentRequest, options, bodyOptions);
+  mapBody(superagentRequest, options);
   return superagentRequest;
 }
 
@@ -69,9 +63,9 @@ function mapAuth(superagentRequest, options) {
   }
 }
 
-function mapBody(superagentRequest, options, bodyOptions) {
-  if (bodyOptions != null) {
-    var body = bodyOptions.body;
+function mapBody(superagentRequest, options) {
+  if (options != null) {
+    var body = options.body;
     if (body != null) {
       superagentRequest = superagentRequest.send(body);
     }
@@ -95,6 +89,5 @@ function handleResponse(callback) {
     }
   };
 }
-
 
 module.exports = new Request();

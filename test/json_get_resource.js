@@ -38,11 +38,11 @@ describe('getResource for JSON', function() {
 
     it('should access the root URI', function() {
       api.newRequest().getResource(callback);
-      expect(get).to.have.been.calledWith(rootUri, sinon.match.func);
+      expect(get).to.have.been.calledWith(rootUri, {}, sinon.match.func);
     });
 
     it('should call callback with the root doc', function(done) {
-      get.callsArgWithAsync(1, null, rootResponse);
+      get.callsArgWithAsync(2, null, rootResponse);
       api.newRequest().getResource(callback);
       waitFor(
         function() { return callback.called; },
@@ -55,7 +55,7 @@ describe('getResource for JSON', function() {
 
     it('should call callback with err', function(done) {
       var err = new Error('test error');
-      get.callsArgWithAsync(1, err);
+      get.callsArgWithAsync(2, err);
       api.newRequest().getResource(callback);
       waitFor(
         function() { return callback.called; },
@@ -67,10 +67,10 @@ describe('getResource for JSON', function() {
     });
 
     it('should follow a single element path', function(done) {
-      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootResponse);
-      get.withArgs(rootUri + '/link/to/thing',
-          sinon.match.func).callsArgWithAsync(1, null, result);
+      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, rootResponse);
+      get.withArgs(rootUri + '/link/to/thing', {},
+          sinon.match.func).callsArgWithAsync(2, null, result);
       api.newRequest().follow('link').getResource(callback);
       waitFor(
         function() { return callback.called; },
@@ -82,10 +82,10 @@ describe('getResource for JSON', function() {
     });
 
     it('should follow a single element path as array', function(done) {
-      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootResponse);
-      get.withArgs(rootUri + '/link/to/thing',
-          sinon.match.func).callsArgWithAsync(1, null, result);
+      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, rootResponse);
+      get.withArgs(rootUri + '/link/to/thing', {},
+          sinon.match.func).callsArgWithAsync(2, null, result);
       api.newRequest().follow(['link']).getResource(callback);
       waitFor(
         function() { return callback.called; },
@@ -97,8 +97,8 @@ describe('getResource for JSON', function() {
     });
 
     it('should call callback with err if link is not found', function(done) {
-      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootResponse);
+      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, rootResponse);
       api.newRequest().follow('non-existing-link').getResource(callback);
       waitFor(
         function() { return callback.called; },
@@ -115,10 +115,10 @@ describe('getResource for JSON', function() {
 
     it('should call callback with err inside recursion', function(done) {
       var err = new Error('test error');
-      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, mockResponse({ firstLink: rootUri + '/first' }));
-      get.withArgs(rootUri + '/first', sinon.match.func).
-          callsArgWithAsync(1, err);
+      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, mockResponse({ firstLink: rootUri + '/first' }));
+      get.withArgs(rootUri + '/first', {}, sinon.match.func).
+          callsArgWithAsync(2, err);
       api.newRequest().follow('firstLink').getResource(callback);
       waitFor(
         function() { return callback.called; },
@@ -140,9 +140,9 @@ describe('getResource for JSON', function() {
     var result = mockResponse({ the: 'result' });
 
     it('should follow to a link via JSONPath expression', function(done) {
-      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootResponse);
-      get.withArgs(uri, sinon.match.func).callsArgWithAsync(1, null,
+      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, rootResponse);
+      get.withArgs(uri, {}, sinon.match.func).callsArgWithAsync(2, null,
           result);
       api.newRequest().follow('$.deeply.nested.link').getResource(callback);
       waitFor(
@@ -156,8 +156,8 @@ describe('getResource for JSON', function() {
 
     it('should call callback with err if JSONPath has no match',
         function(done) {
-      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootResponse);
+      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, rootResponse);
       api.newRequest().follow('$.deeply.nested.blink').getResource(callback);
       waitFor(
         function() { return callback.called; },
@@ -176,8 +176,8 @@ describe('getResource for JSON', function() {
       var rootResponseMulti = mockResponse({
         arr: [ { foo: 'bar' }, { foo: 'baz' } ]
       });
-      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootResponseMulti);
+      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, rootResponseMulti);
       api.newRequest().follow('$.arr[*].foo').getResource(callback);
       waitFor(
         function() { return callback.called; },
@@ -202,12 +202,12 @@ describe('getResource for JSON', function() {
         secondTemplate: rootUri + '/another/{id}'
       });
 
-      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootResponseUriTemplate);
-      get.withArgs(rootUri + '/users/basti1302/things/4711',
-          sinon.match.func).callsArgWithAsync(1, null, next);
-      get.withArgs(rootUri + '/another/42',
-          sinon.match.func).callsArgWithAsync(1, null, result);
+      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, rootResponseUriTemplate);
+      get.withArgs(rootUri + '/users/basti1302/things/4711', {},
+          sinon.match.func).callsArgWithAsync(2, null, next);
+      get.withArgs(rootUri + '/another/42', {},
+          sinon.match.func).callsArgWithAsync(2, null, result);
       api
       .newRequest()
       .withTemplateParameters({user: 'basti1302', thing: 4711, id: 42})
@@ -230,8 +230,8 @@ describe('getResource for JSON', function() {
       var api = traverson.from(startUriTemplate).json();
       get = sinon.stub();
       api.walker.request = { get: get };
-      get.withArgs(startUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootUriTemplate);
+      get.withArgs(startUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, rootUriTemplate);
 
       api
       .newRequest()
@@ -255,12 +255,12 @@ describe('getResource for JSON', function() {
       var next = mockResponse({
         secondTemplate: rootUri + '/another_user/{user}'
       });
-      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootUriTemplate);
-      get.withArgs(rootUri + '/users/basti1302/things/4711',
-          sinon.match.func).callsArgWithAsync(1, null, next);
-      get.withArgs(rootUri + '/another_user/someone_else',
-          sinon.match.func).callsArgWithAsync(1, null, result);
+      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, rootUriTemplate);
+      get.withArgs(rootUri + '/users/basti1302/things/4711', {},
+          sinon.match.func).callsArgWithAsync(2, null, next);
+      get.withArgs(rootUri + '/another_user/someone_else', {},
+          sinon.match.func).callsArgWithAsync(2, null, result);
       api.follow('firstTemplate', 'secondTemplate')
         .withTemplateParameters([null,
                                 {user: 'basti1302', thing: 4711},
@@ -281,10 +281,10 @@ describe('getResource for JSON', function() {
         template: rootUri + '/users{?page,size,sort}',
       });
 
-      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, responseUriTemplate);
-      get.withArgs(rootUri + '/users',
-          sinon.match.func).callsArgWithAsync(1, null, result);
+      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, responseUriTemplate);
+      get.withArgs(rootUri + '/users', {},
+          sinon.match.func).callsArgWithAsync(2, null, result);
       api
       .newRequest()
       .follow('template')
@@ -309,12 +309,12 @@ describe('getResource for JSON', function() {
       var response1 = mockResponse({ link1: path1 });
       var response2 = mockResponse({ link2: path2 });
 
-      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, response1);
-      get.withArgs(path1, sinon.match.func).callsArgWithAsync(
-          1, null, response2);
-      get.withArgs(path2, sinon.match.func).callsArgWithAsync(
-          1, null, result);
+      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, response1);
+      get.withArgs(path1, {}, sinon.match.func).callsArgWithAsync(
+          2, null, response2);
+      get.withArgs(path2, {}, sinon.match.func).callsArgWithAsync(
+          2, null, result);
 
       api
       .newRequest()
@@ -339,12 +339,12 @@ describe('getResource for JSON', function() {
       var response1 = mockResponse({ link1: path1 });
       var response2 = mockResponse({ link2: path2 });
 
-      get.withArgs(httpsRootUri, sinon.match.func).callsArgWithAsync(
-          1, null, response1);
-      get.withArgs(path1, sinon.match.func).callsArgWithAsync(
-          1, null, response2);
-      get.withArgs(path2, sinon.match.func).callsArgWithAsync(
-          1, null, result);
+      get.withArgs(httpsRootUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, response1);
+      get.withArgs(path1, {}, sinon.match.func).callsArgWithAsync(
+          2, null, response2);
+      get.withArgs(path2, {}, sinon.match.func).callsArgWithAsync(
+          2, null, result);
 
       api
       .newRequest()
@@ -369,12 +369,12 @@ describe('getResource for JSON', function() {
       var response1 = mockResponse({ link1: path1 });
       var response2 = mockResponse({ link2: path2 });
 
-      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, response1);
-      get.withArgs(rootUri + path1, sinon.match.func).callsArgWithAsync(
-          1, null, response2);
-      get.withArgs(rootUri + path2, sinon.match.func).callsArgWithAsync(
-          1, null, result);
+      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, response1);
+      get.withArgs(rootUri + path1, {}, sinon.match.func).callsArgWithAsync(
+          2, null, response2);
+      get.withArgs(rootUri + path2, {}, sinon.match.func).callsArgWithAsync(
+          2, null, result);
 
       api
       .newRequest()
@@ -396,12 +396,15 @@ describe('getResource for JSON', function() {
       var response1 = mockResponse({ link1: path1 });
       var response2 = mockResponse({ link2: path2 });
 
-      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, response1);
-      get.withArgs(rootUri + path1, sinon.match.func).callsArgWithAsync(
-          1, null, response2);
-      get.withArgs(rootUri + path1 + path2, sinon.match.func).callsArgWithAsync(
-          1, null, result);
+      get
+      .withArgs(rootUri, {}, sinon.match.func)
+      .callsArgWithAsync(2, null, response1);
+      get
+      .withArgs(rootUri + path1, {}, sinon.match.func)
+      .callsArgWithAsync(2, null, response2);
+      get
+      .withArgs(rootUri + path1 + path2, {}, sinon.match.func)
+      .callsArgWithAsync(2, null, result);
 
       api
       .newRequest()
@@ -440,16 +443,16 @@ describe('getResource for JSON', function() {
       });
       var response4 = mockResponse({ link4: path4 });
 
-      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, root);
-      get.withArgs(path1, sinon.match.func).callsArgWithAsync(
-          1, null, response2);
-      get.withArgs(path2, sinon.match.func).callsArgWithAsync(
-          1, null, response3);
-      get.withArgs(path3, sinon.match.func).callsArgWithAsync(
-          1, null, response4);
-      get.withArgs(path4, sinon.match.func).callsArgWithAsync(
-          1, null, result);
+      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, root);
+      get.withArgs(path1, {}, sinon.match.func).callsArgWithAsync(
+          2, null, response2);
+      get.withArgs(path2, {}, sinon.match.func).callsArgWithAsync(
+          2, null, response3);
+      get.withArgs(path3, {}, sinon.match.func).callsArgWithAsync(
+          2, null, response4);
+      get.withArgs(path4, {}, sinon.match.func).callsArgWithAsync(
+          2, null, result);
 
       api
       .newRequest()

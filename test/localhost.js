@@ -307,7 +307,6 @@ describe('Traverson (when tested against a local server)', function() {
       function() { return callback.called; },
       function() {
         var resultDoc = checkResponseWithBody(201);
-        console.log(resultDoc);
         expect(resultDoc.document).to.exist;
         expect(resultDoc.document).to.equal('created');
         expect(resultDoc.received).to.exist;

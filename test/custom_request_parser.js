@@ -36,9 +36,9 @@ describe('Traverson using a custom request parser', function() {
     api.walker.request = { get: get };
     callback = sinon.spy();
 
-    get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-        1, null, rootResponse, rootResponse.body);
-    get.withArgs(getUri, sinon.match.func).callsArgWithAsync(1, null,
+    get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
+        2, null, rootResponse, rootResponse.body);
+    get.withArgs(getUri, {}, sinon.match.func).callsArgWithAsync(2, null,
         secondResponse, secondResponse.body);
 
   });

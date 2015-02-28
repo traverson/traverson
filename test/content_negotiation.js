@@ -57,12 +57,12 @@ describe('Content negotiation', function() {
       secondResponse = mockResponse({ second: secondUri });
       thirdResponse = mockResponse({ content: 'awesome' });
 
-      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootResponse, rootResponse.body);
-      get.withArgs(firstUri, sinon.match.func).callsArgWithAsync(
-          1, null, secondResponse, secondResponse.body);
-      get.withArgs(secondUri, sinon.match.func).callsArgWithAsync(
-          1, null, thirdResponse, thirdResponse.body);
+      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, rootResponse, rootResponse.body);
+      get.withArgs(firstUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, secondResponse, secondResponse.body);
+      get.withArgs(secondUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, thirdResponse, thirdResponse.body);
     });
 
     it('should recognize the media type as application/json', function(done) {
@@ -95,12 +95,12 @@ describe('Content negotiation', function() {
       });
       thirdResponse = mockResponse({ content: 'awesome' });
 
-      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootResponse, rootResponse.body);
-      get.withArgs(firstUri, sinon.match.func).callsArgWithAsync(
-          1, null, secondResponse, secondResponse.body);
-      get.withArgs(secondUri, sinon.match.func).callsArgWithAsync(
-          1, null, thirdResponse, thirdResponse.body);
+      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, rootResponse, rootResponse.body);
+      get.withArgs(firstUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, secondResponse, secondResponse.body);
+      get.withArgs(secondUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, thirdResponse, thirdResponse.body);
     });
 
     it('should recognize the media type and use the adapter',
@@ -144,16 +144,16 @@ describe('Content negotiation', function() {
       });
       fifthResponse = mockResponseApplicationJson({ content: 'awesome' });
 
-      get.withArgs(rootUri, sinon.match.func).callsArgWithAsync(
-          1, null, rootResponse, rootResponse.body);
-      get.withArgs(firstUri, sinon.match.func).callsArgWithAsync(
-          1, null, secondResponse, secondResponse.body);
-      get.withArgs(secondUri, sinon.match.func).callsArgWithAsync(
-          1, null, thirdResponse, thirdResponse.body);
-      get.withArgs(thirdUri, sinon.match.func).callsArgWithAsync(
-          1, null, fourthResponse, fourthResponse.body);
-      get.withArgs(fourthUri, sinon.match.func).callsArgWithAsync(
-          1, null, fifthResponse, fifthResponse.body);
+      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, rootResponse, rootResponse.body);
+      get.withArgs(firstUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, secondResponse, secondResponse.body);
+      get.withArgs(secondUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, thirdResponse, thirdResponse.body);
+      get.withArgs(thirdUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, fourthResponse, fourthResponse.body);
+      get.withArgs(fourthUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, fifthResponse, fifthResponse.body);
     });
 
     it('should switch the media type on every request',

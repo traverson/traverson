@@ -56,10 +56,12 @@ describe('Using newRequest() after configuring', function() {
 
   it('should keep configured values but not leak state from follow()',
       function(done) {
-    get.withArgs(rootUrl, sinon.match.func).callsArgWithAsync(
-        1, null, rootResponse);
-    get.withArgs(rootUrl + '/link/to/thing',
-        sinon.match.func).callsArgWithAsync(1, null, result);
+    get
+    .withArgs(rootUrl, sinon.match.object, sinon.match.func)
+    .callsArgWithAsync(2, null, rootResponse);
+    get
+    .withArgs(rootUrl + '/link/to/thing', sinon.match.object, sinon.match.func)
+    .callsArgWithAsync(2, null, result);
     request.follow('link').getResource(callback);
     waitFor(
       function() { return callback.called; },

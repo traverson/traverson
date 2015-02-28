@@ -30,7 +30,7 @@ describe('getResource without preceding follow()', function() {
     it('should not require an empty follow() call to access the root URI',
         function() {
       api.getResource(callback);
-      expect(get).to.have.been.calledWith(rootUri, sinon.match.func);
+      expect(get).to.have.been.calledWith(rootUri, {}, sinon.match.func);
     });
   });
 });
