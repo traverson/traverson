@@ -1,6 +1,7 @@
 'use strict';
 
 var traverson = require('../traverson')
+  , util = require('util')
   , mockResponse = require('traverson-mock-response')()
   , waitFor = require('poll-forever')
   , chai = require('chai')
@@ -354,13 +355,29 @@ describe('getResource for JSON', function() {
       );
     });
 
+    it('should use request options provided as array', function(done) {
+      var optionsArray = [{ qs: { a: 'b' } }, { auth: { user: 'fred' } }];
+      runTest(
+        function(requestBuilder) {
+          return requestBuilder.withRequestOptions(optionsArray);
+        },
+        optionsArray,
+        done
+      );
+    });
 
     function runTest(configure, expectedOptions, done) {
+      var expected1 = expectedOptions;
+      var expected2 = expectedOptions;
+      if (util.isArray(expectedOptions)) {
+        expected1 = expectedOptions[0];
+        expected2 = expectedOptions[1];
+      }
       get
-      .withArgs(rootUri, expectedOptions, sinon.match.func)
+      .withArgs(rootUri, expected1, sinon.match.func)
       .callsArgWithAsync(2, null, response);
       get
-      .withArgs(rootUri + '/link', expectedOptions, sinon.match.func)
+      .withArgs(rootUri + '/link', expected2, sinon.match.func)
       .callsArgWithAsync(2, null, result);
 
       configure(api.newRequest())
@@ -388,12 +405,15 @@ describe('getResource for JSON', function() {
       var response1 = mockResponse({ link1: path1 });
       var response2 = mockResponse({ link2: path2 });
 
-      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
-          2, null, response1);
-      get.withArgs(path1, {}, sinon.match.func).callsArgWithAsync(
-          2, null, response2);
-      get.withArgs(path2, {}, sinon.match.func).callsArgWithAsync(
-          2, null, result);
+      get
+      .withArgs(rootUri, {}, sinon.match.func)
+      .callsArgWithAsync(2, null, response1);
+      get
+      .withArgs(path1, {}, sinon.match.func)
+      .callsArgWithAsync(2, null, response2);
+      get
+      .withArgs(path2, {}, sinon.match.func)
+      .callsArgWithAsync(2, null, result);
 
       api
       .newRequest()
