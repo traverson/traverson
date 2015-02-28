@@ -12,6 +12,8 @@ var traverson = require('../traverson')
 
 chai.use(sinonChai);
 
+// TODO SPLIT THIS TEST SUITE INTO MULTIPE FILES! It has become soooo long :-(
+
 describe('getResource for JSON', function() {
 
   var get;
@@ -362,6 +364,76 @@ describe('getResource for JSON', function() {
           return requestBuilder.withRequestOptions(optionsArray);
         },
         optionsArray,
+        done
+      );
+    });
+
+    it('should merge request options arrays from withRequestOptions and ' +
+        'addRequestOptions', function(done) {
+      runTest(
+        // configure
+        function(requestBuilder) {
+          return requestBuilder.withRequestOptions([
+            { qs: { a: 'b' } },
+            { auth: { user: 'fred' } },
+          ])
+          .addRequestOptions([
+            { qs: { c: 'd' }, foo: 'bar' },
+            { auth: { password: 'flintstone' } },
+          ]);
+        },
+        // expected: merge each array element individually
+        [
+          { qs: { a: 'b', c: 'd' }, foo: 'bar' },
+          { auth: { user: 'fred', password: 'flintstone' } },
+        ],
+        done
+      );
+    });
+
+    it('should merge withRequestOptions object with addRequestOptions array',
+        function(done) {
+      runTest(
+        // configure
+        function(requestBuilder) {
+          return requestBuilder.withRequestOptions({
+            qs: { a: 'b' }, auth: { user: 'fred' }
+          })
+          .addRequestOptions([
+            { qs: { c: 'd' }, foo: 'bar' },
+            { auth: { password: 'flintstone' } },
+          ]);
+        },
+        // expected: merge each per-step add-array into the base object
+        [
+          { qs: { a: 'b', c: 'd' }, auth: { user: 'fred' }, foo: 'bar' },
+          { qs: { a: 'b', }, auth: { user: 'fred', password: 'flintstone' } },
+        ],
+        done
+      );
+    });
+
+    it('should merge withRequestOptions array with addRequestOptions object',
+        function(done) {
+      runTest(
+        // configure
+        function(requestBuilder) {
+          return requestBuilder.withRequestOptions([
+            { qs: { a: 'b' }, foo: 'bar' },
+            { auth: { user: 'fred' } },
+          ])
+          .addRequestOptions({
+            qs: { c: 'd' }, auth: { password: 'flintstone' }
+          });
+        },
+        // expected: merge the add-array into each per-step array element
+        [
+          {
+            qs: { a: 'b', c: 'd' },
+            auth: { password: 'flintstone' }, foo: 'bar'
+          },
+          { qs: { c: 'd', }, auth: { user: 'fred', password: 'flintstone' } },
+        ],
         done
       );
     });
