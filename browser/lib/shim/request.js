@@ -6,27 +6,27 @@ function Request() {
 }
 
 Request.prototype.get = function(uri, options, callback) {
-  mapRequest(superagent.get(uri), options)
+  return mapRequest(superagent.get(uri), options)
     .end(handleResponse(callback));
 };
 
 Request.prototype.post = function(uri, options, callback) {
-  mapRequest(superagent.post(uri), options)
+  return mapRequest(superagent.post(uri), options)
     .end(handleResponse(callback));
 };
 
 Request.prototype.put = function(uri, options, callback) {
-  mapRequest(superagent.put(uri), options)
+  return mapRequest(superagent.put(uri), options)
     .end(handleResponse(callback));
 };
 
 Request.prototype.patch = function(uri, options, callback) {
-  mapRequest(superagent.patch(uri), options)
+  return mapRequest(superagent.patch(uri), options)
     .end(handleResponse(callback));
 };
 
 Request.prototype.del = function(uri, options, callback) {
-  mapRequest(superagent.del(uri), options)
+  return mapRequest(superagent.del(uri), options)
     .end(handleResponse(callback));
 };
 

@@ -86,6 +86,8 @@ Calling one of this methods finishes the configuration phase and starts the link
 
 Exactly one of this methods should be called after calling zero or more configuration methods. Once one of these methods has been called, the request builder instance should not be used anymore.
 
+Each action method returns a handle for the link traversal process, which can be used to abort the link traversal (see below).
+
 `getResource(callback)`: This method is what you probably want to call if you want to retrieve information from the remote API. It will parse the JSON body from the last HTTP response and pass the resulting JavaScript object to your callback. The callback signature is `callback(err, resource)`.
 
 `get(callback)`: This method is similar to `getResource`, but it does not parse the HTTP response body for you. Instead, it gives you the response object, including the HTTP status code and the raw body. The callback signature is `callback(err, response)`.
@@ -101,3 +103,7 @@ Exactly one of this methods should be called after calling zero or more configur
 `delete(callback)`: Instead of sending a GET request to the last URL in the link traversal process, Traverson will send a DELETE request. The callback signature is `callback(err, response, url)`.
 
 `del(callback)`: An alias for `delete`.
+
+The handle returned from these methods only has one method:
+
+`abort()`: Aborts the current link traversal. If a HTTP request is in progress, this request is also aborted. The callback given to the action method is called with an error with the message `Link traversal process has been aborted.`.

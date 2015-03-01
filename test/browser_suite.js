@@ -1,3 +1,4 @@
+require('./abort_request');
 require('./content_negotiation');
 require('./custom_request_parser');
 require('./json_get_resource');
