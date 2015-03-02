@@ -540,16 +540,20 @@ describe('Traverson (when tested against a local server)', function() {
     );
   });
 
-  it.only('should use provided Content-Type with post', function(done) {
-    var payload = { what: 'ever' };
+  it('should post with x-www-form-urlencoded',
+      function(done) {
+    var payload = { item: '#4711', quantity: 1 };
     traverson
     .from(rootUri)
-    .withRequestOptions({
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
+    .withRequestOptions([
+      { headers: { 'Accept': 'application/json' } },
+      {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        }
       }
-    })
+    ])
     .follow('echo-all')
     .post(payload, callback);
     waitFor(
@@ -559,10 +563,53 @@ describe('Traverson (when tested against a local server)', function() {
         var responseAcceptHeader =
             resultDoc.headers.Accept ||
             resultDoc.headers.accept;
+        var responseContentType =
+            resultDoc.headers['Content-Type'] ||
+            resultDoc.headers['content-type'];
         expect(responseAcceptHeader).to.exist;
-        expect(responseAcceptHeader).to.equal('application/x-www-form-urlencoded');
+        expect(responseAcceptHeader).to.equal('application/json');
+        expect(responseContentType).to.exist;
+        expect(responseContentType)
+          .to.equal('application/x-www-form-urlencoded');
         expect(resultDoc.received).to.exist;
-        expect(resultDoc.received).to.deep.equal(payload);
+        expect(JSON.stringify(resultDoc.received)).to.contain('item');
+        expect(JSON.stringify(resultDoc.received)).to.contain('#4711');
+        done();
+      }
+    );
+  });
+
+  it('should post form via request options with x-www-form-urlencoded',
+      function(done) {
+    var order = { item: '#4711', quantity: '1'};
+    traverson
+    .from(rootUri)
+    .withRequestOptions([
+      { headers: { 'Accept': 'application/json' } },
+      {
+        headers: { 'Accept': 'application/json' },
+        form: order,
+      }
+    ])
+    .follow('echo-all')
+    .post(null, callback);
+    waitFor(
+      function() { return callback.called; },
+      function() {
+        var resultDoc = checkResponseWithBody(201);
+        var responseAcceptHeader =
+            resultDoc.headers.Accept ||
+            resultDoc.headers.accept;
+        var responseContentType =
+            resultDoc.headers['Content-Type'] ||
+            resultDoc.headers['content-type'];
+        expect(responseAcceptHeader).to.exist;
+        expect(responseAcceptHeader).to.equal('application/json');
+        expect(responseContentType).to.exist;
+        expect(responseContentType)
+          .to.equal('application/x-www-form-urlencoded');
+        expect(resultDoc.received).to.exist;
+        expect(resultDoc.received).to.deep.equal(order);
         done();
       }
     );
