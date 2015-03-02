@@ -36,6 +36,7 @@ function mapRequest(superagentRequest, options) {
   mapHeaders(superagentRequest, options);
   mapAuth(superagentRequest, options);
   mapBody(superagentRequest, options);
+  mapForm(superagentRequest, options);
   return superagentRequest;
 }
 
@@ -68,6 +69,17 @@ function mapBody(superagentRequest, options) {
     var body = options.body;
     if (body != null) {
       superagentRequest = superagentRequest.send(body);
+    }
+  }
+}
+
+function mapForm(superagentRequest, options) {
+  if (options != null) {
+    var form = options.form;
+    if (form != null) {
+      superagentRequest = superagentRequest.send(form);
+      superagentRequest = superagentRequest.set('Content-Type',
+          'application/x-www-form-urlencoded');
     }
   }
 }
