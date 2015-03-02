@@ -625,7 +625,7 @@ Given the call to `abort()` happens while the link traversal is still in process
 Release Notes
 -------------
 
-* 1.1.0 2015-03-??:
+* 1.1.0 2015-03-02:
     * Abort link traversals (and HTTP requests) (#27). This feature is to be considered experimental in this version.
     * Specify request options per step by passing in an array to `withRequestOptions` or `addRequestOptions` (#25).
     * Fix for subsequent error that ate the original error if a problem occured before or during the first HTTP request (#23).
