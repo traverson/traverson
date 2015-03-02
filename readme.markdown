@@ -631,6 +631,7 @@ Release Notes
     * Fix for subsequent error that ate the original error if a problem occured before or during the first HTTP request (#23).
     * Fix: Copy contentNegotiation flag correctly to cloned request builder (`newRequest()`).
     * Add methods to request builder to query the current configuration.
+    * Posting with content type application/x-www-form-urlencoded works now (#31).
 * 1.0.0 2015-02-27:
     * Media Type Plug-ins. You can now register your own media types and plug-ins to process them.
     * HAL is no longer supported by Traverson out of the box. If you want to use HAL, you now have to use the [traverson-hal](https://github.com/basti1302/traverson-hal) plug-in.
