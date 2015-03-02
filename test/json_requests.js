@@ -1,6 +1,7 @@
 'use strict';
 
 var traverson = require('../traverson')
+  , util = require('util')
   , mockResponse =  require('traverson-mock-response')()
   , waitFor = require('poll-forever')
   , chai = require('chai')
@@ -181,8 +182,8 @@ describe('The JSON client\'s', function() {
         }
       );
     });
-  });
 
+  });
 
   describe('post method', function() {
 
@@ -222,6 +223,63 @@ describe('The JSON client\'s', function() {
         }
       );
     });
+
+    it('should use request options provided as object', function(done) {
+      var options = { qs: { a: 'b' } };
+      runTest(
+        function(requestBuilder) {
+          return requestBuilder.withRequestOptions(options);
+        },
+        options,
+        done
+      );
+    });
+
+    it('should use request options provided as array', function(done) {
+      var optionsArray = [{ qs: { a: 'b' } }, { auth: { user: 'fred' } }];
+      runTest(
+        function(requestBuilder) {
+          return requestBuilder.withRequestOptions(optionsArray);
+        },
+        optionsArray,
+        done
+      );
+    });
+
+    function runTest(configure, expectedOptions, done) {
+      var expected1 = expectedOptions;
+      var expected2 = expectedOptions;
+      if (util.isArray(expectedOptions)) {
+        expected1 = expectedOptions[0];
+        expected2 = expectedOptions[1];
+      }
+
+      get
+      .withArgs(rootUri, expected1, sinon.match.func)
+      .callsArgWithAsync(2, null, rootResponse);
+      executeRequest
+      .withArgs(postUri,
+                sinon.match.object,
+                expected2,
+                post,
+                payload,
+                sinon.match.func)
+      .callsArgWithAsync(5, null, result, postUri);
+
+      configure(api.newRequest())
+      .follow('post_link')
+      .post(payload, callback);
+
+      waitFor(
+        function() { return callback.called; },
+        function() {
+          // get.withArgs.calls/executeRequest.withArgs already check if
+          // options are used
+          expect(callback).to.have.been.calledWith(null, result, postUri);
+          done();
+        }
+      );
+    }
 
   });
 

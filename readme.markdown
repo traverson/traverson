@@ -56,6 +56,7 @@ Table of Contents
     * [Using Media Type Plug-ins](#using-media-type-plug-ins)
         * [Implementing Media Type Plug-ins](#implementing-media-type-plug-ins)
     * [Content Type Detection Versus Forcing Media Types](#content-type-detection-versus-forcing-media-types)
+    * [Aborting the Link Traversal](#aborting-the-link-traversal)
 * [Release Notes](#release-notes)
 
 Installation
@@ -596,6 +597,30 @@ traverson
 });
 </pre>
 
+### Aborting the Link Traversal
+
+In some situations you might want to abort or cancel the link traversal process before it has finished. The action methods (`get`, `getResource`, `post`, ...) actually return a handle to do just that:
+
+<pre lang="javascript">
+var traverson = require('traverson');
+
+var traversal = traverson
+.from('http://api.example.com')
+.getResource(function(error, document) {
+  if (error) {
+    console.log(error.message);
+  } else {
+    ...
+  }
+});
+
+// ... for some reason you decide later that you are not interested at all in
+// the result of this link traversal ...
+
+<b>traversal.abort();</b>
+</pre>
+
+Given the call to `abort()` happens while the link traversal is still in process, it will be aborted immediately, that is, all outstanding HTTP requests for the link traversal process are not executed. If there is an HTTP request in progress when abort is called, this HTTP request is also aborted. (There usually is an HTTP request in progress as long as the link traversal is in progress because pretty much everything else in the link traversal process happens synchronously.) The result of aborting the link traversal is that the callback passed to the action method is called with an error which says `Link traversal process has been aborted.`.
 
 Release Notes
 -------------

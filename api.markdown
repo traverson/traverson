@@ -51,9 +51,29 @@ A request builder can be obtained by `traverson.newRequest()` or `traverson.from
 
 `withTemplateParameters(parameters)`: Provide template parameters for URI template substitution. Returns the request builder instance to allow for method chaining.
 
-`withRequestOptions(options)`: Provide options for HTTP requests (additional HTTP headers, for example). This function resets any request options, that had been set previously, that is, multiple calls to `withRequestOptions` are not cumulative. Use `addRequestOptions` to add request options in a cumulative way. Returns the request builder instance to allow for method chaining.
+`withRequestOptions(options)`: Provide options for HTTP requests (additional HTTP headers, for example). This function resets any request options, that had been set previously, that is, multiple calls to `withRequestOptions` are not cumulative. Use `addRequestOptions` to add request options in a cumulative way.
 
-`addRequestOptions(options)`: Adds options for HTTP requests (additional HTTP headers, for example) on top of existing options, if any. To reset all request options and set new ones without keeping the old ones, you can use `withRequestOptions`. Returns the request builder instance to allow for method chaining.
+Options can either be passed as an object or an array. If an object is passed, the options will be used for each HTTP request. If an array is passed, each element should be an options object and the first array element will be used for the first request, the second element for the second request and so on. `null` elements are allowed.
+
+Returns the request builder instance to allow for method chaining.
+
+`addRequestOptions(options)`: Adds options for HTTP requests (additional HTTP headers, for example) on top of existing options, if any. To reset all request options and set new ones without keeping the old ones, you can use `withRequestOptions`.
+
+Options can either be passed as an object or an array. If an object is passed, the options will be used for each HTTP request. If an array is passed, each element should be an options object and the first array element will be used for the first request, the second element for the second request and so on. null elements are allowed.
+
+When called after a call to `withRequestOptions` or when combining multiple `addRequestOptions` calls, some with objects and some with arrays, a multitude of interesting situations can occur:
+
+1) The existing request options are an object and the new options passed into this method are also an object. Outcome: Both objects are merged and all options are applied to all requests.
+
+2) The existing options are an array and the new options passed into this method are also an array. Outcome: Each array element is merged individually.  The combined options from the n-th array element in the existing options array and the n-th array element in the given array are applied to the n-th request.
+
+3) The existing options are an object and the new options passed into this method are an array. Outcome: A new options array will be created. For each element, a clone of the existing options object will be merged with an element from the given options array.
+
+Note that if the given array has less elements than the number of steps in the link traversal (usually the number of steps is derived from the number of link relations given to the follow method), only the first n http requests will use options at all, where n is the number of elements in the given array. HTTP request n + 1 and all following HTTP requests will use an empty options object. This is due to the fact, that at the time of creating the new options array, we can not know with certainty how many steps the link traversal will have.
+
+4) The existing options are an array and the new options passed into this method are an object. Outcome: A clone of the given options object will be merged into into each array element of the existing options.
+
+Returns the request builder instance to allow for method chaining.
 
 `withRequestLibrary(request)`: Injects a custom request library. Returns the request builder instance to allow for method chaining.
 
