@@ -63,15 +63,11 @@ Options can either be passed as an object or an array. If an object is passed, t
 
 When called after a call to `withRequestOptions` or when combining multiple `addRequestOptions` calls, some with objects and some with arrays, a multitude of interesting situations can occur:
 
-1) The existing request options are an object and the new options passed into this method are also an object. Outcome: Both objects are merged and all options are applied to all requests.
-
-2) The existing options are an array and the new options passed into this method are also an array. Outcome: Each array element is merged individually.  The combined options from the n-th array element in the existing options array and the n-th array element in the given array are applied to the n-th request.
-
-3) The existing options are an object and the new options passed into this method are an array. Outcome: A new options array will be created. For each element, a clone of the existing options object will be merged with an element from the given options array.
-
+1. The existing request options are an object and the new options passed into this method are also an object. Outcome: Both objects are merged and all options are applied to all requests.
+1. The existing options are an array and the new options passed into this method are also an array. Outcome: Each array element is merged individually.  The combined options from the n-th array element in the existing options array and the n-th array element in the given array are applied to the n-th request.
+1. The existing options are an object and the new options passed into this method are an array. Outcome: A new options array will be created. For each element, a clone of the existing options object will be merged with an element from the given options array.
 Note that if the given array has less elements than the number of steps in the link traversal (usually the number of steps is derived from the number of link relations given to the follow method), only the first n http requests will use options at all, where n is the number of elements in the given array. HTTP request n + 1 and all following HTTP requests will use an empty options object. This is due to the fact, that at the time of creating the new options array, we can not know with certainty how many steps the link traversal will have.
-
-4) The existing options are an array and the new options passed into this method are an object. Outcome: A clone of the given options object will be merged into into each array element of the existing options.
+1. The existing options are an array and the new options passed into this method are an object. Outcome: A clone of the given options object will be merged into into each array element of the existing options.
 
 Returns the request builder instance to allow for method chaining.
 
