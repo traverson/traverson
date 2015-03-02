@@ -56,6 +56,7 @@ Table of Contents
     * [Using Media Type Plug-ins](#using-media-type-plug-ins)
         * [Implementing Media Type Plug-ins](#implementing-media-type-plug-ins)
     * [Content Type Detection Versus Forcing Media Types](#content-type-detection-versus-forcing-media-types)
+    * [Aborting the Link Traversal](#aborting-the-link-traversal)
 * [Release Notes](#release-notes)
 
 Installation
@@ -596,10 +597,41 @@ traverson
 });
 </pre>
 
+### Aborting the Link Traversal
+
+In some situations you might want to abort or cancel the link traversal process before it has finished. The action methods (`get`, `getResource`, `post`, ...) actually return a handle to do just that:
+
+<pre lang="javascript">
+var traverson = require('traverson');
+
+var traversal = traverson
+.from('http://api.example.com')
+.getResource(function(error, document) {
+  if (error) {
+    console.log(error.message);
+  } else {
+    ...
+  }
+});
+
+// ... for some reason you decide later that you are not interested at all in
+// the result of this link traversal ...
+
+<b>traversal.abort();</b>
+</pre>
+
+Given the call to `abort()` happens while the link traversal is still in process, it will be aborted immediately, that is, all outstanding HTTP requests for the link traversal process are not executed. If there is an HTTP request in progress when abort is called, this HTTP request is also aborted. (There usually is an HTTP request in progress as long as the link traversal is in progress because pretty much everything else in the link traversal process happens synchronously.) The result of aborting the link traversal is that the callback passed to the action method is called with an error which says `Link traversal process has been aborted.`.
+
 Release Notes
 -------------
 
-* 1.0.0 2015-03-??:
+* 1.1.0 2015-03-??:
+    * Abort link traversals (and HTTP requests) (#27). This feature is to be considered experimental in this version.
+    * Specify request options per step by passing in an array to `withRequestOptions` or `addRequestOptions` (#25).
+    * Fix for subsequent error that ate the original error if a problem occured before or during the first HTTP request (#23).
+    * Fix: Copy contentNegotiation flag correctly to cloned request builder (`newRequest()`).
+    * Add methods to request builder to query the current configuration.
+* 1.0.0 2015-02-27:
     * Media Type Plug-ins. You can now register your own media types and plug-ins to process them.
     * HAL is no longer supported by Traverson out of the box. If you want to use HAL, you now have to use the [traverson-hal](https://github.com/basti1302/traverson-hal) plug-in.
     * Traverson uses content type detection by default now. You can still force media types by calling `setMediaType` or shortcuts like `json()`/`jsonHal()` on the request builder.
@@ -609,6 +641,7 @@ Release Notes
     * Entry points (methods on the traverson object) have been restructured (see api.markdown for details).
     * Cloning a request builder (to share configuration between link traversals) is now more explicit (method `newRequest()` on a request builder instance).
     * `del()` has been renamed to `delete()`. `del()` is kept as an alias for backward compatibility.
+    * New method `addRequestOptions` to add request options (HTTP headers etc.) without resetting the ones that have been set already (#33) (thanks to @xogeny)
     * Lots of documenation updates. Also new [API reference documentation](https://github.com/basti1302/traverson/blob/master/api.markdown).
 * 0.15.0 2014-12-06:
     * Content type detection (#6)

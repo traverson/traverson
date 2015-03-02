@@ -280,6 +280,48 @@ describe('Traverson (when tested against a local server)', function() {
     );
   });
 
+  it('should abort a link traversal process and the current request',
+      function(done) {
+    var traversal =
+    api
+    .newRequest()
+    .follow('second', 'doc')
+    .getResource(callback);
+    traversal.abort();
+    waitFor(
+      function() { return callback.called; },
+      function() {
+        expect(callback.callCount).to.equal(1);
+        var error = callback.firstCall.args[0];
+        expect(error).to.exist;
+        expect(error.message).to.equal(
+           'Link traversal process has been aborted.');
+        done();
+      }
+    );
+  });
+
+  it('should abort a post request',
+      function(done) {
+    var traversal =
+    api
+    .newRequest()
+    .post({}, callback);
+    traversal.abort();
+    waitFor(
+      function() { return callback.called; },
+      function() {
+        expect(callback.callCount).to.equal(1);
+        var error = callback.firstCall.args[0];
+        expect(error).to.exist;
+        expect(error.message).to.equal(
+           'Link traversal process has been aborted.');
+        done();
+      }
+    );
+  });
+
+
   it('should yield the last URI', function(done) {
     api
     .newRequest()
@@ -307,7 +349,6 @@ describe('Traverson (when tested against a local server)', function() {
       function() { return callback.called; },
       function() {
         var resultDoc = checkResponseWithBody(201);
-        console.log(resultDoc);
         expect(resultDoc.document).to.exist;
         expect(resultDoc.document).to.equal('created');
         expect(resultDoc.received).to.exist;

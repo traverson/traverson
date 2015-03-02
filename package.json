@@ -1,13 +1,24 @@
 {
   "name": "traverson",
   "version": "1.0.0",
-  "author": "Bastian Krol",
   "description": "Hypermedia API/HATEOAS client for Node.js and the browser",
   "repository": "https://github.com/basti1302/traverson.git",
+  "main": "traverson.js",
+  "author": {
+    "name": "Bastian Krol",
+    "email" : "bastian.krol@web.de"
+  },
+  "contributors": [
+    { "name": "Michael Tiller", "email": "michael.tiller@gmail.com" },
+    { "name": "subvertnormality", "email": "andy@subvertnormality.com" },
+    { "name": "Craig Spaeth", "email": "craigspaeth@gmail.com" },
+    { "name": "Chad Lee", "email": "git@chadly.net" },
+    { "name": "Max F. Albrecht", "email": "1@178.is" }
+  ],
+  "license": "MIT",
   "scripts": {
     "test": "grunt"
   },
-  "main": "./traverson",
   "keywords": [
     "JSON",
     "REST",
@@ -54,24 +65,6 @@
     "emitter": false,
     "reduce": false,
     "url": "./browser/lib/shim/url-resolve.js"
-  },
-  "testling": {
-    "browsers": [
-      "ie9",
-      "ie10",
-      "ff/20",
-      "ff/23",
-      "ff/nightly",
-      "chrome/29",
-      "chrome/canary",
-      "opera/15",
-      "opera/next",
-      "safari/6.0"
-    ],
-    "harness": "mocha",
-    "files": [
-      "test/json*.js"
-    ]
   },
   "engines": {
     "node": ">= 0.10.x"

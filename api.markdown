@@ -51,21 +51,58 @@ A request builder can be obtained by `traverson.newRequest()` or `traverson.from
 
 `withTemplateParameters(parameters)`: Provide template parameters for URI template substitution. Returns the request builder instance to allow for method chaining.
 
-`withRequestOptions(options)`: Provide options for HTTP requests (additional HTTP headers, for example). Returns the request builder instance to allow for method chaining.
+`withRequestOptions(options)`: Provide options for HTTP requests (additional HTTP headers, for example). This function resets any request options, that had been set previously, that is, multiple calls to `withRequestOptions` are not cumulative. Use `addRequestOptions` to add request options in a cumulative way.
+
+Options can either be passed as an object or an array. If an object is passed, the options will be used for each HTTP request. If an array is passed, each element should be an options object and the first array element will be used for the first request, the second element for the second request and so on. `null` elements are allowed.
+
+Returns the request builder instance to allow for method chaining.
+
+`addRequestOptions(options)`: Adds options for HTTP requests (additional HTTP headers, for example) on top of existing options, if any. To reset all request options and set new ones without keeping the old ones, you can use `withRequestOptions`.
+
+Options can either be passed as an object or an array. If an object is passed, the options will be used for each HTTP request. If an array is passed, each element should be an options object and the first array element will be used for the first request, the second element for the second request and so on. null elements are allowed.
+
+When called after a call to `withRequestOptions` or when combining multiple `addRequestOptions` calls, some with objects and some with arrays, a multitude of interesting situations can occur:
+
+1. The existing request options are an object and the new options passed into this method are also an object. Outcome: Both objects are merged and all options are applied to all requests.
+1. The existing options are an array and the new options passed into this method are also an array. Outcome: Each array element is merged individually.  The combined options from the n-th array element in the existing options array and the n-th array element in the given array are applied to the n-th request.
+1. The existing options are an object and the new options passed into this method are an array. Outcome: A new options array will be created. For each element, a clone of the existing options object will be merged with an element from the given options array.
+Note that if the given array has less elements than the number of steps in the link traversal (usually the number of steps is derived from the number of link relations given to the follow method), only the first n http requests will use options at all, where n is the number of elements in the given array. HTTP request n + 1 and all following HTTP requests will use an empty options object. This is due to the fact, that at the time of creating the new options array, we can not know with certainty how many steps the link traversal will have.
+1. The existing options are an array and the new options passed into this method are an object. Outcome: A clone of the given options object will be merged into into each array element of the existing options.
+
+Returns the request builder instance to allow for method chaining.
 
 `withRequestLibrary(request)`: Injects a custom request library. Returns the request builder instance to allow for method chaining.
 
 `parseResponseBodiesWith(parser)`: Injects a custom JSON parser. Returns the request builder instance to allow for method chaining.
 
-`resolveRelative()`: Switches URL resolution to relative (default is absolute). This is for relative URL paths, that is, URLs that omit the protocol (http/https), but start with a slash and that need to be interpreted relative to the current location. Example: If the root URL is `https://api.example.com/home` and the first link contains `/customers/1302` this would usually (without `resolveRelative()`) be resolved to `https://api.example.com/customers/1302`. If this has a link `/orders`, this would be resolved to `https://api.example.com/orders`. When `resolveRelative()` has been called on the request builder instance, the URLs will be resolved differently: From `https://api.example.com/home` the link `/customers/1302` will be resolved to `https://api.example.com/home/customers/1302`. From there, the link `/orders` will be resolved to `https://api.example.com/home/customers/1302/orders`. This feature should be rarely needed. This method returns the request builder instance to allow for method chaining.
+`resolveRelative(flag)`: Switches URL resolution to relative (default is absolute). This is for relative URL paths, that is, URLs that omit the protocol (http/https), but start with a slash and that need to be interpreted relative to the current location. Example: If the root URL is `https://api.example.com/home` and the first link contains `/customers/1302` this would usually (without `resolveRelative()`) be resolved to `https://api.example.com/customers/1302`. If this has a link `/orders`, this would be resolved to `https://api.example.com/orders`. When `resolveRelative()` has been called on the request builder instance, the URLs will be resolved differently: From `https://api.example.com/home` the link `/customers/1302` will be resolved to `https://api.example.com/home/customers/1302`. From there, the link `/orders` will be resolved to `https://api.example.com/home/customers/1302/orders`. This feature should be rarely needed. This method returns the request builder instance to allow for method chaining.
+
+If the method is called without arguments (or the first argument is undefined or null), URL resolution is switched to relative, otherwise the argument is interpreted as a boolean flag. If it is a truthy value, URL resolution is switched to relative, if it is a falsy value, URL resolution is switched to absolute.
 
 `newRequest()`: Returns a clone of the request builder with the same configuration. This method can be called before or after any of the action methods. All configuration options that have been set on the original request builder will also be set on the returned instance, with the exception of the parameter(s) given to the `follow` method which are not copied to the new instance. Also, if an action method has called before calling `newRequest()` on the original request builder, no state from the execution of the action method will be known to the new request builder instance.
+
+`getMediaType()`:  Returns the current media type. If no media type is enforced but content type detection is used, the string `content-negotiation` is returned.
+
+
+`getFrom`: Returns the URL set by the `from(url)` method, that is, the root URL of the API.
+
+`getTemplateParameters`: Returns the template parameters set by the `withTemplateParameters`.
+
+`getRequestOptions`: Returns the request options set by the `withRequestOptions` or `addRequestOptions`.
+
+`getRequestLibrary`: Returns the custom request library instance set by `withRequestLibrary` or the standard request library instance, if a custom one has not been set.
+
+`getJsonParser`: Returns the custom JSON parser function set by `parseResponseBodiesWith` or the standard parser function, if a custom one has not been set.
+
+`doesResolveRelative`: Returns the flag controlling if URLs are resolved relative or absolute. A return value of `true` means that URLs are resolved relative, `false` means absolute.
 
 ### Action Methods
 
 Calling one of this methods finishes the configuration phase and starts the link traversal process. The link traversal process works exactly the same for each of the action methods, with the exception of the last request and how the response of the last response is processed before handing it back to the callback.
 
 Exactly one of this methods should be called after calling zero or more configuration methods. Once one of these methods has been called, the request builder instance should not be used anymore.
+
+Each action method returns a handle for the link traversal process, which can be used to abort the link traversal (see below).
 
 `getResource(callback)`: This method is what you probably want to call if you want to retrieve information from the remote API. It will parse the JSON body from the last HTTP response and pass the resulting JavaScript object to your callback. The callback signature is `callback(err, resource)`.
 
@@ -82,3 +119,7 @@ Exactly one of this methods should be called after calling zero or more configur
 `delete(callback)`: Instead of sending a GET request to the last URL in the link traversal process, Traverson will send a DELETE request. The callback signature is `callback(err, response, url)`.
 
 `del(callback)`: An alias for `delete`.
+
+The handle returned from these methods only has one method:
+
+`abort()`: Aborts the current link traversal. If a HTTP request is in progress, this request is also aborted. The callback given to the action method is called with an error with the message `Link traversal process has been aborted.`.
