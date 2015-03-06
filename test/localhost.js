@@ -269,9 +269,6 @@ describe('Traverson (when tested against a local server)', function() {
           ' could not be parsed as JSON: { this will :: not parse');
         expect(error.uri).to.equal(rootUri + 'junk');
         expect(error.body).to.equal('{ this will :: not parse');
-
-        var resultDoc = callback.firstCall.args[1];
-        expect(resultDoc).to.not.exist;
         done();
       }
     );
