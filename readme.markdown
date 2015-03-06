@@ -44,7 +44,7 @@ Table of Contents
 * [Documentation](#documentation)
     * [Following Links](#following-links)
     * [Configuring Traverson](#configuring-traverson--the-request-builder-object)
-    * [Get Full HTTP Response](#more-control-receive-the-full-http-response)
+    * [Get Full HTTP Response or URL](#more-control-receive-the-full-http-response-or-the-url)
     * [Pass Links as Array](#pass-a-link-array)
     * [POST, PUT, DELETE and PATCH](#post-put-delete-and-patch)
     * [Error Handling](#error-handling)
@@ -187,7 +187,7 @@ api
 .getResource(...);
 </pre>
 
-### More Control: Receive the Full HTTP Response
+### More Control: Receive the Full HTTP Response or the URL
 
 The example above chained the `getResource` method to the `follow` method. For this method, Traverson will parse the JSON from the last HTTP response and pass the resulting JavaScript object to your callback. In certain situations you might want more control and would like to receive the full HTTP response object instead of the body, already parsed to an object. This is what the `get` method is for:
 
@@ -205,6 +205,23 @@ traverson
   }
 });
 </pre>
+
+Or maybe you even want to execute the last HTTP request all by yourself. The method `getUri` has you covered. It will only execute the HTTP GET requests until it has find the final link from `follow`, but will not request the resource that this last link leads to.
+
+<pre lang="javascript">
+traverson
+.from('http://api.example.com')
+.follow('link_to', 'resource')
+<b>.getUri(function(error, url) {</b>
+  if (error) {
+    console.error('No luck :-)')
+  } else {
+    console.log('We have followed the path. The URL you are looking for is:' + url);
+  }
+});
+</pre>
+
+
 
 ### Pass a Link Array
 
