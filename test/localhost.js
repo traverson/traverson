@@ -198,13 +198,10 @@ describe('Traverson (when tested against a local server)', function() {
         expect(error.uri).to.equal(rootUri + 'does/not/exist');
         expect(error.httpStatus).to.equal(404);
 
-        var response = callback.firstCall.args[1];
-        expect(response).to.exist;
-        var body = response.body;
-        expect(body).to.exist;
-        var resultDoc = JSON.parse(body);
-        expect(resultDoc.message).to.exist;
-        expect(resultDoc.message).to.equal('resource not found');
+        var lastBody = error.body;
+        expect(lastBody).to.exist;
+        expect(lastBody).to.contain('message');
+        expect(lastBody).to.contain('resource not found');
         done();
       }
     );
@@ -245,10 +242,10 @@ describe('Traverson (when tested against a local server)', function() {
         expect(error.uri).to.equal(rootUri + 'does/not/exist');
         expect(error.httpStatus).to.equal(404);
 
-        var resultDoc = callback.firstCall.args[1];
-        expect(resultDoc).to.exist;
-        expect(resultDoc.message).to.exist;
-        expect(resultDoc.message).to.equal('resource not found');
+        var lastBody = error.body;
+        expect(lastBody).to.exist;
+        expect(lastBody).to.contain('message');
+        expect(lastBody).to.contain('resource not found');
         done();
       }
     );
