@@ -543,7 +543,7 @@ describe('getResource for JSON', function() {
 
   describe('with absolute and relative urls', function() {
 
-    it('should follow links with absolute urls with protocol http',
+    it('should follow full qualified URLs with protocol http',
         function(done) {
       var path1 = rootUri + '/path/1';
       var path2 = rootUri + '/path/2';
@@ -575,7 +575,7 @@ describe('getResource for JSON', function() {
       );
     });
 
-    it('should follow links with absolute urls with protocol https',
+    it('should follow full qualified URLs with protocol https',
         function(done) {
       // also test case insensitive matching
       var httpsRootUri = 'HttPs://api.io';
