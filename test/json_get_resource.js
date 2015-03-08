@@ -610,7 +610,6 @@ describe('getResource for JSON', function() {
       );
     });
 
-
     it('should follow links with absolute urls without protocol',
       function(done) {
       var path1 = '/path/1';
