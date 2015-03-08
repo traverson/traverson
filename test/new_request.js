@@ -81,7 +81,7 @@ describe('Using newRequest() after configuring', function() {
     // This does not work in the browser when the minified Traverson lib is used
     // because the constructor name has been minified to 'c' :-(
     if (isNodeJs()) {
-      expect(newRequest.walker.adapter.constructor.name)
+      expect(newRequest.adapter.constructor.name)
         .to.equal('JsonAdapter');
     }
     expect(newRequest.getFrom()).to.equal(rootUrl);
