@@ -39,7 +39,7 @@ describe('Aborting requests', function() {
     callback = sinon.spy();
   });
 
-  it('should follow a multi element path', function(done) {
+  it('should follow a multi element path and abort midflight', function(done) {
     var path1 = rootUri + '/path/1';
     var path2 = rootUri + '/path/2';
 
@@ -56,11 +56,6 @@ describe('Aborting requests', function() {
     .withArgs(path1, {}, sinon.match.func);
     secondGet
     .callsArgWithAsync(2, null, response2);
-    /*
-    get
-    .withArgs(path2, {}, sinon.match.func)
-    .callsArgWithAsync(2, null, result);
-    */
 
     var traversal = api
     .newRequest()

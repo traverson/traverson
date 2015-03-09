@@ -39,7 +39,6 @@ describe('The JSON client\'s', function() {
   var put;
   var patch;
   var del;
-  var executeRequest;
 
   var rootResponse = mockResponse({
     'get_link': getUri,
@@ -79,13 +78,6 @@ describe('The JSON client\'s', function() {
     get.withArgs(postUri, {}, sinon.match.func).callsArgWithAsync(1,
         new Error('GET is not implemented for this URI, please POST ' +
         'something'));
-
-    executeRequest = sinon.stub(api.finalAction.constructor.prototype,
-        'executeRequest');
-  });
-
-  afterEach(function() {
-    api.finalAction.constructor.prototype.executeRequest.restore();
   });
 
   describe('get method', function() {
@@ -201,10 +193,9 @@ describe('The JSON client\'s', function() {
 
     it('should follow the links and post to the last URI',
         function(done) {
-      executeRequest
-      .withArgs(postUri, sinon.match.object, {}, post, payload,
-        sinon.match.func)
-      .callsArgWithAsync(5, null, result, postUri);
+      post
+      .withArgs(postUri, sinon.match.object, sinon.match.func)
+      .callsArgWithAsync(2, null, result);
 
       api
       .newRequest()
@@ -215,6 +206,9 @@ describe('The JSON client\'s', function() {
         function() { return callback.called; },
         function() {
           expect(callback).to.have.been.calledWith(null, result, postUri);
+          expect(post.firstCall.args[1].body).to.exist;
+          expect(post.firstCall.args[1].body).to.contain(payload.some);
+          expect(post.firstCall.args[1].body).to.contain(payload.data);
           done();
         }
       );
@@ -223,10 +217,9 @@ describe('The JSON client\'s', function() {
     it('should call callback with err when post fails',
         function(done) {
       var err = new Error('test error');
-      executeRequest
-      .withArgs(postUri, sinon.match.object, {}, post, payload,
-        sinon.match.func)
-      .callsArgWithAsync(5, err);
+      post
+      .withArgs(postUri, sinon.match.object, sinon.match.func)
+      .callsArgWithAsync(2, err);
 
       api
       .newRequest()
@@ -273,12 +266,11 @@ describe('The JSON client\'s', function() {
       }
 
       get
-      .withArgs(rootUri, expected1, sinon.match.func)
+      .withArgs(rootUri, sinon.match.object, sinon.match.func)
       .callsArgWithAsync(2, null, rootResponse);
-      executeRequest
-      .withArgs(postUri, sinon.match.object, expected2, post, payload,
-        sinon.match.func)
-      .callsArgWithAsync(5, null, result, postUri);
+      post
+      .withArgs(postUri, sinon.match.object, sinon.match.func)
+      .callsArgWithAsync(2, null, result);
 
       configure(api.newRequest())
       .follow('post_link')
@@ -287,9 +279,12 @@ describe('The JSON client\'s', function() {
       waitFor(
         function() { return callback.called; },
         function() {
-          // get.withArgs.calls/executeRequest.withArgs already check if
-          // options are used
           expect(callback).to.have.been.calledWith(null, result, postUri);
+          expect(get.firstCall.args[1]).to.deep.equal(expected1);
+          expect(post.firstCall.args[1]).to.deep.equal(expected2);
+          expect(post.firstCall.args[1].body).to.exist;
+          expect(post.firstCall.args[1].body).to.contain(payload.some);
+          expect(post.firstCall.args[1].body).to.contain(payload.data);
           done();
         }
       );
@@ -303,9 +298,9 @@ describe('The JSON client\'s', function() {
 
     it('should follow the links and put to the last URI',
         function(done) {
-      executeRequest
-      .withArgs(putUri, sinon.match.object, {}, put, payload, sinon.match.func)
-      .callsArgWithAsync(5, null, result, putUri);
+      put
+      .withArgs(putUri, sinon.match.object, sinon.match.func)
+      .callsArgWithAsync(2, null, result, putUri);
 
       api
       .newRequest()
@@ -316,6 +311,9 @@ describe('The JSON client\'s', function() {
         function() { return callback.called; },
         function() {
           expect(callback).to.have.been.calledWith(null, result, putUri);
+          expect(put.firstCall.args[1].body).to.exist;
+          expect(put.firstCall.args[1].body).to.contain(payload.some);
+          expect(put.firstCall.args[1].body).to.contain(payload.data);
           done();
         }
       );
@@ -324,9 +322,9 @@ describe('The JSON client\'s', function() {
     it('should call callback with err when put fails',
         function(done) {
       var err = new Error('test error');
-      executeRequest
-      .withArgs(putUri, sinon.match.object, {}, put, payload, sinon.match.func)
-      .callsArgWithAsync(5, err);
+      put
+      .withArgs(putUri, sinon.match.object, sinon.match.func)
+      .callsArgWithAsync(2, err);
 
       api
       .newRequest()
@@ -349,10 +347,9 @@ describe('The JSON client\'s', function() {
 
     it('should follow the links and patch the last URI',
         function(done) {
-      executeRequest
-      .withArgs(patchUri, sinon.match.object, {}, patch, payload,
-        sinon.match.func)
-      .callsArgWithAsync(5, null, result, patchUri);
+      patch
+      .withArgs(patchUri, sinon.match.object, sinon.match.func)
+      .callsArgWithAsync(2, null, result);
 
       api
       .newRequest()
@@ -363,6 +360,9 @@ describe('The JSON client\'s', function() {
         function() { return callback.called; },
         function() {
           expect(callback).to.have.been.calledWith(null, result, patchUri);
+          expect(patch.firstCall.args[1].body).to.exist;
+          expect(patch.firstCall.args[1].body).to.contain(payload.some);
+          expect(patch.firstCall.args[1].body).to.contain(payload.data);
           done();
         }
       );
@@ -371,10 +371,9 @@ describe('The JSON client\'s', function() {
     it('should call callback with err when patch fails',
         function(done) {
       var err = new Error('test error');
-      executeRequest
-      .withArgs(patchUri, sinon.match.object, {}, patch, payload,
-        sinon.match.func)
-      .callsArgWithAsync(5, err, null);
+      patch
+      .withArgs(patchUri, sinon.match.object, sinon.match.func)
+      .callsArgWithAsync(2, err);
 
       api
       .newRequest()
@@ -391,15 +390,15 @@ describe('The JSON client\'s', function() {
     });
   });
 
-  describe('del method', function() {
+  describe('delete method', function() {
 
     var result = mockResponse(null, 204);
 
     it('should follow the links and delete the last URI',
         function(done) {
-      executeRequest
-      .withArgs(deleteUri, sinon.match.object, {}, del, null, sinon.match.func)
-      .callsArgWithAsync(5, null, result, deleteUri);
+      del
+      .withArgs(deleteUri, sinon.match.object, sinon.match.func)
+      .callsArgWithAsync(2, null, result);
 
       api
       .newRequest()
@@ -410,6 +409,7 @@ describe('The JSON client\'s', function() {
         function() { return callback.called; },
         function() {
           expect(callback).to.have.been.calledWith(null, result, deleteUri);
+          expect(del.firstCall.args[1].body).to.not.exist;
           done();
         }
       );
@@ -418,9 +418,9 @@ describe('The JSON client\'s', function() {
     it('should call callback with err when deleting fails',
         function(done) {
       var err = new Error('test error');
-      executeRequest
-      .withArgs(deleteUri, sinon.match.object, {}, del, null, sinon.match.func)
-      .callsArgWithAsync(5, err);
+      del
+      .withArgs(deleteUri, sinon.match.object, sinon.match.func)
+      .callsArgWithAsync(2, err);
 
       api
       .newRequest()
