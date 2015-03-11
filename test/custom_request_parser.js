@@ -33,7 +33,7 @@ describe('Traverson using a custom request parser', function() {
 
   beforeEach(function() {
     get = sinon.stub();
-    api.walker.request = { get: get };
+    api.actions.walker.request = { get: get };
     callback = sinon.spy();
 
     get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(

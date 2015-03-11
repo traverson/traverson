@@ -21,7 +21,7 @@ describe('getResource without preceding follow()', function() {
 
   beforeEach(function() {
     get = sinon.stub();
-    api.walker.request = { get: get };
+    api.actions.walker.request = { get: get };
     callback = sinon.spy();
   });
 

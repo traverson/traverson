@@ -33,7 +33,7 @@ describe('Aborting requests', function() {
 
   beforeEach(function() {
     get = sinon.stub();
-    api.walker.request = {
+    api.actions.walker.request = {
       get: get,
     };
     callback = sinon.spy();

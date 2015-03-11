@@ -43,7 +43,7 @@ describe('Using newRequest() after configuring', function() {
     .resolveRelative();
     request = client.newRequest();
     get = sinon.stub();
-    request.walker.request = { get: get };
+    request.actions.walker.request = { get: get };
     callback = sinon.spy();
   });
 
@@ -96,7 +96,9 @@ describe('Using newRequest() after configuring', function() {
 
   function checkNoLeaksFromFollowProcess(oldRequest, newRequest) {
     expect(oldRequest).to.not.be.equal(newRequest);
-    expect(oldRequest.walker).to.not.be.equal(newRequest.walker);
+    expect(oldRequest.actions).to.not.be.equal(newRequest.actions);
+    expect(oldRequest.actions.walker)
+      .to.not.be.equal(newRequest.actions.walker);
     expect(oldRequest.links).to.exist();
     expect(oldRequest.links.length).to.equal(1);
     expect(oldRequest.links[0]).to.equal('link');
