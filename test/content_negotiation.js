@@ -42,7 +42,7 @@ describe('Content negotiation', function() {
   beforeEach(function() {
     api = client.newRequest();
     get = sinon.stub();
-    api.actions.walker.request = { get: get };
+    api.requestModuleInstance = { get: get };
     callback = sinon.spy();
   });
 

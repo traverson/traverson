@@ -25,7 +25,7 @@ describe('getResource for JSON', function() {
 
   beforeEach(function() {
     get = sinon.stub();
-    api.actions.walker.request = { get: get };
+    api.requestModuleInstance = { get: get };
     callback = sinon.spy();
   });
 
@@ -293,7 +293,7 @@ describe('getResource for JSON', function() {
       var startUri = rootUri + '/substituted/whatever';
       var api = traverson.from(startUriTemplate).json();
       get = sinon.stub();
-      api.actions.walker.request = { get: get };
+      api.requestModuleInstance = { get: get };
       get
       .withArgs(startUri, {}, sinon.match.func)
       .callsArgWithAsync(2, null, rootUriTemplate);

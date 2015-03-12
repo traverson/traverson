@@ -62,7 +62,7 @@ describe('The JSON client\'s', function() {
     put = sinon.stub();
     patch = sinon.stub();
     del = sinon.stub();
-    api.actions.walker.request = {
+    api.requestModuleInstance = {
       get: get,
       post: post,
       put: put,
@@ -102,7 +102,7 @@ describe('The JSON client\'s', function() {
       // Default stubbing from beforeEach is not what we want here.
       // IMO, get.reset() should be enough, but isnt?
       get = sinon.stub();
-      api.actions.walker.request = { get: get };
+      api.requestModuleInstance = { get: get };
       get.callsArgWithAsync(2, err);
 
       api
@@ -125,7 +125,7 @@ describe('The JSON client\'s', function() {
       // Default stubbing from beforeEach is not what we want here.
       // IMO, get.reset() should be enough, but isnt?
       get = sinon.stub();
-      api.actions.walker.request = { get: get };
+      api.requestModuleInstance = { get: get };
       get
       .withArgs(rootUri, {}, sinon.match.func)
       .callsArgWithAsync(2, null, rootResponse);
