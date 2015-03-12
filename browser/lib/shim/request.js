@@ -2,8 +2,7 @@
 
 var superagent = require('superagent');
 
-function Request() {
-}
+function Request() {}
 
 Request.prototype.get = function(uri, options, callback) {
   return mapRequest(superagent.get(uri), options)
@@ -93,9 +92,19 @@ function mapResponse(response) {
 }
 
 function handleResponse(callback) {
-  return function(error, response) {
-    if (error) {
-      return callback(error);
+  return function(err, response) {
+    console.log(err);
+    if (err) {
+      if (!response) {
+        // network error or timeout, no response
+        return callback(err);
+      } else {
+        // Since 1.0.0 superagent calls the callback with an error if the status
+        // code of the response is not in the 2xx range. In this cases, it also
+        // passes in the resonse. To align things with request, call the
+        // callback without the error but just with the response.
+        callback(null, mapResponse(response));
+      }
     } else {
       callback(null, mapResponse(response));
     }

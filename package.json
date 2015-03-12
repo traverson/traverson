@@ -6,14 +6,29 @@
   "main": "traverson.js",
   "author": {
     "name": "Bastian Krol",
-    "email" : "bastian.krol@web.de"
+    "email": "bastian.krol@web.de"
   },
   "contributors": [
-    { "name": "Michael Tiller", "email": "michael.tiller@gmail.com" },
-    { "name": "subvertnormality", "email": "andy@subvertnormality.com" },
-    { "name": "Craig Spaeth", "email": "craigspaeth@gmail.com" },
-    { "name": "Chad Lee", "email": "git@chadly.net" },
-    { "name": "Max F. Albrecht", "email": "1@178.is" }
+    {
+      "name": "Michael Tiller",
+      "email": "michael.tiller@gmail.com"
+    },
+    {
+      "name": "subvertnormality",
+      "email": "andy@subvertnormality.com"
+    },
+    {
+      "name": "Craig Spaeth",
+      "email": "craigspaeth@gmail.com"
+    },
+    {
+      "name": "Chad Lee",
+      "email": "git@chadly.net"
+    },
+    {
+      "name": "Max F. Albrecht",
+      "email": "1@178.is"
+    }
   ],
   "license": "MIT",
   "scripts": {
@@ -33,7 +48,7 @@
     "minilog": "^2.0.2",
     "request": "^2.28.0",
     "resolve-url": "^0.2.1",
-    "superagent": "^0.21.0",
+    "superagent": "^1.0.0",
     "underscore.string": "^2.3.3",
     "url-template": "^2.0.4"
   },
