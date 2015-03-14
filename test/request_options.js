@@ -12,7 +12,7 @@ var traverson = require('../traverson')
 
 chai.use(sinonChai);
 
-describe('with request options', function() {
+describe('Traverson using request options', function() {
 
   var get;
   var callback;

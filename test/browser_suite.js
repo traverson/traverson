@@ -1,9 +1,13 @@
+require('./absolute_relative');
 require('./abort_request');
 require('./content_negotiation');
 require('./custom_request_parser');
 require('./json_get_resource');
+require('./json_path.js');
 require('./json_requests');
 require('./localhost');
 require('./merge_recursive');
 require('./new_request');
 require('./no_follow');
+require('./request_options.js');
+require('./uri_template.js');
