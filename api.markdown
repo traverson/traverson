@@ -108,7 +108,9 @@ Each action method returns a handle for the link traversal process, which can be
 
 `get(callback)`: This method is similar to `getResource`, but it does not parse the HTTP response body for you. Instead, it gives you the response object, including the HTTP status code and the raw body. The callback signature is `callback(err, response)`.
 
-`getUri(callback)`: This method is similar to `getResource` and `get`, but it will actually not execute the last HTTP request in the link traversal process. Instead it will pass the URL it has discovered for the last HTTP request back to the client so that the client can execute the HTTP request itself. The callback signature is `callback(err, url)`.
+`getUrl(callback)`: This method is similar to `getResource` and `get`, but it will actually not execute the last HTTP request in the link traversal process. Instead it will pass the URL it has discovered for the last HTTP request back to the client so that the client can execute the HTTP request itself. The callback signature is `callback(err, url)`.
+
+`getUri(callback)`: An alias for `getUrl`.
 
 `post(body, callback)`: Instead of sending a GET request to the last URL in the link traversal process, Traverson will send a POST request with the given `body`. The callback signature is `callback(err, response, url)`.
 

@@ -5,7 +5,7 @@ require('./custom_request_parser');
 require('./delete');
 require('./get');
 require('./get_resource');
-require('./get_uri');
+require('./get_url');
 require('./json_path.js');
 require('./localhost');
 require('./merge_recursive');

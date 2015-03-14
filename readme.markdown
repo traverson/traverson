@@ -19,9 +19,9 @@ A Hypermedia API/HATEOAS Client for Node.js and the Browser
 Introduction
 ------------
 
-Traverson comes in handy when consuming REST APIs that follow the HATEOAS principle, that is, REST APIs that have links between their resources. Such an API (also sometimes referred to as hypermedia or hypertext-driven API) typically has a root resource/endpoint, which publishes links to other resources. These resources in turn might also have, as part of their metadata, links to related resources. Sometimes you need to follow multiple consecutive links to get to the resource you want. This pattern makes it unnecessary for the client to hardcode all endpoint URIs of the API it uses, which in turn reduces the coupling between the API provider and the API consumer. This makes it easier for the API provider to change the structure of the API without breaking existing client implementations.
+Traverson comes in handy when consuming REST APIs that follow the HATEOAS principle, that is, REST APIs that have links between their resources. Such an API (also sometimes referred to as hypermedia or hypertext-driven API) typically has a root resource/endpoint, which publishes links to other resources. These resources in turn might also have, as part of their metadata, links to related resources. Sometimes you need to follow multiple consecutive links to get to the resource you want. This pattern makes it unnecessary for the client to hardcode all endpoint URLs of the API it uses, which in turn reduces the coupling between the API provider and the API consumer. This makes it easier for the API provider to change the structure of the API without breaking existing client implementations.
 
-To follow a path of links you typically start at one URI (most often the root URI of the API), then look for the link you are interested in, fetch the document from there and repeat this process until you have reached the end of this path.
+To follow a path of links you typically start at one URL (most often the root URL of the API), then look for the link you are interested in, fetch the document from there and repeat this process until you have reached the end of this path.
 
 Traverson does that for you. You just need to tell Traverson where it can find the link to follow in each consecutive document and Traverson will happily execute the hops from document to document for you and when it's done, hand you the final http response or document, the one you really wanted to have in the first place.
 
@@ -119,7 +119,7 @@ http://api.example.com
 }
 ```
 
-(To make the examples easier to read, we note the URI corresponding to the document above each document. The URI is of course not part of the JSON response body.)
+(To make the examples easier to read, we note the URL corresponding to the document above each document. The URL is of course not part of the JSON response body.)
 
 By the way, we forced Traverson to interpret the response as `application/json` by using the `json()` method. We could have omitted the `json()` method and let Traverson figure out the content type. For this, the server would need to send the `Content-Type` header with the value `application/json`. (see [Content Type Detection](#content-type-detection-versus-forcing-media-types)).
 
@@ -165,7 +165,7 @@ There are more configuration options available. Most are explained in more detai
 
 #### Reusing Configuration Between Link Traversals
 
-One request builder should only be used for one link traversal process. That is, after you called one of the methods that actually start the link traversal process (`get`, `getResource`, `getUri`, `post`, `put`, `patch` or `delete`) on the request builder instance, you should not use it again for another link traversal process. If you want to set up a common configuration to be used in every link traversal, you can clone the request builder by calling `newRequest()` on it. Like this:
+One request builder should only be used for one link traversal process. That is, after you called one of the methods that actually start the link traversal process (`get`, `getResource`, `getUrl`, `post`, `put`, `patch` or `delete`) on the request builder instance, you should not use it again for another link traversal process. If you want to set up a common configuration to be used in every link traversal, you can clone the request builder by calling `newRequest()` on it. Like this:
 
 <pre lang="javascript">
 // set some common configuration options for all link traversals
@@ -206,13 +206,13 @@ traverson
 });
 </pre>
 
-Or maybe you even want to execute the last HTTP request all by yourself. The method `getUri` has you covered. It will only execute the HTTP GET requests until it has find the final link from `follow`, but will not request the resource that this last link leads to.
+Or maybe you even want to execute the last HTTP request all by yourself. The method `getUrl` has you covered. It will only execute the HTTP GET requests until it has find the final link from `follow`, but will not request the resource that this last link leads to.
 
 <pre lang="javascript">
 traverson
 .from('http://api.example.com')
 .follow('link_to', 'resource')
-<b>.getUri(function(error, url) {</b>
+<b>.getUrl(function(error, url) {</b>
   if (error) {
     console.error('No luck :-)')
   } else {
@@ -569,7 +569,7 @@ MediaTypeAdapter.prototype.findNextStep = function(doc, key) {
 
   // return next step as an object
   return {
-    uri: ...,
+    url: ...,
 
 
   };
@@ -582,7 +582,7 @@ Every media type plug-in *should* provide a propery `mediaType` that represents 
 
 Every media type plug-in *must* provide a method `findNextStep`, which takes two parameters, `doc` and `key`. The incoming `doc` is the resource retrieved from the response of the last HTTP request. This is already a parsed JavaScript object, not raw JSON content. The `key` is the link relation that has been specified for this step in the `follow` method. The responsibility of the `findNextStep` method is to return a step object, that tells Traverson what to do next.
 
-A step object can be as simple as this `{ uri: '/next/uri/to/call' }`. This would make Traverson make an HTTP request to the given URI. Some media types (like HAL) contain embeddeded resources. For those, the next step is not an HTTP request. Instead, you can put the part of `doc` that represents the embedded resource into the returned step object, like this: `{ doc: { ... } }`.
+A step object can be as simple as this `{ url: '/next/url/to/call' }`. This would make Traverson make an HTTP request to the given URL. Some media types (like HAL) contain embeddeded resources. For those, the next step is not an HTTP request. Instead, you can put the part of `doc` that represents the embedded resource into the returned step object, like this: `{ doc: { ... } }`.
 
 If you want to implement your own media type plug-in, having a look at the existing HAL plug-in might be helpful: <https://github.com/basti1302/traverson-hal/blob/master/index.js>
 

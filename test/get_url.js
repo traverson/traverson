@@ -12,7 +12,7 @@ var traverson = require('../traverson')
 
 chai.use(sinonChai);
 
-describe('getUri method', function() {
+describe('getUrl method', function() {
 
   var callback;
   var rootUri = 'http://api.io';
@@ -44,7 +44,7 @@ describe('getUri method', function() {
     api
     .newRequest()
     .follow('get_link')
-    .getUri(callback);
+    .getUrl(callback);
 
     waitFor(
       function() { return callback.called; },

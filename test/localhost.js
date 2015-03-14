@@ -195,7 +195,7 @@ describe('Traverson (when tested against a local server)', function() {
         expect(error.name).to.equal('HTTPError');
         expect(error.message).to.equal('HTTP GET for ' + rootUri +
             'does/not/exist' + ' resulted in HTTP status code 404.');
-        expect(error.uri).to.equal(rootUri + 'does/not/exist');
+        expect(error.url).to.equal(rootUri + 'does/not/exist');
         expect(error.httpStatus).to.equal(404);
 
         var lastBody = error.body;
@@ -239,7 +239,7 @@ describe('Traverson (when tested against a local server)', function() {
         expect(error.name).to.equal('HTTPError');
         expect(error.message).to.equal('HTTP GET for ' + rootUri +
             'does/not/exist' + ' resulted in HTTP status code 404.');
-        expect(error.uri).to.equal(rootUri + 'does/not/exist');
+        expect(error.url).to.equal(rootUri + 'does/not/exist');
         expect(error.httpStatus).to.equal(404);
 
         var lastBody = error.body;
@@ -267,7 +267,7 @@ describe('Traverson (when tested against a local server)', function() {
         expect(error.name).to.equal('JSONError');
         expect(error.message).to.equal('The document at ' + rootUri + 'junk' +
           ' could not be parsed as JSON: { this will :: not parse');
-        expect(error.uri).to.equal(rootUri + 'junk');
+        expect(error.url).to.equal(rootUri + 'junk');
         expect(error.body).to.equal('{ this will :: not parse');
         done();
       }
@@ -320,7 +320,7 @@ describe('Traverson (when tested against a local server)', function() {
     api
     .newRequest()
     .follow('second', 'doc')
-    .getUri(callback);
+    .getUrl(callback);
     waitFor(
       function() { return callback.called; },
       function() {
