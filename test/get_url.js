@@ -58,6 +58,7 @@ describe('getUrl method', function() {
 
   it('should yield resolved URI if last URI is a URI template',
       function(done) {
+    // using the deprecated alias getUri here, so the alias is tested as well
     api
     .newRequest()
     .follow('template_link')

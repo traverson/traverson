@@ -79,6 +79,12 @@ Returns the request builder instance to allow for method chaining.
 
 If the method is called without arguments (or the first argument is undefined or null), URL resolution is switched to relative, otherwise the argument is interpreted as a boolean flag. If it is a truthy value, URL resolution is switched to relative, if it is a falsy value, URL resolution is switched to absolute.
 
+`preferEmbeddedResources(flag)`: Makes Traverson prefer embedded resources over traversing a link or vice versa. This only applies to media types which support embedded resources (like HAL). It has no effect when using a media type that does not support embedded resources.
+
+It also only takes effect when a resource contains both a link _and_ an embedded resource with the name that is to be followed at this step in the link traversal process.
+
+If the method is called without arguments (or the first argument is undefined or null), embedded resources will be preferred over fetching linked resources with an additional HTTP request. Otherwise the argument is interpreted as a boolean flag. If it is a truthy value, embedded resources will be preferred, if it is a falsy value, traversing the link relation will be preferred.
+
 `newRequest()`: Returns a clone of the request builder with the same configuration. This method can be called before or after any of the action methods. All configuration options that have been set on the original request builder will also be set on the returned instance, with the exception of the parameter(s) given to the `follow` method which are not copied to the new instance. Also, if an action method has called before calling `newRequest()` on the original request builder, no state from the execution of the action method will be known to the new request builder instance.
 
 `getMediaType()`:  Returns the current media type. If no media type is enforced but content type detection is used, the string `content-negotiation` is returned.

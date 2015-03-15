@@ -40,7 +40,8 @@ describe('Using newRequest() after configuring', function() {
       }
     })
     .parseResponseBodiesWith(customParser)
-    .resolveRelative();
+    .resolveRelative()
+    .preferEmbeddedResources();
     request = client.newRequest();
     get = sinon.stub();
     request.requestModuleInstance = { get: get };
@@ -92,6 +93,7 @@ describe('Using newRequest() after configuring', function() {
       .to.equal('foo');
     expect(newRequest.getJsonParser()).to.equal(customParser);
     expect(newRequest.doesResolveRelative()).to.be.true;
+    expect(newRequest.doesPreferEmbeddedResources()).to.be.true;
   }
 
   function checkNoLeaksFromFollowProcess(oldRequest, newRequest) {
