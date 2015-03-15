@@ -11,10 +11,10 @@ A Hypermedia API/HATEOAS Client for Node.js and the Browser
 
 [![NPM](https://nodei.co/npm/traverson.png?downloads=true&stars=true)](https://nodei.co/npm/traverson/)
 
-| File Size (browser build) | KB   |
-|---------------------------|-----:|
-| minified & gzipped        |  9.6 |
-| minified                  | 30   |
+| File Size (browser build) | KB |
+|---------------------------|---:|
+| minified & gzipped        | 11 |
+| minified                  | 36 |
 
 Introduction
 ------------
@@ -642,6 +642,16 @@ Given the call to `abort()` happens while the link traversal is still in process
 Release Notes
 -------------
 
+* 1.2.0 2015-03-15:
+    * Huge refactoring of Traverson's internals. To the best of my knowledge, this did not break anything (the test coverage on Traverson is pretty good). You probably should take this version for a test ride before pushing it to production, though.
+    * The method `getUri` has been renamed to `getUrl`. `getUri` is now deprecated, but is kept as an alias for `getUrl`.
+    * The API for media type plug-ins has changed. The property `uri` in the step object that media type plug-ins return has been renamed to `url`. Media type plug-ins that return a step object with an `uri` attribute still work, but this attribute is considered to be deprecated. Support for it will be removed in version 2.0.0.
+    * An undocumented behaviour has been removed: In case of an error, the
+  callback has sometimes been called with more than one argument (the error),
+  namely with the last response and the last URL that had been accessed before
+  the error occured. If you relied on this behaviour, then this is a breaking
+  change for you.
+    * Added `preferEmbeddedResources()`.
 * 1.1.0 2015-03-02:
     * Abort link traversals (and HTTP requests) (#27). This feature is to be considered experimental in this version.
     * Specify request options per step by passing in an array to `withRequestOptions` or `addRequestOptions` (#25).
