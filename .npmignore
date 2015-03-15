@@ -1,3 +1,11 @@
 *.un~
+*.swp
+reduce-size.txt
+.editorconfig
+REFACTOR.txt
+release_upcoming.markdown
 todo.md
-browser/dist
+todo.txt
+.travis.yml
+test
+browser/test/browserified_tests.js

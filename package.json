@@ -1,6 +1,6 @@
 {
   "name": "traverson",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Hypermedia API/HATEOAS client for Node.js and the browser",
   "repository": "https://github.com/basti1302/traverson.git",
   "main": "traverson.js",

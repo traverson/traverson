@@ -643,6 +643,8 @@ Release Notes
 -------------
 
 * 1.2.0 2015-03-15:
+    * Include browser build in npm release (for users using npm for client side packages but not using Browserify but script tags or RequireJS).
+* 1.2.0 2015-03-15:
     * Huge refactoring of Traverson's internals. To the best of my knowledge, this did not break anything (the test coverage on Traverson is pretty good). You probably should take this version for a test ride before pushing it to production, though.
     * The method `getUri` has been renamed to `getUrl`. `getUri` is now deprecated, but is kept as an alias for `getUrl`.
     * The API for media type plug-ins has changed. The property `uri` in the step object that media type plug-ins return has been renamed to `url`. Media type plug-ins that return a step object with an `uri` attribute still work, but this attribute is considered to be deprecated. Support for it will be removed in version 2.0.0.
