@@ -642,7 +642,7 @@ Given the call to `abort()` happens while the link traversal is still in process
 Release Notes
 -------------
 
-* 1.2.0 2015-03-15:
+* 1.2.1 2015-03-15:
     * Include browser build in npm release (for users using npm for client side packages but not using Browserify but script tags or RequireJS).
 * 1.2.0 2015-03-15:
     * Huge refactoring of Traverson's internals. To the best of my knowledge, this did not break anything (the test coverage on Traverson is pretty good). You probably should take this version for a test ride before pushing it to production, though.
