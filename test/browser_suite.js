@@ -8,6 +8,7 @@ require('./get_resource');
 require('./get_url');
 require('./json_path.js');
 require('./localhost');
+require('./maze');
 require('./merge_recursive');
 require('./new_request');
 require('./no_follow');
