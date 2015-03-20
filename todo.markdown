@@ -1,6 +1,8 @@
->>> Separate HAL support into a separate, optional plug-in. This would be quite a breaking change, so version 1.0.0 would be in order!
+# TODOs
 
-* JSDoc
+* Also see refactor.markdown
+* JSDoc (DGeni, YUIDoc, JSDuck, Raphael.js' doc package)
+* API docs for step objects
 
 # Ideas
 
@@ -34,12 +36,11 @@ There will be some simple on/off toggles for certain parts of Traverson behaviou
 
 ## Other Media Types Besides JSON
 
-Traverson could and should support HTML APIs and/or XML APIs, as well as other JSON based hypermedia types. We would need some sort of plug-in system for that, though.
+Traverson could and should support HTML APIs and/or XML APIs, as well as other JSON based hypermedia types. The interface between media type plug-ins and Traverson's core would need to be revamped for that, probably.
 
 ## More unsorted ideas
 
-* Testling is dead! Switch to zuul or something. Also for traverson-angular.
-* make it configurable if embedded resources or linked resources are to be preferred
+* Testling is dead! Switch to saucelabs or something. Also for traverson-angular.
 * clean up test server document and link structure
 * Builder#withLastRequestOptions({...}) - use the given options, but only in the last request (the one which get/post/put/getResource control)
 * Builder#withFirtRequestOptions({...}) - use the given options, but only in the first request - is there a use case for this?
@@ -47,18 +48,13 @@ Traverson could and should support HTML APIs and/or XML APIs, as well as other J
 * what about accept and content-type headers? API could have some custom
   content type and still be JSON, so we probably can not check that
 * cache final links for path
-* pass options array to constructor:
-    {
-      resolveJsonPath: false,
-      resolveUriTemplates: false,
-      caching: false
-    }
 * Customize JsonWalker by overriding methods for fetching, URI template
   resolving, caching, ...
     * Tests
     * Examples in README.md
 * support more media types in addition to application/json and application/hal+json:
     * HAL (done)
+    * Mason!
     * Collection+JSON
     * JSON+API
     * Siren
@@ -66,21 +62,7 @@ Traverson could and should support HTML APIs and/or XML APIs, as well as other J
     * HTML5 + microdata
     * XML media types or XML in general?
     * Atom
-    * application/hal+xml? Does anybody use this? There's no RFC for that, but http://stateless.co/hal_specification.html ._ mentions it.
-    * Including support for all media types would be considerable bloat, maybe some kind of plug-in mechanism could be used...
-* Hooks: Set filters/hooks (callbacks) on Builder which get called on each hop and can influence what happens
-
-## Docs
-
-* Write a more formal API doc in addition to the documentation by example in README.md. Notes:
-    * `from` - returns a new walker with initialised startUri each time
-    * `walk` - takes a list or an array, each element either a plain property key or a JSONPath expression, returns itself, with link array set
-    * `withTemplateParameters` - takes an object or an array of objects, returns itself, with template params array set
-    * `getResource`, `getResponse`, `getUri`, `post`, `put`, `patch`, `patch` - see above
-    * callback always takes error first, then either document, response, uri, etc
-    * `post`, `put`, `patch`, `patch` always deliver complete http response in callback
-    * accept - sets accept header for requests
-    * checkHttpStatus - sets up a check so that callback is only called with result, if the last request hat one of the given http status, otherwise callback is called with error.
+    * application/hal+xml? Does anybody use this? There's no RFC for that, but http://stateless.co/hal_specification.html mentions it.
 
 ## Browser Build
 
