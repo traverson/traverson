@@ -103,7 +103,8 @@ describe('Traverson in the maze', function() {
    * a resource can not be known in advance but has to be figured out
    * dynamically from examining the resource.
    */
-  it('should find the way by using a maze-solving algorithm', function(done) {
+  it('should find the way by using a maze-solving algorithm',
+      function(done) {
     api
     .newRequest()
     .follow('enter')
@@ -122,61 +123,48 @@ describe('Traverson in the maze', function() {
     var directions = ['north', 'east', 'south', 'west'];
     var directionIndex = 0;
     var direction = null;
-    var url = null;
 
-    var fn = function(err, resource) {
-      // console.log('=====================================');
-      // console.log(JSON.stringify(resource, null, 2));
+    var fn = function(err, resource, traversal) {
       if (err) {
         return done(err);
       }
-      // try a 90° left turn first
-      var leftHandIndex = mod((directionIndex - 1), 4);
-      // console.log('old direction index: ' + directionIndex);
-      // console.log('left hand dir index: ' + leftHandIndex);
-      var leftHandDirection = directions[leftHandIndex];
-      // console.log('left hand direction: ' + leftHandDirection);
 
+      // are we at an exit already?
       if (resource.leave) {
         // found exit \o/
-        url = rootUri + resource.leave;
-        // console.log('FOUND EXIT!!!!');
-        // console.log('url: ' + url);
-        return api
-        .newRequest()
-        .from(url)
+        console.log(resource.leave);
+        return traversal
+        .continue()
+        .follow('leave')
         .getResource(callback);
       }
+
+      // check if there is a wall to the left
+      var leftHandIndex = mod((directionIndex - 1), 4);
+      var leftHandDirection = directions[leftHandIndex];
+
       if (resource[leftHandDirection]) {
         // no wall to the left, so turn left in accordance with the left hand
         // rule
-        // console.log('no left hand wall, turn left');
         directionIndex = leftHandIndex;
         direction = directions[directionIndex];
-        // console.log('direction: ' + direction);
-        url = rootUri + resource[direction];
-        // console.log('url: ' + url);
-        return api
-        .newRequest()
-        .from(url)
+        console.log(resource[direction]);
+        return traversal
+        .continue()
+        .follow(direction)
         .getResource(fn);
       } else {
         // left hand wall exists, try other directions, starting with straight
         // ahead
-        // console.log('left hand wall exists, try other directions');
         for (var i = 0; i < 4; i++) {
-          // console.log('                   i: ' + i);
           var di = mod(directionIndex + i, 4);
-          // console.log('loop direction index: ' + di);
           direction = directions[di];
           if (resource[direction]) {
             directionIndex = di;
-            // console.log('direction: ' + direction);
-            url = rootUri + resource[direction];
-            // console.log(url);
-            return api
-            .newRequest()
-            .from(url)
+            console.log(resource[direction]);
+            return traversal
+            .continue()
+            .follow(direction)
             .getResource(fn);
           } // else: direction is blocked by a wall
         }

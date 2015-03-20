@@ -12,8 +12,6 @@ var traverson = require('../traverson')
 
 chai.use(sinonChai);
 
-// TODO SPLIT THIS TEST SUITE INTO MULTIPE FILES! It has become soooo long :-(
-
 describe('Traverson\'s getResource', function() {
 
   var get;
