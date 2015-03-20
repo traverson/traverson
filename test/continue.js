@@ -71,12 +71,16 @@ describe('Continuation of traversals', function() {
     .callsArgWithAsync(2, null, response4);
   });
 
+  describe('get', function() {
+    defineTestsForMethod(api.get);
+  });
+
   describe('getResource', function() {
     defineTestsForMethod(api.getResource);
   });
 
-  describe('get', function() {
-    defineTestsForMethod(api.get);
+  describe('getUrl', function() {
+    defineTestsForMethod(api.getUrl);
   });
 
   function defineTestsForMethod(method) {
@@ -91,8 +95,7 @@ describe('Continuation of traversals', function() {
       waitFor(
         function() { return callback.called; },
         function() {
-          checkResult(method, callback, response4);
-          expect(get.callCount).to.equal(4);
+          checkResult(method, callback, response4, url3, 4);
           done();
         }
       );
@@ -108,8 +111,7 @@ describe('Continuation of traversals', function() {
       waitFor(
         function() { return callback.called; },
         function() {
-          checkResult(method, callback, response3);
-          expect(get.callCount).to.equal(3);
+          checkResult(method, callback, response3, url2, 3);
           done();
         }
       );
@@ -125,8 +127,7 @@ describe('Continuation of traversals', function() {
       waitFor(
         function() { return callback.called; },
         function() {
-          checkResult(method, callback, response4);
-          expect(get.callCount).to.equal(4);
+          checkResult(method, callback, response4, url3, 4);
           done();
         }
       );
@@ -142,8 +143,7 @@ describe('Continuation of traversals', function() {
       waitFor(
         function() { return callback.called; },
         function() {
-          checkResult(method, callback, response4);
-          expect(get.callCount).to.equal(4);
+          checkResult(method, callback, response4, url3, 4);
           done();
         }
       );
@@ -159,8 +159,7 @@ describe('Continuation of traversals', function() {
       waitFor(
         function() { return callback.called; },
         function() {
-          checkResult(method, callback, response4);
-          expect(get.callCount).to.equal(4);
+          checkResult(method, callback, response4, url3, 4);
           done();
         }
       );
@@ -177,19 +176,27 @@ describe('Continuation of traversals', function() {
       waitFor(
         function() { return callback.called; },
         function() {
-          checkResult(method, callback, rootResponse);
-          expect(get.callCount).to.equal(1);
+          checkResult(method, callback, rootResponse, rootUrl, 1);
           done();
         }
       );
     });
   } // function defineTestsForMethod
 
-  function checkResult(method, callback, response) {
+  function checkResult(method,
+                       callback,
+                       response,
+                       url,
+                       expectedNumberOfHttpGets) {
     if (method === api.get) {
       expect(callback).to.have.been.calledWith(null, response);
+      expect(get.callCount).to.equal(expectedNumberOfHttpGets);
     } else if (method === api.getResource) {
       expect(callback).to.have.been.calledWith(null, response.doc);
+      expect(get.callCount).to.equal(expectedNumberOfHttpGets);
+    } else if (method === api.getUrl) {
+      expect(callback).to.have.been.calledWith(null, url);
+      expect(get.callCount).to.equal(expectedNumberOfHttpGets - 1);
     } else {
       throw new Error('Unknown method: ' + method.name + ': ' +
           method);
