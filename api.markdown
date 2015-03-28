@@ -53,11 +53,11 @@ A request builder can be obtained by `traverson.newRequest()` or `traverson.from
 
 `withRequestOptions(options)`: Provide options for HTTP requests (additional HTTP headers, for example). This function resets any request options, that had been set previously, that is, multiple calls to `withRequestOptions` are not cumulative. Use `addRequestOptions` to add request options in a cumulative way.
 
-Options can either be passed as an object or an array. If an object is passed, the options will be used for each HTTP request. If an array is passed, each element should be an options object and the first array element will be used for the first request, the second element for the second request and so on. `null` elements are allowed.
+Options can either be passed as an object or an array. If an object is passed, the options will be used for each HTTP request. If an array is passed, each element should be an options object and the first array element will be used for the first request, the second element for the second request and so on. `null` elements are allowed. Traverson (on node.js) uses the [request](https://github.com/request/request) internally to execute HTTP requests and this method just exposes the configuration options of request. Refer to the [request documentation about the options object](https://github.com/request/request#requestoptions-callback) for possible configuration options. Among the most common configuration parameters you might want to use are `headers` (additional HTTP headers, `qs` (query parameters), `auth`, `oauth`).
 
 Returns the request builder instance to allow for method chaining.
 
-`addRequestOptions(options)`: Adds options for HTTP requests (additional HTTP headers, for example) on top of existing options, if any. To reset all request options and set new ones without keeping the old ones, you can use `withRequestOptions`.
+`addRequestOptions(options)`: Adds options for HTTP requests (additional HTTP headers, for example) on top of existing options, if any. To reset all request options and set new ones without keeping the old ones, you can use `withRequestOptions`.  Refer to `withRequestOptions` to see which options can be passed.
 
 Options can either be passed as an object or an array. If an object is passed, the options will be used for each HTTP request. If an array is passed, each element should be an options object and the first array element will be used for the first request, the second element for the second request and so on. null elements are allowed.
 
