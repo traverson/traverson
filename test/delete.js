@@ -59,7 +59,7 @@ describe('delete method', function() {
     waitFor(
       function() { return callback.called; },
       function() {
-        expect(callback).to.have.been.calledWith(null, result, deleteUri);
+        expect(callback).to.have.been.calledWith(null, result);
         expect(del.firstCall.args[1].body).to.not.exist;
         done();
       }

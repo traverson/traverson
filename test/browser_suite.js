@@ -1,6 +1,7 @@
-require('./absolute_relative');
 require('./abort_request');
+require('./absolute_relative');
 require('./content_negotiation');
+require('./continue');
 require('./custom_request_parser');
 require('./delete');
 require('./get');

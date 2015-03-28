@@ -93,7 +93,6 @@ function mapResponse(response) {
 
 function handleResponse(callback) {
   return function(err, response) {
-    console.log(err);
     if (err) {
       if (!response) {
         // network error or timeout, no response

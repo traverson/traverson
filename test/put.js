@@ -62,7 +62,7 @@ describe('put method', function() {
     waitFor(
       function() { return callback.called; },
       function() {
-        expect(callback).to.have.been.calledWith(null, result, putUri);
+        expect(callback).to.have.been.calledWith(null, result);
         expect(put.firstCall.args[1].body).to.exist;
         expect(put.firstCall.args[1].body).to.contain(payload.some);
         expect(put.firstCall.args[1].body).to.contain(payload.data);

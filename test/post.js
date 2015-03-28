@@ -43,9 +43,12 @@ describe('post method', function() {
     };
     callback = sinon.spy();
 
-    get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
-        2, null, rootResponse, rootResponse.body);
-    get.withArgs(postUri, {}, sinon.match.func).callsArgWithAsync(1,
+    get
+    .withArgs(rootUri, {}, sinon.match.func)
+    .callsArgWithAsync(2, null, rootResponse, rootResponse.body);
+    get
+    .withArgs(postUri, {}, sinon.match.func)
+    .callsArgWithAsync(1,
         new Error('GET is not implemented for this URI, please POST ' +
         'something'));
   });
@@ -64,7 +67,8 @@ describe('post method', function() {
     waitFor(
       function() { return callback.called; },
       function() {
-        expect(callback).to.have.been.calledWith(null, result, postUri);
+        expect(callback).to.have.been.calledWith(null, result,
+          sinon.match.object);
         expect(post.firstCall.args[1].body).to.exist;
         expect(post.firstCall.args[1].body).to.contain(payload.some);
         expect(post.firstCall.args[1].body).to.contain(payload.data);
@@ -138,7 +142,8 @@ describe('post method', function() {
     waitFor(
       function() { return callback.called; },
       function() {
-        expect(callback).to.have.been.calledWith(null, result, postUri);
+        expect(callback).to.have.been.calledWith(null, result,
+          sinon.match.object);
         expect(get.firstCall.args[1]).to.deep.equal(expected1);
         expect(post.firstCall.args[1]).to.deep.equal(expected2);
         expect(post.firstCall.args[1].body).to.exist;

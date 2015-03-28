@@ -63,7 +63,7 @@ describe('patch method', function() {
     waitFor(
       function() { return callback.called; },
       function() {
-        expect(callback).to.have.been.calledWith(null, result, patchUri);
+        expect(callback).to.have.been.calledWith(null, result);
         expect(patch.firstCall.args[1].body).to.exist;
         expect(patch.firstCall.args[1].body).to.contain(payload.some);
         expect(patch.firstCall.args[1].body).to.contain(payload.data);
