@@ -55,6 +55,8 @@ A request builder can be obtained by `traverson.newRequest()` or `traverson.from
 
 Options can either be passed as an object or an array. If an object is passed, the options will be used for each HTTP request. If an array is passed, each element should be an options object and the first array element will be used for the first request, the second element for the second request and so on. `null` elements are allowed. Traverson (on node.js) uses the [request](https://github.com/request/request) internally to execute HTTP requests and this method just exposes the configuration options of request. Refer to the [request documentation about the options object](https://github.com/request/request#requestoptions-callback) for possible configuration options. Among the most common configuration parameters you might want to use are `headers` (additional HTTP headers, `qs` (query parameters), `auth`, `oauth`).
 
+A word of warning: When running in the browser and not in Node.js, the request library is shimmed by [SuperAgent](https://github.com/visionmedia/superagent) to shim the request module. Most request options are mapped to appropriate superagent options. If you use Traverson in the browser and you notice odd behaviour regarding `withRequestOptions`, please file an [issue](https://github.com/basti1302/traverson/issues).
+
 Returns the request builder instance to allow for method chaining.
 
 `addRequestOptions(options)`: Adds options for HTTP requests (additional HTTP headers, for example) on top of existing options, if any. To reset all request options and set new ones without keeping the old ones, you can use `withRequestOptions`.  Refer to `withRequestOptions` to see which options can be passed.
