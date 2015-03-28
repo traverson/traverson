@@ -51,7 +51,7 @@ Table of Contents
     * [Absolute Versus Relative URLs](#on-absolute-urls-absolute-url-paths-and-relative-url-paths)
     * [JSONPath](#jsonpath)
     * [URI Templates](#uri-templates)
-    * [Headers and Authentication](#headers-http-basic-auth-oauth-and-whatnot)
+    * [Headers, Query Strings and Authentication](#headers-query-strings-http-basic-auth-oauth-and-whatnot)
     * [Custom JSON parser](#custom-json-parser)
     * [Using Media Type Plug-ins](#using-media-type-plug-ins)
         * [Implementing Media Type Plug-ins](#implementing-media-type-plug-ins)
