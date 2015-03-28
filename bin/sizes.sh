@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 # Script to browserify without Grunt - usually the Grunt build is used to
 # browserify and build everything.
@@ -6,7 +7,7 @@
 bin_path=`dirname $0`
 pushd $bin_path/.. > /dev/null
 
-browserify_cmd=node_modules/.bin/browserify
+browserify_cmd=node_modules/grunt-browserify/node_modules/browserify/bin/cmd.js
 
 # This browserify build can be used by users of the module. It contains a
 # UMD (universal module definition) and can be used via an AMD module

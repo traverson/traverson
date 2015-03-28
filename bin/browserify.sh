@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 # Script to browserify without Grunt - usually the Grunt build is used to
 # browserify and build everything.
