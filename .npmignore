@@ -1,11 +1,11 @@
 *.un~
 *.swp
-reduce-size.txt
 .editorconfig
-REFACTOR.txt
+.travis.yml
+disc.html
+reduce-size.txt
 release_upcoming.markdown
+test
 todo.md
 todo.txt
-.travis.yml
-test
 browser/test/browserified_tests.js

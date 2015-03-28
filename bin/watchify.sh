@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 # This script assumes that watchify is installed globally. To do that execute
 # npm install -g watchify
