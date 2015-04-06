@@ -130,21 +130,6 @@ describe('Traverson in the maze', function() {
     }));
   });
 
-  it.skip('should find the way by using a maze-solving algorithm with getUrl',
-      function(done) {
-    // This test would not make much sense. With getUrl, we did not yet make the
-    // HTTP request to get the response/resource we need to make the next
-    // decision in the maze solving algorithm.
-    api
-    .newRequest()
-    .follow('north')
-    .getUrl(solveMaze(done, 'getUrl', true, null, function(err, url) {
-      expect(err).to.not.exist;
-      assert.fail();
-      done();
-    }));
-  });
-
   it('should find the way by using a maze-solving algorithm with post',
       function(done) {
     api
