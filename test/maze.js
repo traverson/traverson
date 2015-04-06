@@ -144,6 +144,47 @@ describe('Traverson in the maze', function() {
     }));
   });
 
+  it('should find the way by using a maze-solving algorithm with put',
+      function(done) {
+    api
+    .newRequest()
+    .follow('north')
+    .put({}, solveMaze(done, 'put', true, {}, function(err, response) {
+      expect(err).to.not.exist;
+      var resource = JSON.parse(response.body);
+      expect(resource.status).to.exist;
+      expect(resource.status).to.equal('finished');
+      done();
+    }));
+  });
+
+  it('should find the way by using a maze-solving algorithm with patch',
+      function(done) {
+    api
+    .newRequest()
+    .follow('north')
+    .patch({}, solveMaze(done, 'patch', true, {}, function(err, response) {
+      expect(err).to.not.exist;
+      var resource = JSON.parse(response.body);
+      expect(resource.status).to.exist;
+      expect(resource.status).to.equal('finished');
+      done();
+    }));
+  });
+
+  it('should find the way by using a maze-solving algorithm with delete',
+      function(done) {
+    api
+    .newRequest()
+    .follow('north')
+    .delete(solveMaze(done, 'delete', true, null, function(err, response) {
+      expect(err).to.not.exist;
+      var resource = JSON.parse(response.body);
+      expect(resource.status).to.exist;
+      expect(resource.status).to.equal('finished');
+      done();
+    }));
+  });
 
   // solves the maze by using the wall follower strategy/left-hand rule.
   function solveMaze(done, method, rawResponse, body, callback) {
