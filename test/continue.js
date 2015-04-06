@@ -1,6 +1,7 @@
 'use strict';
 
 /* jshint maxparams: 7 */
+/* jshint maxcomplexity: 12 */
 
 var traverson = require('../traverson')
   , util = require('util')
@@ -16,9 +17,6 @@ chai.use(sinonChai);
 
 // TODO:
 // getUrl - works, but I have no idea why?!?
-// put
-// patch
-// delete
 //
 // first traversal without links & continuation without links
 // first traversal with links & continuation without links
@@ -87,6 +85,18 @@ describe('Continuation of traversals', function() {
 
   describe('post', function() {
     defineTestsForMethod(api.post, payload);
+  });
+
+  describe('put', function() {
+    defineTestsForMethod(api.put, payload);
+  });
+
+  describe('patch', function() {
+    defineTestsForMethod(api.patch, payload);
+  });
+
+  describe('delete', function() {
+    defineTestsForMethod(api.delete);
   });
 
   function defineTestsForMethod(method, body) {
@@ -244,6 +254,21 @@ describe('Continuation of traversals', function() {
       expect(get.callCount).to.equal(expectedNumberOfHttpGets -
          (noLinksForSecondTraversal ? 1 : 2));
       expect(post.callCount).to.equal(2);
+    } else if (method === api.put) {
+      expect(callback).to.have.been.calledWith(null, response);
+      expect(get.callCount).to.equal(expectedNumberOfHttpGets -
+         (noLinksForSecondTraversal ? 1 : 2));
+      expect(put.callCount).to.equal(2);
+    } else if (method === api.patch) {
+      expect(callback).to.have.been.calledWith(null, response);
+      expect(get.callCount).to.equal(expectedNumberOfHttpGets -
+         (noLinksForSecondTraversal ? 1 : 2));
+      expect(patch.callCount).to.equal(2);
+    } else if (method === api.delete) {
+      expect(callback).to.have.been.calledWith(null, response);
+      expect(get.callCount).to.equal(expectedNumberOfHttpGets -
+         (noLinksForSecondTraversal ? 1 : 2));
+      expect(del.callCount).to.equal(2);
     } else {
       throw new Error('Unknown method: ' + method.name + ': ' +
           method);
