@@ -56,6 +56,7 @@ Table of Contents
     * [Using Media Type Plug-ins](#using-media-type-plug-ins)
         * [Implementing Media Type Plug-ins](#implementing-media-type-plug-ins)
     * [Content Type Detection Versus Forcing Media Types](#content-type-detection-versus-forcing-media-types)
+    * [Continuing a Link Traversal](#continuing-a-link-traversal)
     * [Aborting the Link Traversal](#aborting-the-link-traversal)
 * [Release Notes](#release-notes)
 
@@ -617,6 +618,38 @@ traverson
 });
 </pre>
 
+### Continuing a Link Traversal
+
+The examples so far were all concerned with one link traversal process. It is not unusual though that, when a link traversal has finished, you want to start a second link traversal process right at the resource where the first link traversal finished. Traverson makes it possible to reuse a finished link traversal to start a new one at its end resource.
+
+The callbacks given to the action methods (`get`, `getResource`, `getUrl`, `post`, `put`, `patch`, `delete`) are actually called with one more additional parameter (that hasn't been shown in the examples so far) which represents the traversal process that has just been finished. This object `traversal` offers only one method, `continue()` which gives you a request builder instance which can be used just as the standard [request builder](https://github.com/basti1302/traverson/blob/master/api.markdown#request-builder). That is, it has the same configuration and action methods.
+
+Using `traversal.continue()` to initiate a new traversal ensures that the new traversal is started right where the first traversal stopped and it makes use of the last HTTP response of the first traversal to do so.
+
+Here is an example:
+
+
+```javascript
+traverson
+.from(rootUrl)
+.follow('link1', 'link2')
+.getResource(function(err, firstResource, traversal) {
+  if (err) { return done(err); }
+  // do something with the first resource, maybe decide where to go from here.
+  traversal
+  .continue()
+  .follow('link3', 'link3')
+  .getResource(function(err, secondResource) {
+    if (err) { return done(err); }
+    // do something with the second resource
+  });
+});
+```
+
+This would first follow the links `link1` and `link2` from the root URL for the first link traversal and then call the first callback. Then, by calling `traversal.continue().follow(...).getResource`, a second link traversal is initiated which follows the links `link3` and `link4`, starting at the resource that `link2` linked to.
+
+You can combine `traversal.continue()` with `newRequest()` to clons/split a continued link traversal and follow multiple link relations from a resource,
+
 ### Aborting the Link Traversal
 
 In some situations you might want to abort or cancel the link traversal process before it has finished. The action methods (`get`, `getResource`, `post`, ...) actually return a handle to do just that:
@@ -645,6 +678,11 @@ Given the call to `abort()` happens while the link traversal is still in process
 Release Notes
 -------------
 
+* 2.0.0 (not yet published):
+    * Continue link traversals with `continue` (see [API docs](https://github.com/basti1302/traverson/blob/master/api.markdown#traversal-continue), also see GitHub issues [#7](https://github.com/basti1302/traverson/issues/7), [#24](https://github.com/basti1302/traverson/issues/24), [#40](https://github.com/basti1302/traverson/issues/40) and [traverson-hal/#4](https://github.com/basti1302/traverson-hal/issues/4)).
+    * Fix for wrong resolution of URLs for HAL and root URLs with path ([#38](https://github.com/basti1302/traverson/issues/38), thanks to @xogeny)
+    * Breaking changes (_probably_ irrelevant for most users):
+        * The methods callback passed to `post`, `put`, `patch` and `delete` no longer receive the URL that had been visited last as their third parameter. The callback signature is now `callback(err, response, traversal)` for these methods.
 * 1.2.1 2015-03-15:
     * Include browser build in npm release (for users using npm for client side packages but not using Browserify but script tags or RequireJS).
 * 1.2.0 2015-03-15:
@@ -658,12 +696,12 @@ Release Notes
   change for you.
     * Added `preferEmbeddedResources()`.
 * 1.1.0 2015-03-02:
-    * Abort link traversals (and HTTP requests) (#27). This feature is to be considered experimental in this version.
-    * Specify request options per step by passing in an array to `withRequestOptions` or `addRequestOptions` (#25).
-    * Fix for subsequent error that ate the original error if a problem occured before or during the first HTTP request (#23).
+    * Abort link traversals (and HTTP requests) ([#27](https://github.com/basti1302/traverson/issues/27)). This feature is to be considered experimental in this version.
+    * Specify request options per step by passing in an array to `withRequestOptions` or `addRequestOptions` ([#25](https://github.com/basti1302/traverson/issues/25)).
+    * Fix for subsequent error that ate the original error if a problem occured before or during the first HTTP request ([#23](https://github.com/basti1302/traverson/issues/23)).
     * Fix: Copy contentNegotiation flag correctly to cloned request builder (`newRequest()`).
     * Add methods to request builder to query the current configuration.
-    * Posting with content type application/x-www-form-urlencoded works now (#31).
+    * Posting with content type application/x-www-form-urlencoded works now ([#31](https://github.com/basti1302/traverson/issues/31)).
 * 1.0.0 2015-02-27:
     * Media Type Plug-ins. You can now register your own media types and plug-ins to process them.
     * HAL is no longer supported by Traverson out of the box. If you want to use HAL, you now have to use the [traverson-hal](https://github.com/basti1302/traverson-hal) plug-in.
@@ -674,30 +712,30 @@ Release Notes
     * Entry points (methods on the traverson object) have been restructured (see api.markdown for details).
     * Cloning a request builder (to share configuration between link traversals) is now more explicit (method `newRequest()` on a request builder instance).
     * `del()` has been renamed to `delete()`. `del()` is kept as an alias for backward compatibility.
-    * New method `addRequestOptions` to add request options (HTTP headers etc.) without resetting the ones that have been set already (#33) (thanks to @xogeny)
+    * New method `addRequestOptions` to add request options (HTTP headers etc.) without resetting the ones that have been set already ([#33](https://github.com/basti1302/traverson/issues/33)) (thanks to @xogeny)
     * Lots of documenation updates. Also new [API reference documentation](https://github.com/basti1302/traverson/blob/master/api.markdown).
 * 0.15.0 2014-12-06:
-    * Content type detection (#6)
+    * Content type detection ([#6](https://github.com/basti1302/traverson/issues/6))
 * 0.14.0 2014-12-05:
-    * `'link[$all]'` to retrieve the complete array of `_embedded` HAL resources instead of an individual resource (#14)
-    * Add ability to use a custom JSON parsing method (#13)
+    * `'link[$all]'` to retrieve the complete array of `_embedded` HAL resources instead of an individual resource ([#14](https://github.com/basti1302/traverson/issues/14))
+    * Add ability to use a custom JSON parsing method ([#13](https://github.com/basti1302/traverson/issues/13))
 * 0.13.0 2014-12-01:
     * Reduce size of browser build by 33%. The minified version now has 37k instead of 55k (still too much, but also much better than before)
 * 0.12.0 2014-11-29:
-    * Deal with cases where body comes as arg but not in response (#19) (thanks to @subvertnormality/@bbc-contentdiscovery)
+    * Deal with cases where body comes as arg but not in response ([#19](https://github.com/basti1302/traverson/issues/19)) (thanks to @subvertnormality/@bbc-contentdiscovery)
 * 0.11.0 2014-11-14:
-    * Add ability to set a custom request library (#18) (thanks to @subvertnormality/@bbc-contentdiscovery)
+    * Add ability to set a custom request library ([#18](https://github.com/basti1302/traverson/issues/18)) (thanks to @subvertnormality/@bbc-contentdiscovery)
 * 0.10.0 2014-10-01:
-    * Add query string handling for client side (#16) (thanks to @craigspaeth)
+    * Add query string handling for client side ([#16](https://github.com/basti1302/traverson/issues/16)) (thanks to @craigspaeth)
 * 0.9.0 2014-06-27:
-    *  Add HAL curie resolution (#12)
+    *  Add HAL curie resolution ([#12](https://github.com/basti1302/traverson/issues/12))
 * 0.8.3 2014-06-19:
-    * Fix bower release (#11)
+    * Fix bower release ([#11](https://github.com/basti1302/traverson/issues/11))
 * 0.8.2 2014-06-12:
-    * Fix corrupted browser build (#10)
+    * Fix corrupted browser build ([#10](https://github.com/basti1302/traverson/issues/10))
     * Can now be installed via bower (thanks to @chadly)
 * 0.8.0 2014-04-30:
-    * Support absolute URLs, absolute URL paths and relative URLs (#3)
+    * Support absolute URLs, absolute URL paths and relative URLs ([#3](https://github.com/basti1302/traverson/issues/3))
     * Fix: Also resolve URI templates when no template params are given (makes sense for templates with optional components)
     * Fix: Now works for cases where the entry point has a pathname other than `/`. (thanks to @eins78)
 * 0.7.0 2013-12-05:
