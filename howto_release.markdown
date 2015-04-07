@@ -10,7 +10,7 @@ To release version x.y.z:
 - `git commit -am"release x.y.z" && git push`
 - `npm publish`
 - `git checkout -b release-x.y.z` (to create the release branch, required for bower)
-- `git add -f browser/dist/traverson*` (to add the build artifacts to the release branch)
+- `git add -f browser/dist/traverson.*` (to add the build artifacts to the release branch)
 - `git commit -m"add build artifacts for release"`
 - `git push origin release-x.y.z`
 - [create a new release on github](https://github.com/basti1302/traverson/releases/new)

@@ -4,34 +4,27 @@
 /* jshint maxcomplexity: 12 */
 
 var traverson = require('../traverson')
-  , util = require('util')
   , mockResponse = require('traverson-mock-response')()
   , waitFor = require('poll-forever')
   , chai = require('chai')
   , sinon = require('sinon')
   , sinonChai = require('sinon-chai')
-  , assert = chai.assert
   , expect = chai.expect;
 
 chai.use(sinonChai);
 
 // TODO:
-// getUrl - works, but I have no idea why?!?
-//
-// first traversal without links & continuation without links
-// first traversal with links & continuation without links
-// first traversal without links & continuation with links
-// first traversal with links & continuation with links
-//
-// error handling in a continued traversal
-//
-// cloning with traversal.continue().newRequest(), splitting into multiple
-// follow up traversals
-//
-// abort a continuation
-//
-// mixed continuations (first with getResource second with get or vice versa
-// plus other combinations, getUrl, post, ...)
+// - Refactor even more, see traverson-angular/test/continue.js
+//   - use parameter object for checkResult
+//   - refactor test setup into one function, setupTest and have
+//     it('...', function() {...}) call that
+// - getUrl works, but I have no idea why
+// - error handling in a continued traversal
+// - cloning with traversal.continue().newRequest(), splitting into multiple
+// - follow up traversals
+// - abort a continuation
+// - mixed continuations (first with getResource second with get or vice versa
+// - plus other combinations, getUrl, post, ...)
 
 describe('Continuation of traversals', function() {
 
