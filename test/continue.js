@@ -1,5 +1,4 @@
 'use strict';
-
 /* jshint maxparams: 7 */
 /* jshint maxcomplexity: 12 */
 
@@ -64,31 +63,31 @@ describe('Continuation of traversals', function() {
     setupMocks();
   });
 
-  describe('get', function() {
+  describe('[method: get]', function() {
     defineTestsForMethod(api.get);
   });
 
-  describe('getResource', function() {
+  describe('[method: getResource]', function() {
     defineTestsForMethod(api.getResource);
   });
 
-  describe('getUrl', function() {
+  describe('[method: getUrl]', function() {
     defineTestsForMethod(api.getUrl);
   });
 
-  describe('post', function() {
+  describe('[method: post]', function() {
     defineTestsForMethod(api.post, payload);
   });
 
-  describe('put', function() {
+  describe('[method: put]', function() {
     defineTestsForMethod(api.put, payload);
   });
 
-  describe('patch', function() {
+  describe('[method: patch]', function() {
     defineTestsForMethod(api.patch, payload);
   });
 
-  describe('delete', function() {
+  describe('[method: delete]', function() {
     defineTestsForMethod(api.delete);
   });
 
@@ -208,6 +207,68 @@ describe('Continuation of traversals', function() {
         }
       );
     });
+
+    it('should branch out with continue and newRequest', function(done) {
+      var request = api.newRequest().follow('link1');
+      var args = body ? [body] : [];
+      var callback1 = sinon.spy();
+      var callback2 = sinon.spy();
+      args.push(function(err, resource, traversal) {
+        if (err) { return done(err); }
+        var cont = traversal.continue();
+        var request1 = cont.newRequest();
+        var request2 = cont.newRequest();
+        request1.follow('link2');
+        request2.follow('link2', 'link3');
+        var args1 = body ? [body, callback1] : [callback1];
+        var args2 = body ? [body, callback2] : [callback2];
+        method.apply(request1, args1);
+        method.apply(request2, args2);
+      });
+      method.apply(request, args);
+      waitFor(
+        function() { return callback1.called && callback2.called; },
+        function() {
+          if (method === api.get) {
+            expect(callback1).to.have.been.calledWith(null, response3);
+            expect(callback2).to.have.been.calledWith(null, response4);
+            expect(get.callCount).to.equal(5);
+          } else if (method === api.getResource) {
+            expect(callback1).to.have.been.calledWith(null, response3.doc);
+            expect(callback2).to.have.been.calledWith(null, response4.doc);
+            expect(get.callCount).to.equal(5);
+          } else if (method === api.getUrl) {
+            expect(callback1).to.have.been.calledWith(null, url2);
+            expect(callback2).to.have.been.calledWith(null, url3);
+            expect(get.callCount).to.equal(4);
+          } else if (method === api.post) {
+            expect(callback1).to.have.been.calledWith(null, response3);
+            expect(callback2).to.have.been.calledWith(null, response4);
+            expect(get.callCount).to.equal(2);
+            expect(post.callCount).to.equal(3);
+          } else if (method === api.put) {
+            expect(callback1).to.have.been.calledWith(null, response3);
+            expect(callback2).to.have.been.calledWith(null, response4);
+            expect(get.callCount).to.equal(2);
+            expect(put.callCount).to.equal(3);
+          } else if (method === api.patch) {
+            expect(callback1).to.have.been.calledWith(null, response3);
+            expect(callback2).to.have.been.calledWith(null, response4);
+            expect(get.callCount).to.equal(2);
+            expect(patch.callCount).to.equal(3);
+          } else if (method === api.delete) {
+            expect(callback1).to.have.been.calledWith(null, response3);
+            expect(callback2).to.have.been.calledWith(null, response4);
+            expect(get.callCount).to.equal(2);
+            expect(del.callCount).to.equal(3);
+          } else {
+            throw new Error('Unknown method: ' + method.name + ': ' +
+                method);
+          }
+          done();
+        }
+      );
+    });
   } // function defineTestsForMethod
 
   function setupMocks() {
@@ -267,5 +328,4 @@ describe('Continuation of traversals', function() {
           method);
     }
   }
-
 });
