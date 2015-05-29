@@ -95,8 +95,35 @@ describe('Traverson with JSONPath', function() {
       function() {
         expect(callback).to.have.been.calledWith(sinon.match.
             instanceOf(Error));
-        expect(callback.args[0][0].message).to.contain('JSONPath ' +
-            'expression $.arr[*].foo returned more than one match');
+         expect(callback.args[0][0].message).to.contain('JSONPath ' +
+             'expression $.arr[*].foo returned more than one match');
+        done();
+      }
+    );
+  });
+
+  it('should give a decent error when the path does not denote a string ' +
+      'attribute points to an object', function(done) {
+
+    get
+    .withArgs(rootUri, {}, sinon.match.func)
+    .callsArgWithAsync(2, null, rootResponse);
+    get
+    .withArgs(uri, {}, sinon.match.func)
+    .callsArgWithAsync(2, null, result);
+
+    api.
+    newRequest()
+    .follow('$.deeply.nested').getResource(callback);
+
+    waitFor(
+      function() { return callback.called; },
+      function() {
+        expect(callback).to.have.been.calledWith(sinon.match.
+            instanceOf(Error));
+        expect(callback.args[0][0].message).to.contain(
+            'JSONPath expression $.deeply.nested was resolved but the result ' +
+            'is not a property of type string. Instead it has type "object"');
         done();
       }
     );
