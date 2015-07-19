@@ -680,7 +680,7 @@ Release Notes
 
 * Next/unreleased:
     * Improved error message when a JSONPath expression denotes a property that does not have type string; for example, if the property has type object. ([#43](https://github.com/basti1302/traverson/issues/43), thanks to @Baiteman for reporting).
-* 2.0.0 2015-04-07:
+* 2.0.1 2015-05-04:
     * Fixes a [bug](https://github.com/basti1302/traverson-angular/issues/11) when cloning a continued traversal (via `continue`) with `newRequest`.
 * 2.0.0 2015-04-07:
     * Continue link traversals with `continue` (see [API docs](https://github.com/basti1302/traverson/blob/master/api.markdown#traversal-continue), also see GitHub issues [#7](https://github.com/basti1302/traverson/issues/7), [#24](https://github.com/basti1302/traverson/issues/24), [#40](https://github.com/basti1302/traverson/issues/40) and [traverson-hal/#4](https://github.com/basti1302/traverson-hal/issues/4)).
