@@ -181,7 +181,9 @@ describe('Traverson (when tested against a local server)', function() {
     );
   });
 
-  it('should fail gracefully on 404 with get()', function(done) {
+  // this is a 404 *during* the traversal, which is interpreted as an error
+  // condition
+  it('should fail gracefully on 404 during traversal', function(done) {
     api
     .newRequest()
     .follow('blind_alley', 'more', 'links')
@@ -207,7 +209,10 @@ describe('Traverson (when tested against a local server)', function() {
     );
   });
 
-  it('should just deliver the last response of get(), even when it\'s 404',
+  // this is a 404 *at the end* of the traversal, which is *not* considered as
+  // an error condition
+  it('should just deliver the last response of get(), even when the last ' +
+      'response is a 404',
       function(done) {
     api
     .newRequest()
@@ -225,7 +230,9 @@ describe('Traverson (when tested against a local server)', function() {
     );
   });
 
-  it('should fail gracefully on 404 with getResource()', function(done) {
+  // 404 during traversal => error
+  it('should fail gracefully on 404 during traversal (getResource)',
+      function(done) {
     api
     .newRequest()
     .follow('blind_alley')
