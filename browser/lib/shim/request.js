@@ -100,7 +100,7 @@ function handleResponse(callback) {
       } else {
         // Since 1.0.0 superagent calls the callback with an error if the status
         // code of the response is not in the 2xx range. In this cases, it also
-        // passes in the resonse. To align things with request, call the
+        // passes in the response. To align things with request, call the
         // callback without the error but just with the response.
         callback(null, mapResponse(response));
       }
