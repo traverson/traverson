@@ -298,12 +298,17 @@ No luck :-)
 ```
 
 Reasons for failure could be:
-* The start URL, one of the intermediate URLs, or the final URL is not reachable.
+
+* The start URL, one of the intermediate URLs, or the final URL is not reachable (but see the section below for details on the handling of HTTP status codes).
 * One of the documents can not be parsed as JSON, that is, it is not syntactically well formed.
 * One of the intermediate documents does not contain the property (link relation) specified via `follow`.
 * If JSONPath (see below) is used:
     * One of the JSONPath expressions in the path array does not yield a match for the corresponding document.
     * One of the JSONPath expressions in the path array yields more than one match for the corresponding document.
+
+#### How HTTP Status Code Are Handled
+
+In contrast to some other AJAX-related libraries, Traverson does not interpret status codes outside of the 2xx range as an error condition. Only network problems (host not reachable, timeouts, etc.) will result in Traverson calling the callback with an error. Completed HTTP requests, even those with status 4xx or 5xx are interpreted as a success. This applies only to the last request in a traversal, HTTP requests *during* the traversal that respond with 4xx/5xx are interpreted as an error (because the traversal can not continue). This design decision comes from Traverson's use of [request](https://github.com/request/request) internally, which behaves in the same way.
 
 ### On Absolute URLs, Absolute URL Paths and Relative URL Paths
 
