@@ -18,3 +18,5 @@ require('./post');
 require('./put');
 require('./request_options.js');
 require('./uri_template.js');
+require('./transform/apply_transforms');
+require('./transform/fetch_resource');

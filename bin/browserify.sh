@@ -25,7 +25,7 @@ $browserify_cmd \
 $browserify_cmd \
   --entry traverson.js \
   --outfile browser/dist/traverson.external.js \
-  --require ./traverson
+  --require ./traverson.js
 
 # These are the browserified tests.
 $browserify_cmd \

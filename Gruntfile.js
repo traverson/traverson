@@ -24,7 +24,7 @@ module.exports = function(grunt) {
         '!browser/example/assets/**/*',
         '!browser/lib/third-party/**/*',
         '!browser/lib/shim/underscore-string-reduced.js',
-        '!browser/test/browserified_tests.js'
+        '!browser/test/browserified_tests.js',
       ],
       options: {
         jshintrc: '.jshintrc'
@@ -60,7 +60,7 @@ module.exports = function(grunt) {
         src: [ '<%= pkg.name %>.js' ],
         dest: './browser/dist/<%= pkg.name %>.js',
         options: {
-          bundleOptions: {
+          browserifyOptions: {
             standalone: '<%= pkg.name %>'
           }
         }
@@ -72,7 +72,7 @@ module.exports = function(grunt) {
         src: [ '<%= pkg.name %>.js' ],
         dest: './browser/dist/<%= pkg.name %>.external.js',
         options: {
-          alias: [ './<%= pkg.name %>.js:traverson' ]
+          require: ['./traverson.js']
         }
       },
       // Browserify the tests
@@ -80,11 +80,16 @@ module.exports = function(grunt) {
         src: [ 'test/browser_suite.js' ],
         dest: './browser/test/browserified_tests.js',
         options: {
-          external: [ './<%= pkg.name %>.js' ],
-          bundleOptions: {
+          // use the external bundle created above, do not bundle traverson
+          // into the tests
+          external: [ './traverson.js' ],
+          browserifyOptions: {
             // Embed source map for tests
             debug: true
-          }
+          },
+          plugin: [
+            'proxyquire-universal'
+          ],
         }
       }
     },

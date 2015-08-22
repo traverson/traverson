@@ -8,7 +8,7 @@ var traverson = require('../traverson')
   , EventEmitter = events.EventEmitter
   , sinon = require('sinon')
   , sinonChai = require('sinon-chai')
-  , testUtil = require('./util')
+  , testUtil = require('./util/util')
   , assert = chai.assert
   , expect = chai.expect;
 

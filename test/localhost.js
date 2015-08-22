@@ -1,7 +1,7 @@
 'use strict';
 
 var traverson = require('../traverson')
-  , environment = require('./environment')
+  , environment = require('./util/environment')
   , isNodeJs = environment.isNodeJs
   , isPhantomJs = environment.isPhantomJs
   , waitFor = require('poll-forever')
