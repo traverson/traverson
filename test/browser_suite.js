@@ -12,7 +12,6 @@ require('./localhost');
 require('./maze');
 require('./merge_recursive');
 require('./new_request');
-require('./no_follow');
 require('./patch');
 require('./post');
 require('./put');
