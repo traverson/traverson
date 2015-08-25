@@ -7,7 +7,9 @@ var minilog = require('minilog')
   , mediaTypeRegistry = require('./lib/media_type_registry');
 
 // activate this line to enable logging
-// require('minilog').enable();
+if (process.env.TRAVERSON_LOGGING) {
+  require('minilog').enable();
+}
 
 // export builder for traverson-angular
 exports._Builder = Builder;
