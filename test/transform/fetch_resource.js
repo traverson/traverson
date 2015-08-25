@@ -84,41 +84,4 @@ describe('fetch resource transform', function() {
     });
 
   });
-
-  describe('when aborted', function() {
-
-    it('should abort when abort has been requested',
-        function(done) {
-      t.aborted = true;
-      fetchResource(t, function() {
-        done(new Error('should not have been called'));
-      });
-      waitFor(
-        function() { return callCallbackOnAbort.called; },
-        function() {
-          expect(callCallbackOnAbort).to.have.been.calledWith(t);
-          expect(httpRequestsFetchResource).to.not.have.been.called;
-          done();
-      });
-    });
-
-  });
-
-  describe('when link array is exhausted', function() {
-
-    it('should call t.callback', function(done) {
-      t.step.index = 3;
-      fetchResource(t, function() {
-        done(new Error('should not have been called'));
-      });
-      waitFor(
-        function() { return t.callback.called; },
-        function() {
-          expect(httpRequestsFetchResource).to.not.have.been.called;
-          done();
-      });
-    });
-
-  });
 });
-

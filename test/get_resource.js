@@ -37,12 +37,18 @@ describe('Traverson\'s getResource', function() {
       more: { stuff: { that: 'we do not care about' } }
     });
 
-    it('should access the root URI', function() {
+    it('should access the root URI', function(done) {
       api
       .newRequest()
       .getResource(callback);
 
-      expect(get).to.have.been.calledWith(rootUri, {}, sinon.match.func);
+      waitFor(
+        function() { return get.called; },
+        function() {
+          expect(get).to.have.been.calledWith(rootUri, {}, sinon.match.func);
+          done();
+        }
+      );
     });
 
     it('should call callback with the root doc', function(done) {
