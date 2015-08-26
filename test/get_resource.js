@@ -128,6 +128,30 @@ describe('Traverson\'s getResource', function() {
       );
     });
 
+    it('using get (instead of getResource), but with the ' +
+        '"convertResponseToObject" option', function(done) {
+      get
+      .withArgs(rootUri, {}, sinon.match.func)
+      .callsArgWithAsync(2, null, rootResponse);
+      get
+      .withArgs(rootUri + '/link/to/thing', {}, sinon.match.func)
+      .callsArgWithAsync(2, null, result);
+
+      api
+      .newRequest()
+      .follow('link')
+      .convertResponseToObject()
+      .get(callback);
+
+      waitFor(
+        function() { return callback.called; },
+        function() {
+          expect(callback).to.have.been.calledWith(null, result.doc);
+          done();
+        }
+      );
+    });
+
     it('should call callback with err if link is not found', function(done) {
       get
       .withArgs(rootUri, {}, sinon.match.func)
