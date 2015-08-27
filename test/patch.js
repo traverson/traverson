@@ -28,7 +28,8 @@ describe('patch method', function() {
     'patch_link': patchUri,
   });
 
-  var result = mockResponse({ result: 'success' });
+  var resultObject = { result: 'success' };
+  var result = mockResponse(resultObject);
 
   var payload = {
     some: 'stuff',
@@ -49,7 +50,7 @@ describe('patch method', function() {
     .callsArgWithAsync(2, null, rootResponse, rootResponse.body);
   });
 
-  it('should follow the links and patch the last URI',
+  it('should follow the links and patch the last URL',
       function(done) {
     patch
     .withArgs(patchUri, sinon.match.object, sinon.match.func)
@@ -63,10 +64,33 @@ describe('patch method', function() {
     waitFor(
       function() { return callback.called; },
       function() {
-        expect(callback).to.have.been.calledWith(null, result);
+        expect(callback).to.have.been.calledWith(null, result,
+          sinon.match.object);
         expect(patch.firstCall.args[1].body).to.exist;
         expect(patch.firstCall.args[1].body).to.contain(payload.some);
         expect(patch.firstCall.args[1].body).to.contain(payload.data);
+        done();
+      }
+    );
+  });
+
+  it('should convert the response to an object',
+      function(done) {
+    patch
+    .withArgs(patchUri, sinon.match.object, sinon.match.func)
+    .callsArgWithAsync(2, null, result);
+
+    api
+    .newRequest()
+    .follow('patch_link')
+    .convertResponseToObject()
+    .patch(payload, callback);
+
+    waitFor(
+      function() { return callback.called; },
+      function() {
+        expect(callback).to.have.been.calledWith(null, resultObject,
+          sinon.match.object);
         done();
       }
     );

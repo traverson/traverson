@@ -27,7 +27,8 @@ describe('put method', function() {
     'put_link': putUri,
   });
 
-  var result = mockResponse({ result: 'success' });
+  var resultObject = { result: 'success' };
+  var result = mockResponse(resultObject);
 
   var payload = {
     some: 'stuff',
@@ -48,7 +49,7 @@ describe('put method', function() {
     .callsArgWithAsync(2, null, rootResponse, rootResponse.body);
   });
 
-  it('should follow the links and put to the last URI',
+  it('should follow the links and put to the last URL',
       function(done) {
     put
     .withArgs(putUri, sinon.match.object, sinon.match.func)
@@ -62,10 +63,32 @@ describe('put method', function() {
     waitFor(
       function() { return callback.called; },
       function() {
-        expect(callback).to.have.been.calledWith(null, result);
+        expect(callback).to.have.been.calledWith(null, result,
+          sinon.match.object);
         expect(put.firstCall.args[1].body).to.exist;
         expect(put.firstCall.args[1].body).to.contain(payload.some);
         expect(put.firstCall.args[1].body).to.contain(payload.data);
+        done();
+      }
+    );
+  });
+
+  it('should convert the response to an object', function(done) {
+    put
+    .withArgs(putUri, sinon.match.object, sinon.match.func)
+    .callsArgWithAsync(2, null, result, putUri);
+
+    api
+    .newRequest()
+    .follow('put_link')
+    .convertResponseToObject()
+    .put(payload, callback);
+
+    waitFor(
+      function() { return callback.called; },
+      function() {
+        expect(callback).to.have.been.calledWith(null, resultObject,
+          sinon.match.object);
         done();
       }
     );

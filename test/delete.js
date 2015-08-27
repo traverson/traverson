@@ -45,7 +45,7 @@ describe('delete method', function() {
     .callsArgWithAsync(2, null, rootResponse, rootResponse.body);
   });
 
-  it('should follow the links and delete the last URI',
+  it('should follow the links and delete the last URL',
       function(done) {
     del
     .withArgs(deleteUri, sinon.match.object, sinon.match.func)
@@ -59,12 +59,37 @@ describe('delete method', function() {
     waitFor(
       function() { return callback.called; },
       function() {
-        expect(callback).to.have.been.calledWith(null, result);
+        expect(callback).to.have.been.calledWith(null, result,
+          sinon.match.object);
         expect(del.firstCall.args[1].body).to.not.exist;
         done();
       }
     );
   });
+
+  it('should convert a response without a body to a null object',
+      function(done) {
+    del
+    .withArgs(deleteUri, sinon.match.object, sinon.match.func)
+    .callsArgWithAsync(2, null, result);
+
+    api
+    .newRequest()
+    .follow('delete_link')
+    .convertResponseToObject()
+    .delete(callback);
+
+    waitFor(
+      function() { return callback.called; },
+      function() {
+        expect(callback).to.have.been.calledWith(null, null,
+          sinon.match.object);
+        done();
+      }
+    );
+  });
+
+
 
   it('should call callback with err when deleting fails',
       function(done) {

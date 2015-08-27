@@ -77,6 +77,16 @@ Returns the request builder instance to allow for method chaining.
 
 <a name="builder-parseResponseBodiesWith"></a>`parseResponseBodiesWith(parser)`: Injects a custom JSON parser. Returns the request builder instance to allow for method chaining.
 
+<a name="builder-convertResponseToObject"></a>`convertResponseToObject(flag)`: With this option enabled, the body of the response at the end of the traversal will be converted into a JavaScript object (for example by passing it into JSON.parse) and passing the resulting object into the callback. The default is false, which means the full response is handed to the callback.
+
+When response body conversion is enabled, you will not get the full response, so you won't have access to the HTTP status code or headers. Instead only the converted object will be passed into the callback.
+
+Note that the body of any intermediary responses during the traversal is always converted by Traverson (to find the next link).
+
+If the method is called without arguments (or the first argument is undefined or null), response body conversion is switched on, otherwise the argument is interpreted as a boolean flag. If it is a truthy value, response body
+conversion is switched to on, if it is a falsy value (but not null or undefined), response body conversion is switched off.
+
+
 <a name="builder-resolveRelative"></a>`resolveRelative(flag)`: Switches URL resolution to relative (default is absolute). This is for relative URL paths, that is, URLs that omit the protocol (http/https), but start with a slash and that need to be interpreted relative to the current location. Example: If the root URL is `https://api.example.com/home` and the first link contains `/customers/1302` this would usually (without `resolveRelative()`) be resolved to `https://api.example.com/customers/1302`. If this has a link `/orders`, this would be resolved to `https://api.example.com/orders`. When `resolveRelative()` has been called on the request builder instance, the URLs will be resolved differently: From `https://api.example.com/home` the link `/customers/1302` will be resolved to `https://api.example.com/home/customers/1302`. From there, the link `/orders` will be resolved to `https://api.example.com/home/customers/1302/orders`. This feature should be rarely needed. This method returns the request builder instance to allow for method chaining.
 
 If the method is called without arguments (or the first argument is undefined or null), URL resolution is switched to relative, otherwise the argument is interpreted as a boolean flag. If it is a truthy value, URL resolution is switched to relative, if it is a falsy value, URL resolution is switched to absolute.
@@ -91,15 +101,17 @@ If the method is called without arguments (or the first argument is undefined or
 
 <a name="builder-"></a>`getMediaType()`:  Returns the current media type. If no media type is enforced but content type detection is used, the string `content-negotiation` is returned.
 
-<a name="builder-getFrom"></a>`getFrom`: Returns the URL set by the `from(url)` method, that is, the root URL of the API.
+<a name="builder-getFrom"></a>`getFrom()`: Returns the URL set by the `from(url)` method, that is, the root URL of the API.
 
-<a name="builder-getTemplateParameters"></a>`getTemplateParameters`: Returns the template parameters set by the `withTemplateParameters`.
+<a name="builder-getTemplateParameters"></a>`getTemplateParameters()`: Returns the template parameters set by the `withTemplateParameters`.
 
-<a name="builder-getRequestOptions"></a>`getRequestOptions`: Returns the request options set by the `withRequestOptions` or `addRequestOptions`.
+<a name="builder-getRequestOptions"></a>`getRequestOptions()`: Returns the request options set by the `withRequestOptions` or `addRequestOptions`.
 
-<a name="builder-getRequestLibrary"></a>`getRequestLibrary`: Returns the custom request library instance set by `withRequestLibrary` or the standard request library instance, if a custom one has not been set.
+<a name="builder-getRequestLibrary"></a>`getRequestLibrary()`: Returns the custom request library instance set by `withRequestLibrary` or the standard request library instance, if a custom one has not been set.
 
-<a name="builder-getJsonParser"></a>`getJsonParser`: Returns the custom JSON parser function set by `parseResponseBodiesWith` or the standard parser function, if a custom one has not been set.
+<a name="builder-getJsonParser"></a>`getJsonParser()`: Returns the custom JSON parser function set by `parseResponseBodiesWith` or the standard parser function, if a custom one has not been set.
+
+<a name="builder-convertsResponseToObject"></a>`convertsResponseToObject()`: Returns true if the body of the last response will be converted to a JavaScript before passing the result back to the callback.
 
 <a name="builder-doesResolveRelative"></a>`doesResolveRelative`: Returns the flag controlling if URLs are resolved relative or absolute. A return value of `true` means that URLs are resolved relative, `false` means absolute.
 

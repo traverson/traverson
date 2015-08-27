@@ -323,7 +323,7 @@ describe('Traverson (when tested against a local server)', function() {
   });
 
 
-  it('should yield the last URI', function(done) {
+  it('should yield the last URL', function(done) {
     api
     .newRequest()
     .follow('second', 'doc')
@@ -350,6 +350,26 @@ describe('Traverson (when tested against a local server)', function() {
       function() { return callback.called; },
       function() {
         var resultDoc = checkResponseWithBody(201);
+        expect(resultDoc.document).to.exist;
+        expect(resultDoc.document).to.equal('created');
+        expect(resultDoc.received).to.exist;
+        expect(resultDoc.received).to.deep.equal(payload);
+        done();
+      }
+    );
+  });
+
+  it('should post and convert response body', function(done) {
+    var payload = {'new': 'document'};
+    api
+    .newRequest()
+    .follow('post_link')
+    .convertResponseToObject()
+    .post(payload, callback);
+    waitFor(
+      function() { return callback.called; },
+      function() {
+        var resultDoc = checkResultDoc();
         expect(resultDoc.document).to.exist;
         expect(resultDoc.document).to.equal('created');
         expect(resultDoc.received).to.exist;

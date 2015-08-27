@@ -5,16 +5,21 @@ A Hypermedia API/HATEOAS Client for Node.js and the Browser
 -----------------------------------------------------------
 
 [![Build Status](https://travis-ci.org/basti1302/traverson.png?branch=master)](https://travis-ci.org/basti1302/traverson)
-[![Dependency Status](https://david-dm.org/basti1302/traverson.png)](https://david-dm.org/basti1302/traverson)
-
-[![browser support](http://ci.testling.com/basti1302/traverson.png)](http://ci.testling.com/basti1302/traverson)
 
 [![NPM](https://nodei.co/npm/traverson.png?downloads=true&stars=true)](https://nodei.co/npm/traverson/)
 
 | File Size (browser build) | KB |
 |---------------------------|---:|
-| minified & gzipped        | 11 |
-| minified                  | 36 |
+| minified & gzipped        | 13 |
+| minified                  | 44 |
+
+
+Quick Links:
+
+* [API reference documentation](https://github.com/basti1302/traverson/blob/master/api.markdown)
+* [User Guide](#documentation)
+* [Release Notes](#release-notes)
+
 
 Introduction
 ------------
@@ -222,8 +227,6 @@ traverson
 });
 </pre>
 
-
-
 ### Pass a Link Array
 
 You can also pass an array of strings to the follow method. Makes no difference.
@@ -264,9 +267,21 @@ traverson
 });
 </pre>
 
-All methods except `getResource` (that is `get`, `post`, `put`, `delete` and `patch` pass the full http response into the provided callback, so the callback's method signature always looks like `function(error, response)`. `post`, `put` and `patch` obviously have a body argument, `delete` doesn't. Some more examples, just for completenss' sake:
+All methods except `getResource` (that is `get`, `post`, `put`, `delete` and `patch` pass the full http response into the provided callback, so the callback's method signature always looks like `function(error, response)`.
+
+But same as with `get` versus `getResource`, you also have the choice of receiving just the parsed response body (converted to a JavaScript object) instead of the full HTTP Response. The configuration method `convertResponseToObject` switches to the former behaviour (the latter is the default). With `convertResponseToObject`, the signature of the provided callback is `function(error, doc)`.
+
+The methods `post`, `put` and `patch` accept a body argument, `delete` does not. Some more examples, just for completenss' sake:
 
 <pre lang="javascript">
+traverson
+.from('http://api.example.com')
+.follow('link_to', 'resource')
+<b>.convertResponseToObject()</b>
+.post({'some': 'data'}, function(error, <b>doc</b>) {
+  ...
+});
+
 traverson
 .from('http://api.example.com')
 .follow('link_to', 'resource')
@@ -326,7 +341,7 @@ Traverson supports [JSONPath](http://goessner.net/articles/JsonPath/) expression
 traverson
 .from('http://api.example.com')
 .follow(<b>'$.deeply.nested.link'</b>)
-.getResource(function(error, document) {
+.getResource(function(error, doc) {
    ...
 });
 </pre>
@@ -366,7 +381,7 @@ traverson
 .from('http://api.example.com')
 .follow('user_thing_lookup')
 <b>.withTemplateParameters({ user_name: 'basti1302', thing_id: 4711 })</b>
-.getResource(function(error, document) {
+.getResource(function(error, doc) {
   ...
 });
 </pre>
@@ -400,7 +415,7 @@ traverson
 .from('http://api.example.com')
 .follow('user_lookup', 'thing_lookup')
 .withTemplateParameters({ user_name: 'basti1302', thing_id: 4711 })
-.getResource(function(error, document) {
+.getResource(function(error, doc) {
   ...
 });
 ```
@@ -435,7 +450,7 @@ traverson
 .from('http://api.example.com')
 .follow('user_lookup', 'things', 'thing_lookup')
 .withTemplateParameters([null, {id: "basti1302"}, null, {id: 4711} ])
-.getResource(function(error, document) {
+.getResource(function(error, doc) {
   ...
 });
 ```
@@ -480,7 +495,7 @@ traverson
   headers: { 'x-my-special-header': 'foo' },
   qs: { query: 'bar' },
 })</b>
-.getResource(function(error, document) {
+.getResource(function(error, doc) {
     ...
 });
 </pre>
@@ -498,7 +513,7 @@ traverson
 .from('http://api.example.com')
 .follow('link_one', 'link_two', 'link_three')
 <b>.withRequestLibrary(customRequestLibrary)</b>
-.getResource(function(error, document) {
+.getResource(function(error, doc) {
     ...
 });
 </pre>
@@ -520,7 +535,7 @@ traverson
   body = body.slice(protectionLength);
   return JSON.parse(body);
 })</b>
-.getResource(function(error, document) {
+.getResource(function(error, doc) {
   ...
 });
 </pre>
@@ -617,7 +632,7 @@ traverson
 .from('http://api.example.com')
 <b>// no call to json(), jsonHal() or setMediaType</b>
 .follow('link_to', 'resource')
-.getResource(function(error, document) {
+.getResource(function(error, doc) {
    // Traverson will interpret the responses as generic JSON or HAL, depending
    // on the Content-Type header.
 });
@@ -664,7 +679,7 @@ var traverson = require('traverson');
 
 var traversal = traverson
 .from('http://api.example.com')
-.getResource(function(error, document) {
+.getResource(function(error, doc) {
   if (error) {
     console.log(error.message);
   } else {
@@ -684,6 +699,7 @@ Release Notes
 -------------
 
 * Next/unreleased:
+    * Ability to convert response bodies to JavaScript objects at the end of the traversal is now also available for POST/PUT/PATCH/DELETE, not only for GET. ([#44](https://github.com/basti1302/traverson/issues/44), thanks to @jinder for the suggestion).
     * Improved error message when a JSONPath expression denotes a property that does not have type string; for example, if the property has type object. ([#43](https://github.com/basti1302/traverson/issues/43), thanks to @Baiteman for reporting).
 * 2.0.1 2015-05-04:
     * Fixes a [bug](https://github.com/basti1302/traverson-angular/issues/11) when cloning a continued traversal (via `continue`) with `newRequest`.

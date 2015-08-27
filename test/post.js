@@ -27,7 +27,8 @@ describe('post method', function() {
     'post_link': postUri,
   });
 
-  var result = mockResponse({ result: 'success' }, 201);
+  var resultObject = { result: 'success' };
+  var result = mockResponse(resultObject, 201);
 
   var payload = {
     some: 'stuff',
@@ -49,11 +50,11 @@ describe('post method', function() {
     get
     .withArgs(postUri, {}, sinon.match.func)
     .callsArgWithAsync(1,
-        new Error('GET is not implemented for this URI, please POST ' +
+        new Error('GET is not implemented for this URL, please POST ' +
         'something'));
   });
 
-  it('should follow the links and post to the last URI',
+  it('should follow the links and post to the last URL',
       function(done) {
     post
     .withArgs(postUri, sinon.match.object, sinon.match.func)
@@ -72,6 +73,27 @@ describe('post method', function() {
         expect(post.firstCall.args[1].body).to.exist;
         expect(post.firstCall.args[1].body).to.contain(payload.some);
         expect(post.firstCall.args[1].body).to.contain(payload.data);
+        done();
+      }
+    );
+  });
+
+  it('should convert the response to an object', function(done) {
+    post
+    .withArgs(postUri, sinon.match.object, sinon.match.func)
+    .callsArgWithAsync(2, null, result);
+
+    api
+    .newRequest()
+    .follow('post_link')
+    .convertResponseToObject()
+    .post(payload, callback);
+
+    waitFor(
+      function() { return callback.called; },
+      function() {
+        expect(callback).to.have.been.calledWith(null, resultObject,
+          sinon.match.object);
         done();
       }
     );
