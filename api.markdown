@@ -1,7 +1,7 @@
 Traverson API
 =============
 
-This is the reference documenation for the Traverson API. It is rather technical and concise. Also see the [readme](https://github.com/basti1302/traverson/blob/master/readme.markdown), which explains the concepts behind Traverson in greater depths and has a lot of examples for the various features.
+This is the reference documenation for the Traverson API. It is rather technical and concise. Also see the [user guide](https://github.com/basti1302/traverson/blob/master/user-guide.markdown), which explains the concepts behind Traverson in greater depths and has a lot of examples for the various features.
 
 Traverson
 ---------
