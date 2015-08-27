@@ -2,7 +2,7 @@
 
 To release version x.y.z:
 
-- Update release notes and/or change the next/unreleased bullet point in the release notes to the version number.
+- Update release notes and/or change the next/unreleased bullet point in the release notes to the version number. Also add date to release notes.
 - bump version in package.json to x.y.z
 - bump version in bower.json to x.y.z
 - `grunt` (to create a fresh browser build, also make sure all tests pass etc.)

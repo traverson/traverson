@@ -700,7 +700,7 @@ Release Notes
 -------------
 
 * 2.1.0 2015-08-27:
-    * Ability to convert response bodies to JavaScript objects at the end of the traversal is now also available for POST/PUT/PATCH/DELETE, not only for GET. ([#44](https://github.com/basti1302/traverson/issues/44), thanks to @jinder for the suggestion).
+    * Ability to convert response bodies to JavaScript objects at the end of the traversal is now also available for `post()/put()/patch()/delete()` via configuration method `convertResponseToObject()`, not only for `get()`. ([#44](https://github.com/basti1302/traverson/issues/44), thanks to @jinder for the suggestion).
     * Improved error message when a JSONPath expression denotes a property that does not have type string; for example, if the property has type object. ([#43](https://github.com/basti1302/traverson/issues/43), thanks to @Baiteman for reporting).
 * 2.0.1 2015-05-04:
     * Fixes a [bug](https://github.com/basti1302/traverson-angular/issues/11) when cloning a continued traversal (via `continue`) with `newRequest`.
