@@ -14,7 +14,8 @@ A Hypermedia API/HATEOAS Client for Node.js and the Browser
 | minified                  | 44 |
 
 
-Quick Links:
+Quick Links
+-----------
 
 * [API reference documentation](https://github.com/basti1302/traverson/blob/master/api.markdown)
 * [User Guide](#documentation)
