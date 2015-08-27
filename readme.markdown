@@ -699,7 +699,7 @@ Given the call to `abort()` happens while the link traversal is still in process
 Release Notes
 -------------
 
-* Next/unreleased:
+* 2.1.0:
     * Ability to convert response bodies to JavaScript objects at the end of the traversal is now also available for POST/PUT/PATCH/DELETE, not only for GET. ([#44](https://github.com/basti1302/traverson/issues/44), thanks to @jinder for the suggestion).
     * Improved error message when a JSONPath expression denotes a property that does not have type string; for example, if the property has type object. ([#43](https://github.com/basti1302/traverson/issues/43), thanks to @Baiteman for reporting).
 * 2.0.1 2015-05-04:
