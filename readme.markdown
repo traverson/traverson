@@ -41,7 +41,6 @@ var traverson = require('traverson');
 
 traverson
 .from('http://api.example.com')
-.json()
 .follow('link_to', 'resource')
 .getResource(function(error, document) {
   if (error) {
