@@ -1,6 +1,10 @@
 Release Notes
 -------------
 
+* Upcoming/3.0.0 (not yet released):
+    * *Breaking change* for media type plug-ins: the API for media type plug-ins has changed (TODO: describe change, link to api.markdown).
+    * *Breaking change*: Multiple consecutive calls to `follow(...)` for the same traversal now add links to the list of link relations instead of overwriting the old list with a new list. This is probably irrelevant because until now, there was no reason to call follow multiple times for one traversal.
+    * Ability to follow the location header instead a link relation in the body ([#45](https://github.com/basti1302/traverson/issues/45), thanks to @xogeny for the idea)
 * 2.1.0 2015-08-27:
     * Ability to convert response bodies to JavaScript objects at the end of the traversal is now also available for `post()/put()/patch()/delete()` via configuration method `convertResponseToObject()`, not only for `get()`. ([#44](https://github.com/basti1302/traverson/issues/44), thanks to @jinder for the suggestion).
     * Improved error message when a JSONPath expression denotes a property that does not have type string; for example, if the property has type object. ([#43](https://github.com/basti1302/traverson/issues/43), thanks to @Baiteman for reporting).

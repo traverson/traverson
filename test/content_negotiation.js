@@ -179,12 +179,12 @@ describe('Content negotiation', function() {
 
   FoobarAdapter.mediaType = 'application/foobar+json';
 
-  FoobarAdapter.prototype.findNextStep = function(doc, key) {
+  FoobarAdapter.prototype.findNextStep = function(t, link) {
     this.log.debug('logging something');
     return {
-      // No matter what has been specified in the follow method, this adaapter
+      // No matter what has been specified in the follow method, this adapter
       // always returns the link relation foobar from the doc.
-      uri: doc.foobar,
+      url: t.lastStep.doc.foobar,
     };
   };
 

@@ -70,8 +70,8 @@
     "proxyquireify": "^3.0.0",
     "sinon": "^1.9.1",
     "sinon-chai": "^2.5.0",
-    "traverson-mock-response": "1.0.0",
-    "traverson-test-server": "1.4.0"
+    "traverson-mock-response": "1.1.0",
+    "traverson-test-server": "1.5.0"
   },
   "browser": {
     "minilog": "./browser/lib/shim/log.js",

@@ -546,7 +546,7 @@ traverson.registerMediaType(MasonAdapter.mediaType, MasonAdapter);
 
 The `setMediaType` call could be changed to `setMediaType(MasonAdapter.mediaType)`, accordingly.
 
-(Note that there currently is no MasonAdapter, this is just an example.)
+(Note that there currently is no MasonAdapter, this is just an example. There is a [HAL adapter](https://github.com/basti1302/traverson-hal), though.)
 
 #### Implementing Media Type Plug-ins
 
@@ -561,15 +561,27 @@ function MediaTypeAdapter(log) {
 
 MediaTypeAdapter.mediaType = 'application/whatever+json';
 
-MediaTypeAdapter.prototype.findNextStep = function(doc, key) {
-  // parse incoming doc to determine the next step for Traverson
+MediaTypeAdapter.prototype.findNextStep = function(t, link) {
+  // you can access the HTTP response that the last step yielded
+  var lastHttpResponse = t.lastStep.response;
+  // if you do not need the full HTTP response you can also access the parse
+  // body of the last response
+  var lastDocument = t.lastStep.doc;
+
+  // The parameter link is an object that has a type and a value attribute like
+  // this:
+  // { type: 'link-rel', value: 'next' }
+
+  // process the incoming response/document to determine the next step for
+  // Traverson, for example, find the link 'next' in the document and read its
+  // URL.
+  var nextUrl = lastDocument.links.next.url;
+
   ...
 
   // return next step as an object
   return {
-    url: ...,
-
-
+    url: nextUrl,
   };
 }
 ```
@@ -578,11 +590,11 @@ A media type plug-in is always a constructor function. It is passed one argument
 
 Every media type plug-in *should* provide a propery `mediaType` that represents the registered content type for this plug-in.
 
-Every media type plug-in *must* provide a method `findNextStep`, which takes two parameters, `doc` and `key`. The incoming `doc` is the resource retrieved from the response of the last HTTP request. This is already a parsed JavaScript object, not raw JSON content. The `key` is the link relation that has been specified for this step in the `follow` method. The responsibility of the `findNextStep` method is to return a step object, that tells Traverson what to do next.
+Every media type plug-in *must* provide a method `findNextStep`, which takes two parameters, `t` and `link`. `t` represents the traversal process and contains all information about the traversal and its current state. The `link` object represents the link relation that has been specified for this step in the `follow` method. The responsibility of the `findNextStep` method is to return a step object, that tells Traverson what to do next.
 
 A step object can be as simple as this `{ url: '/next/url/to/call' }`. This would make Traverson make an HTTP request to the given URL. Some media types (like HAL) contain embeddeded resources. For those, the next step is not an HTTP request. Instead, you can put the part of `doc` that represents the embedded resource into the returned step object, like this: `{ doc: { ... } }`.
 
-If you want to implement your own media type plug-in, having a look at the existing HAL plug-in might be helpful: <https://github.com/basti1302/traverson-hal/blob/master/index.js>
+If you want to implement your own media type plug-in, having a look at the existing HAL plug-in might be helpful: <https://github.com/basti1302/traverson-hal/blob/master/index.js>, another example is the [stock JSON adapter](https://github.com/basti1302/traverson/blob/master/lib/json_adapter.js) that comes with Traverson.
 
 ### Content Type Detection Versus Forcing Media Types
 
