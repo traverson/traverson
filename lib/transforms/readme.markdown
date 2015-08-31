@@ -8,6 +8,7 @@ Each transform only exports a single function (directly as `module.exports`). As
 Synchronous transforms accepts only one parameter, the current traversal process `t`. The protocol to interact with a synchronous transform:
 * If the transform returns `true`, it has successfully transformed `t`, processing can continue.
 * If the transform returns `false`, it could not successfully transform `t`, the transform has already called `t.callback` with the appropriate error. The caller is required to stop processing immediately and do not call `t.callback` itself.
+* There are also so called *final transforms* like `lib/transforms/extract_response` and `lib/transforms/extract_doc` that always call `t.callback` and always return `false`. Those are meant to be the very last transform before the control is handed back to the client. For those, `return false` does not signal an error but is just called to stop processing.
 
 Asynchronous transforms accepts two parameters, the current traversal process `t` and a callback. The callback should take a single parameter `t`. The protocol to interact with an asynchronous transform:
 * If the transform calls the given callback with `t` (might be a new instance), it has successfully transformed `t`, processing can continue.
