@@ -184,6 +184,8 @@ traverson
 });
 </pre>
 
+Actually, `getResource` is just a shortcut for `get` combined with [`convertResponseToObject`](https://github.com/basti1302/traverson/blob/master/api.markdown#builder-convertResponseToObject).
+
 Or maybe you even want to execute the last HTTP request all by yourself. The method `getUrl` has you covered. It will only execute the HTTP GET requests until it has find the final link from `follow`, but will not request the resource that this last link leads to.
 
 <pre lang="javascript">
