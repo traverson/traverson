@@ -45,9 +45,29 @@ A request builder can be obtained by `traverson.newRequest()` or `traverson.from
 
 <a name="builder-from"></a>`from(url)`: Set the root URL of the API, that is, where the link traversal begins. If you created the request builder instance with `traverson.from(url)` you don't need to call `from` on the request builder instance. This method returns the request builder instance to allow for method chaining.
 
-<a name="builder-follow"></a>`follow(links)`: Provides the list of link relations to follow. Returns the request builder instance to allow for method chaining.
+<a name="builder-follow"></a>`follow(links)`: Provides the list of link relations to follow. Multiple strings can be used as well as an array of strings. For multiple consecutive calls to `follow` the arguments of all calls are aggregated into a single list of links.
+
+That is all of the following snippets are equivalent:
+```
+.follow('one', 'two', 'three')
+```
+
+```
+.follow(['one', 'two', 'three'])
+```
+
+```
+.follow('one', 'two').follow('three')
+```
+
+```
+.follow(['one', 'two']).follow('three')
+```
+This method returns the request builder instance to allow for method chaining.
 
 <a name="builder-walk"></a>`walk(links)`: A deprecated alias for `follow`. Returns the request builder instance to allow for method chaining.
+
+<a name="builder-follow-location-header"></a>`followLocationHeader()`: Similar to calling `follow` with a single link, this adds one step to the link traversal but in contrast to `follow('link')`, this will not look for a link in the body but use the URL from `Location` HTTP header for the next step. Returns the request builder instance to allow for method chaining.
 
 <a name="builder-withTemplateParameters"></a>`withTemplateParameters(parameters)`: Provide template parameters for URI template substitution. Returns the request builder instance to allow for method chaining.
 
