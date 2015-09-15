@@ -1,8 +1,9 @@
 Release Notes
 -------------
 
-* Upcoming/3.0.0 (not yet released):
-    * *Breaking change* for media type plug-ins: the API for media type plug-ins has changed (TODO: describe change, link to api.markdown).
+* 3.0.0
+    * *Breaking change* for media type plug-ins: the API for media type plug-ins has changed. The `findNextStep` method takes different parameters now:
+    `XyzAdapter.prototype.findNextStep = function(t, link) { ... }` where `t` represents the link traversal process and `link` is always an object that represents what to do in the next step in the traversal. See [Implementing Media Type Plug-ins](https://github.com/basti1302/traverson/blob/master/user-guide.markdown#implementing-media-type-plug-ins) in the user guide for details.
     * *Breaking change*: Multiple consecutive calls to `follow(...)` for the same traversal now add links to the list of link relations instead of overwriting the old list with a new list. This is probably irrelevant because until now, there was no reason to call follow multiple times for one traversal.
     * Ability to follow the location header instead a link relation in the body ([#45](https://github.com/basti1302/traverson/issues/45), thanks to @xogeny for the idea)
 * 2.1.0 2015-08-27:
