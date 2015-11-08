@@ -36,6 +36,7 @@ function mapRequest(superagentRequest, options) {
   mapAuth(superagentRequest, options);
   mapBody(superagentRequest, options);
   mapForm(superagentRequest, options);
+  mapWithCredentials(superagentRequest, options);
   return superagentRequest;
 }
 
@@ -79,6 +80,15 @@ function mapForm(superagentRequest, options) {
       superagentRequest = superagentRequest.send(form);
       superagentRequest = superagentRequest.set('Content-Type',
           'application/x-www-form-urlencoded');
+    }
+  }
+}
+
+function mapWithCredentials(superagentRequest, options) {
+  if (options != null) {
+    var withCredentials = options.withCredentials;
+    if (withCredentials === true) {
+      superagentRequest.withCredentials(); // https://visionmedia.github.io/superagent/#cors
     }
   }
 }
