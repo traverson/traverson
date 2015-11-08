@@ -88,7 +88,8 @@ function mapWithCredentials(superagentRequest, options) {
   if (options != null) {
     var withCredentials = options.withCredentials;
     if (withCredentials === true) {
-      superagentRequest.withCredentials(); // https://visionmedia.github.io/superagent/#cors
+      // https://visionmedia.github.io/superagent/#cors
+      superagentRequest.withCredentials();
     }
   }
 }
