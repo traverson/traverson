@@ -653,31 +653,34 @@ describe('Traverson (when tested against a local server)', function() {
     );
   });
 
-  if (isPhantomJs()) {
-    it('should send XHR withCredentials', function (done) {
-      traverson
-        .from(rootUri)
-        .follow('first')
-        .withRequestOptions({
-          withCredentials: true
-        })
-        .get(callback);
+  it('should send XHR withCredentials', function (done) {
+    if (isNodeJs()) {
+      console.log('skipping "should send XHR withCredentials" in NodeJs');
+      return done();
+    }
 
-      waitFor(
-        function () {
-          return callback.called;
-        },
-        function () {
-          var res = callback.firstCall.args[1];
-          var xhr = res.xhr;
+    traverson
+      .from(rootUri)
+      .follow('first')
+      .withRequestOptions({
+        withCredentials: true
+      })
+      .get(callback);
 
-          expect(xhr.withCredentials).to.exist;
-          expect(xhr.withCredentials).to.equal(true);
-          done();
-        }
-      );
-    });
-  }
+    waitFor(
+      function () {
+        return callback.called;
+      },
+      function () {
+        var res = callback.firstCall.args[1];
+        var xhr = res.xhr;
+
+        expect(xhr.withCredentials).to.exist;
+        expect(xhr.withCredentials).to.equal(true);
+        done();
+      }
+    );
+  });
 
   function checkResponseWithBody(httpStatus) {
     var response = checkResponse(httpStatus);
