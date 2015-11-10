@@ -608,7 +608,7 @@ describe('Traverson (when tested against a local server)', function() {
         expect(responseAcceptHeader).to.equal('application/json');
         expect(responseContentType).to.exist;
         expect(responseContentType)
-          .to.equal('application/x-www-form-urlencoded');
+          .to.contain('application/x-www-form-urlencoded');
         expect(resultDoc.received).to.exist;
         expect(JSON.stringify(resultDoc.received)).to.contain('item');
         expect(JSON.stringify(resultDoc.received)).to.contain('#4711');
@@ -645,7 +645,7 @@ describe('Traverson (when tested against a local server)', function() {
         expect(responseAcceptHeader).to.equal('application/json');
         expect(responseContentType).to.exist;
         expect(responseContentType)
-          .to.equal('application/x-www-form-urlencoded');
+          .to.contain('application/x-www-form-urlencoded');
         expect(resultDoc.received).to.exist;
         expect(resultDoc.received).to.deep.equal(order);
         done();
