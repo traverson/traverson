@@ -1,6 +1,8 @@
 Release Notes
 -------------
 
+* 3.1.0 2015-11-10:
+    * Support for setting `withCrendentials` flag on XHR object (only in browser) ([#48](https://github.com/basti1302/traverson/issues/48), thanks to @ricardoecosta)
 * 3.0.0 2015-09-15:
     * *Breaking change* for media type plug-ins: the API for media type plug-ins has changed. The `findNextStep` method takes different parameters now:
     `XyzAdapter.prototype.findNextStep = function(t, link) { ... }` where `t` represents the link traversal process and `link` is always an object that represents what to do in the next step in the traversal. See [Implementing Media Type Plug-ins](https://github.com/basti1302/traverson/blob/master/user-guide.markdown#implementing-media-type-plug-ins) in the user guide for details.
