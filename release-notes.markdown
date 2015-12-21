@@ -1,6 +1,8 @@
 Release Notes
 -------------
 
+* 3.1.1 2015-12-21:
+    * Update from JSONPath 0.10 to jsonpath-plus 0.13. (See [traverson-angular/#20](https://github.com/basti1302/traverson-angular/issues/20))
 * 3.1.0 2015-11-10:
     * Support for setting `withCrendentials` flag on XHR object (only in browser) ([#48](https://github.com/basti1302/traverson/issues/48), thanks to @ricardoecosta)
 * 3.0.0 2015-09-15:
