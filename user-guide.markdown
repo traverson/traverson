@@ -342,7 +342,7 @@ Upon loading the document from the start URL `http://api.example.com`, Traverson
 
 Any element of the path array that begins with `$.` or `$[` is assumed to be a JSONPath expression, otherwise the element is interpreted as a plain object property.
 
-More information on JSONPath can be found [here](http://goessner.net/articles/JsonPath/). Traverson uses the npm module [JSONPath](https://github.com/s3u/JSONPath) to evaluate JSONPath expressions.
+More information on JSONPath can be found [here](http://goessner.net/articles/JsonPath/). Traverson uses the npm module [JSONPath](https://www.npmjs.com/package/jsonpath-plus) to evaluate JSONPath expressions.
 
 If a JSONPath expressions yields no match or more than one match, an error will be passed to your callback.
 
