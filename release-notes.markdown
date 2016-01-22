@@ -1,6 +1,8 @@
 Release Notes
 -------------
 
+* 3.1.2 2016-01-22:
+    * Fix `Cannot read property 'step' of undefined` in case a step of the traversal can not be processed ([#52](https://github.com/basti1302/traverson/issues/52)).
 * 3.1.1 2015-12-21:
     * Update from JSONPath 0.10 to jsonpath-plus 0.13. (See [traverson-angular/#20](https://github.com/basti1302/traverson-angular/issues/20))
 * 3.1.0 2015-11-10:
