@@ -22,7 +22,7 @@
     .follow('second', 'doc')
     .getResource(function(err, resource) {
       if (err) {
-        $('#plain_vanilla_response').html(JSON.stringify(err));
+        $('#plain_vanilla_response').html(err);
         return;
       }
       $('#plain_vanilla_response').html(JSON.stringify(resource, null, 2));
@@ -37,7 +37,7 @@
     .follow('$.jsonpath.nested.key')
     .getResource(function(err, resource) {
       if (err) {
-        $('#jsonpath_response').html(JSON.stringify(err));
+        $('#jsonpath_response').html(err);
         return;
       }
       $('#jsonpath_response').html(JSON.stringify(resource, null, 2));
@@ -53,7 +53,7 @@
     .withTemplateParameters({param: 'foobar', id: 13})
     .getResource(function(err, resource) {
       if (err) {
-        $('#uri_template_response').html(JSON.stringify(err));
+        $('#uri_template_response').html(err);
         return;
       }
       $('#uri_template_response').html(JSON.stringify(resource, null, 2));
