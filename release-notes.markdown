@@ -1,6 +1,8 @@
 Release Notes
 -------------
 
+* 3.1.3 2016-02-01:
+    * Do not mutate original link array ([#53](https://github.com/basti1302/traverson/issues/53), thanks to @dimik).
 * 3.1.2 2016-01-22:
     * Fix `Cannot read property 'step' of undefined` in case a step of the traversal can not be processed ([#52](https://github.com/basti1302/traverson/issues/52)).
 * 3.1.1 2015-12-21:

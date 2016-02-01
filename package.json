@@ -1,6 +1,6 @@
 {
   "name": "traverson",
-  "version": "3.1.2",
+  "version": "3.1.3",
   "description": "Hypermedia API/HATEOAS client for Node.js and the browser",
   "repository": "https://github.com/basti1302/traverson.git",
   "main": "traverson.js",
@@ -32,6 +32,10 @@
     {
       "name": "Max F. Albrecht",
       "email": "1@178.is"
+    },
+    {
+      "name": "dimik",
+      "email": "dimik@yandex.ru"
     }
   ],
   "license": "MIT",
