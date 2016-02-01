@@ -189,7 +189,7 @@ module.exports = function(grunt) {
             'doing nothing');
         return done();
       } else {
-        grunt.log.writeln('Poison pill request has been send to test server, ' +
+        grunt.log.writeln('Shutdown request has been send to test server, ' +
             'test server should have been shut down.');
         grunt.log.writeln('');
         return done();
