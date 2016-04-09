@@ -241,7 +241,7 @@ traverson
 });
 </pre>
 
-All methods except `getResource` (that is `get`, `post`, `put`, `delete` and `patch` pass the full http response into the provided callback, so the callback's method signature always looks like `function(error, response)`.
+All methods except `getResource` (that is `get`, `post`, `put`, `delete` and `patch`) pass the full http response into the provided callback, so the callback's method signature always looks like `function(error, response)`.
 
 But same as with `get` versus `getResource`, you also have the choice of receiving just the parsed response body (converted to a JavaScript object) instead of the full HTTP Response. The configuration method `convertResponseToObject` switches to the former behaviour (the latter is the default). With `convertResponseToObject`, the signature of the provided callback is `function(error, doc)`.
 
