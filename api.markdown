@@ -147,7 +147,7 @@ Each action method returns a handle for the link traversal process, which can be
 
 <a name="builder-get"></a>`get(callback)`: This method is similar to `getResource`, but it does not parse the HTTP response body for you. Instead, it gives you the response object, including the HTTP status code and the raw body. The callback signature is `callback(err, response, traversal)`.
 
-<a name="builder-getUrl"></a>`getUrl(callback)`: This method is similar to `getResource` and `get`, but it will actually not execute the last HTTP request in the link traversal process. Instead it will pass the URL it has discovered for the last HTTP request back to the client so that the client can execute the HTTP request itself. The callback signature is `callback(err, url, traversal)`.
+<a name="builder-getUrl"></a>`getUrl(callback)`: This method is similar to `getResource` and `get`, but it will actually not execute the last HTTP request in the link traversal process. Instead it will pass the URL it has discovered for the last HTTP request back to the client so that the client can execute the HTTP request itself. The callback signature is `callback(err, url, traversal)`. URI template resolution will take place before the URL is returned to your callback. So if the last URL is actually a template, make sure to provide the required template parameters via [`withTemplateParameters`](https://github.com/basti1302/traverson/blob/master/api.markdown#builder-withTemplateParameters).
 
 <a name="builder-getUri"></a>`getUri(callback)`: An alias for `getUrl`.
 

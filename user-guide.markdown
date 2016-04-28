@@ -186,7 +186,7 @@ traverson
 
 Actually, `getResource` is just a shortcut for `get` combined with [`convertResponseToObject`](https://github.com/basti1302/traverson/blob/master/api.markdown#builder-convertResponseToObject).
 
-Or maybe you even want to execute the last HTTP request all by yourself. The method `getUrl` has you covered. It will only execute the HTTP GET requests until it has find the final link from `follow`, but will not request the resource that this last link leads to.
+Or maybe you even want to execute the last HTTP request all by yourself. The method `getUrl` has you covered. It will only execute the HTTP GET requests until it has found the final link from `follow`, but will not request the resource that this last link leads to.
 
 <pre lang="javascript">
 traverson
@@ -200,6 +200,8 @@ traverson
   }
 });
 </pre>
+
+URI template resolution will take place before the URL is returned to your callback. So if the last URL is actually a template, make sure to provide the required template parameters via [`withTemplateParameters`](https://github.com/basti1302/traverson/blob/master/api.markdown#builder-withTemplateParameters)
 
 ### Pass a Link Array
 
