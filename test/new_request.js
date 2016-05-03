@@ -98,10 +98,10 @@ describe('Using newRequest() after configuring', function() {
 
   function checkNoLeaksFromFollowProcess(oldRequest, newRequest) {
     expect(oldRequest).to.not.be.equal(newRequest);
-    expect(oldRequest.links).to.exist();
+    expect(oldRequest.links).to.exist;
     expect(oldRequest.links.length).to.equal(1);
     expect(oldRequest.links[0]).eql({ type: 'link-rel', value: 'link' });
-    expect(newRequest.links).to.exist();
+    expect(newRequest.links).to.exist;
     expect(newRequest.links.length).to.equal(0);
   }
 });
