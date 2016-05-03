@@ -106,12 +106,13 @@ module.exports = function(grunt) {
       }
     },
 
-    'mocha_phantomjs': {
-      all: {
+    // run the mocha tests in PhantomJS
+    mocha: {
+      test: {
         options: {
-          urls: [
-            mochaPhantomJsTestRunner
-          ]
+          urls: [ mochaPhantomJsTestRunner ],
+          timeout: 20000,
+          reporter: 'spec',
         }
       }
     },
@@ -122,13 +123,8 @@ module.exports = function(grunt) {
     },
   });
 
-  grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-mocha-test');
-  grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-mocha-phantomjs');
-  grunt.loadNpmTasks('grunt-contrib-watch');
+  // load all grunt-tasks
+  require('load-grunt-tasks')(grunt);
 
   grunt.registerTask('start-test-server', 'Start the test server.',
       function() {
@@ -208,7 +204,7 @@ module.exports = function(grunt) {
     'browserify',
     'uglify',
     'start-test-server',
-    'mocha_phantomjs',
+    'mocha',
     'stop-test-server',
   ]);
 };

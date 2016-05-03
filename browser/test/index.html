@@ -24,10 +24,8 @@
 
     <!-- kick of tests -->
     <script>
-      if (window.mochaPhantomJS) {
-        window.mochaPhantomJS.run()
-      } else {
-        mocha.run()
+      if (navigator.userAgent.indexOf('PhantomJS') < 0) {
+        mocha.run();
       }
     </script>
  </body>
