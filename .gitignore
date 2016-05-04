@@ -1,4 +1,5 @@
 node_modules
+.node-version
 
 browser/dist/traverson.external.js
 browser/dist/traverson.external.min.js
