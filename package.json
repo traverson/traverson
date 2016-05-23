@@ -74,7 +74,7 @@
     "grunt-mocha": "^1.0.2",
     "grunt-mocha-test": "^0.12.7",
     "load-grunt-tasks": "^3.5.0",
-    "mocha": "^2.4.5",
+    "mocha": "^2.5.0",
     "poll-forever": "^1.0.0",
     "proxyquire": "^1.7.1",
     "proxyquire-universal": "^1.0.8",
