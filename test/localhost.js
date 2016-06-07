@@ -463,12 +463,20 @@ describe('Traverson (when tested against a local server)', function() {
   });
 
   it('should use provided request options', function(done) {
+    var auth;
+    if (typeof btoa === 'function') {
+      auth = 'Basic ' + global.btoa('username:password');
+    } else {
+      auth = 'Basic ' + (require('btoa'))('username:password');
+    }
+
     api
     .newRequest()
     .withRequestOptions({
       headers: {
         'Accept': 'application/json',
-        'X-Traverson-Test-Header': 'Traverson rocks!'
+        'X-Traverson-Test-Header': 'Traverson rocks!',
+        'Authorization' : auth,
       }
     })
     .follow('echo-headers')
@@ -477,11 +485,16 @@ describe('Traverson (when tested against a local server)', function() {
       function() { return callback.called; },
       function() {
         var resultDoc = checkResultDoc();
-        var testResponseHeader =
+        var customHeaderInResponse =
             resultDoc['X-Traverson-Test-Header'] ||
             resultDoc['x-traverson-test-header'];
-        expect(testResponseHeader).to.exist;
-        expect(testResponseHeader).to.equal('Traverson rocks!');
+        expect(customHeaderInResponse).to.exist;
+        expect(customHeaderInResponse).to.equal('Traverson rocks!');
+        var authHeaderInResponse =
+            resultDoc.Authorization ||
+            resultDoc.authorization;
+        expect(authHeaderInResponse).to.exist;
+        expect(authHeaderInResponse).to.equal(auth);
         done();
       }
     );
