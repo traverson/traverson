@@ -77,9 +77,12 @@ function mapForm(superagentRequest, options) {
   if (options != null) {
     var form = options.form;
     if (form != null) {
-      superagentRequest = superagentRequest.send(form);
-      superagentRequest = superagentRequest.set('Content-Type',
+      // content-type header needs to be set before calling send AND it NEEDS
+      // to be all lower case otherwise superagent automatically sets
+      // application/json as content-type :-/
+      superagentRequest = superagentRequest.set('content-type',
           'application/x-www-form-urlencoded');
+      superagentRequest = superagentRequest.send(form);
     }
   }
 }
