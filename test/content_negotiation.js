@@ -18,7 +18,7 @@ describe('Content negotiation', function() {
     , get
     , mockResponse
     , rootResponse
-    , rootUri = 'http://api.io'
+    , rootUri = 'http://api.example.org'
     , client = traverson.from(rootUri)
     , secondResponse
     , secondUri

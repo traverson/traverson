@@ -17,7 +17,7 @@ describe('Using newRequest() after configuring', function() {
 
   var get;
   var callback;
-  var rootUrl = 'http://api.io';
+  var rootUrl = 'http://api.example.org';
   // deliberately using deprecated API (property json) here, so we can check if
   // this form also still works
   var client = traverson.json.from(rootUrl);

@@ -17,7 +17,7 @@ describe('Traverson using a custom request parser', function() {
   var get;
 
   var callback;
-  var rootUri = 'http://api.io';
+  var rootUri = 'http://api.example.org';
   var api = traverson.from(rootUri).json();
 
   var getUri = rootUri + '/link/to/resource';

@@ -16,7 +16,7 @@ chai.use(sinonChai);
 describe('patch method', function() {
 
   var callback;
-  var rootUri = 'http://api.io';
+  var rootUri = 'http://api.example.org';
   var api = traverson.from(rootUri).json();
 
   var patchUri = rootUri + '/patch/me';

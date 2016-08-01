@@ -15,7 +15,7 @@ chai.use(sinonChai);
 describe('getUrl method', function() {
 
   var callback;
-  var rootUri = 'http://api.io';
+  var rootUri = 'http://api.example.org';
   var api = traverson.from(rootUri).json();
 
   var getUri = rootUri + '/link/to/resource';

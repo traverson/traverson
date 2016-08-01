@@ -64,7 +64,7 @@ describe('Traverson resolving absolute and relative URLs', function() {
   it('should follow full qualified URLs with protocol https',
       function(done) {
     // also test case insensitive matching
-    var httpsRootUri = 'HttPs://api.io';
+    var httpsRootUri = 'HttPs://api.example.org';
     var path1 = httpsRootUri + '/path/1';
     var path2 = httpsRootUri + '/path/2';
 

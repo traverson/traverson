@@ -15,7 +15,7 @@ chai.use(sinonChai);
 describe('put method', function() {
 
   var callback;
-  var rootUri = 'http://api.io';
+  var rootUri = 'http://api.example.org';
   var api = traverson.from(rootUri).json();
 
   var putUri = rootUri + '/put/something/here';
