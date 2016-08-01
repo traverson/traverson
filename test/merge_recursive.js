@@ -60,6 +60,27 @@ describe('mergeRecursive', function() {
     expect(result.nested3.bla).to.be.false;
   });
 
+  it('should merge recursive nested objects with functions', function() {
+    var o1 = {
+      nested: {
+        deeper: {
+          func: function func1() {}
+        }
+      }
+    };
+    var o2 = {
+      nested: {
+        deeper: {
+          func: function func2() {}
+        }
+      }
+    };
+    var result = mergeRecursive(o1, o2);
+    expect(result.nested.deeper.func).to.exist;
+    expect(result.nested.deeper.func).to.be.a('function');
+    expect(result.nested.deeper.func.name).to.equal('func2');
+  });
+
   it('should merge with non-existing second parameter', function() {
     var o1 = {
       foo: 'bar',

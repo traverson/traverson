@@ -56,6 +56,33 @@ describe('Traverson using request options', function() {
     );
   });
 
+  it('should merge request options of type function',
+      function(done) {
+    get
+    .withArgs(rootUri, sinon.match.any, sinon.match.func)
+    .callsArgWithAsync(2, null, response);
+    get
+    .withArgs(rootUri + '/link', sinon.match.any, sinon.match.func)
+    .callsArgWithAsync(2, null, result);
+
+    api
+    .newRequest()
+    .withRequestOptions({ jsonReplacer: function firstReplacer() {} })
+    .addRequestOptions({ jsonReplacer: function secondReplacer() {} })
+    .follow('link')
+    .getResource(callback);
+
+    waitFor(
+      function() { return callback.called; },
+      function() {
+        // get.withArgs.calls already check if options are used
+        expect(callback).to.have.been.calledWith(null, result.doc);
+        console.log(get.firstCall.args[1].jsonReplacer.name);
+        done();
+      }
+    );
+  });
+
   it('should use request options from two addRequestOptions', function(done) {
     runTest(
       function(requestBuilder) {
