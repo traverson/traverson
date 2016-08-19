@@ -357,6 +357,35 @@ describe('Traverson (when tested against a local server)', function() {
     );
   });
 
+  it('should have the httpStatus of when an intermediate URL fails with 4xx',
+      function(done) {
+    // Test for https://github.com/basti1302/traverson/issues/71
+    api
+    .newRequest()
+    .follow('blind_alley', 'doc')
+    .getUrl(callback);
+    waitFor(
+      function() { return callback.called; },
+      function() {
+        expect(callback.callCount).to.equal(1);
+        var error = callback.firstCall.args[0];
+        expect(error).to.exist;
+        expect(error.name).to.equal('HTTPError');
+        expect(error.message).to.equal('HTTP GET for ' + rootUri +
+            'does/not/exist' + ' resulted in HTTP status code 404.');
+        expect(error.url).to.equal(rootUri + 'does/not/exist');
+        expect(error.httpStatus).to.equal(404);
+
+        var lastBody = error.body;
+        expect(lastBody).to.exist;
+        expect(lastBody).to.contain('message');
+        expect(lastBody).to.contain('resource not found');
+
+        done();
+      }
+    );
+  });
+
   it('should post', function(done) {
     var payload = {'new': 'document'};
     api
