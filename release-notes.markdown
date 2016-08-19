@@ -1,6 +1,13 @@
 Release Notes
 -------------
 
+* 3.2.0 2016-??-?? (planned, not yet released):
+    * Fix: Do not discard `requestOption` of type `function`.
+      ([#65](https://github.com/basti1302/traverson/issues/65), thanks to @JulienYo)
+    * Support for jsonReplacer and jsonReviver in `requestOption` (in Node.js, this is not supported by Traverson in the browser)
+      ([#68](https://github.com/basti1302/traverson/issues/68) and
+       [#69](https://github.com/basti1302/traverson/issues/69),
+       thanks to @JulienYo)
 * 3.1.3 2016-02-01:
     * Do not mutate original link array ([#53](https://github.com/basti1302/traverson/issues/53), thanks to @dimik).
 * 3.1.2 2016-01-22:
