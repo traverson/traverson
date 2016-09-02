@@ -1,7 +1,7 @@
 Release Notes
 -------------
 
-* 3.2.0 2016-??-?? (planned, not yet released):
+* 3.2.0 2016-09-02 (planned, not yet released):
     * Fix: Do not discard `requestOption` of type `function`.
       ([#65](https://github.com/basti1302/traverson/issues/65), thanks to @JulienYo)
     * Support for jsonReplacer and jsonReviver in `requestOption` (in Node.js, this is not supported by Traverson in the browser)
