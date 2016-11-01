@@ -102,6 +102,6 @@
     "url": "./browser/lib/shim/url-resolve.js"
   },
   "engines": {
-    "node": ">= 0.10.x"
+    "node": ">= 4"
   }
 }
