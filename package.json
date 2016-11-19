@@ -61,7 +61,7 @@
     "minilog": "^3.0.0",
     "request": "^2.28.0",
     "resolve-url": "^0.2.1",
-    "superagent": "^2.0.0",
+    "superagent": "^3.0.0",
     "underscore.string": "^3.3.4",
     "url-template": "^2.0.4"
   },
