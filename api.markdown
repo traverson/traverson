@@ -34,6 +34,8 @@ This properties are available on the Traverson object - the object acquired by `
 * `TraversalAbortedError: 'TraversalAbortedError'`: When the link traversal process is aborted by the client before it has completed.
 * `UnsupportedMediaType: 'UnsupportedMediaTypeError'`: When a client tries to use a media type that is not supported.
 
+Client code that wants to check for a particular error type is encouraged to use the pattern given in the [user guide](https://github.com/basti1302/traverson/blob/master/user-guide.markdown#error-handling).
+
 <a name="traverson-json"></a>`json`: *Deprecated* An object that only has one method, `from(url)`, which in turn creates a new [request builder](#request-builder). Use `traverson.from(url).json()` instead of `traverson.json.from(url)`. Or use `traverson.from(url)` and let Traverson figure out the media type by using the Content-Type header send by the server.
 
 <a name="traverson-jsonHal"></a>`jsonHal`: *Deprecated* An object that only has one method, `from(url)`, which in turn creates a new [request builder](#request-builder). Use `traverson.from(url).jsonHal()` instead of `traverson.jsonHal.from(url)`. Or use `traverson.from(url)` and let Traverson figure out the media type by using the Content-Type header send by the server. The media type plug-in `traverson-hal` has to be installed for HAL support as of version 1.0.0.

@@ -297,6 +297,35 @@ Reasons for failure could be:
     * One of the JSONPath expressions in the path array does not yield a match for the corresponding document.
     * One of the JSONPath expressions in the path array yields more than one match for the corresponding document.
 
+Traverson always adds the `name` property to the errors it creates. Also, all error names that Traverson uses are exported via `traverson.errors`. If you want to check for a particular error conditions, use the following pattern:
+
+```javascript
+var traverson = require('traverson');
+
+traverson
+.from('http://api.example.com')
+.json()
+.follow('link_to', 'resource')
+.getResource(function(error, document) {
+  if (error) {
+    if (error.name === traverson.errors.HTTPError) {
+      // special handling for HTTP issues goes here
+    } else if (error.name === traverson.errors.JSONError) {
+      // special handling for JSON parsing problems goes here
+    } else if (error.name === traverson.errors.LinkError) {
+      // special handling for invalid or missing links goes here
+    } else {
+      // not so special handling for all other error conditions goes here
+    }
+  } else {
+    // link traversal has been successfull
+  }
+});
+```
+
+All error names and their resepective keys in the `traverson.errors` object are documented in the [API docs](https://github.com/basti1302/traverson/blob/master/api.markdown#traverson-errors).
+
+
 #### How HTTP Status Code Are Handled
 
 In contrast to some other AJAX-related libraries, Traverson does not interpret status codes outside of the 2xx range as an error condition. Only network problems (host not reachable, timeouts, etc.) will result in Traverson calling the callback with an error. Completed HTTP requests, even those with status 4xx or 5xx are interpreted as a success. This applies only to the last request in a traversal, HTTP requests *during* the traversal that respond with 4xx/5xx are interpreted as an error (because the traversal can not continue). This design decision comes from Traverson's use of [request](https://github.com/request/request) internally, which behaves in the same way.
