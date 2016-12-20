@@ -24,6 +24,16 @@ This properties are available on the Traverson object - the object acquired by `
 
 <a name="traverson-mediaTypes"></a>`mediaTypes`: A map of media types that can be used with `setMediaType` (see below).
 
+<a name="traverson-errors"></a>`errors`: A map of error names that are used by Traverson. Whenever Traverson creates an `Error` object, the `name` property of the `Error` object will be set to one of the values of this map. The following error keys and values will be used:
+* `HTTPError: 'HTTPError'`: When an HTTP request fails. This includes HTTP errors on an intermediate request during the traversal process.
+* `InvalidArgumentError: 'InvalidArgumentError'`: When an invalid argument is passed to a Traverson method.
+* `InvalidStateError: 'InvalidStateError'`: When Traverson encounters an invalid state during the traversal.
+* `JSONError: 'JSONError'`: When a JSON respons can not be parsed (that is, when Traverson receives invalid JSON from in an HTTP response).
+* `JSONPathError: 'JSONPathError'`: When the evaluation of a JSONPath expression against a document fails or the value referenced by a JSONPath expression is not a valid link.
+* `LinkError: 'LinkError'`: When a link given to Traverson for the link traversal process can not be found or is invalid.
+* `TraversalAbortedError: 'TraversalAbortedError'`: When the link traversal process is aborted by the client before it has completed.
+* `UnsupportedMediaType: 'UnsupportedMediaTypeError'`: When a client tries to use a media type that is not supported.
+
 <a name="traverson-json"></a>`json`: *Deprecated* An object that only has one method, `from(url)`, which in turn creates a new [request builder](#request-builder). Use `traverson.from(url).json()` instead of `traverson.json.from(url)`. Or use `traverson.from(url)` and let Traverson figure out the media type by using the Content-Type header send by the server.
 
 <a name="traverson-jsonHal"></a>`jsonHal`: *Deprecated* An object that only has one method, `from(url)`, which in turn creates a new [request builder](#request-builder). Use `traverson.from(url).jsonHal()` instead of `traverson.jsonHal.from(url)`. Or use `traverson.from(url)` and let Traverson figure out the media type by using the Content-Type header send by the server. The media type plug-in `traverson-hal` has to be installed for HAL support as of version 1.0.0.
