@@ -168,8 +168,10 @@ describe('Traverson\'s getResource', function() {
           assert(callback.calledOnce);
           expect(callback).to.have.been.calledWith(sinon.match.
               instanceOf(Error));
-          expect(callback.args[0][0].message).to.contain('Could not find ' +
+          var err = callback.args[0][0];
+          expect(err.message).to.contain('Could not find ' +
               'property non-existing-link');
+          expect(err.name).to.equal(traverson.errors.LinkError);
           done();
         }
       );

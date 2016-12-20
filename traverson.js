@@ -1,9 +1,11 @@
 'use strict';
 
 var minilog = require('minilog')
+  , errorModule = require('./lib/errors')
+  , errors = errorModule.errors
+  , createError = errorModule.createError
   , mediaTypes = require('./lib/media_types')
   , Builder = require('./lib/builder')
-  , mediaTypes = require('./lib/media_types')
   , mediaTypeRegistry = require('./lib/media_type_registry');
 
 // activate this line to enable logging
@@ -50,10 +52,12 @@ exports.json = {
 exports.jsonHal = {
   from: function(url) {
     if (!mediaTypeRegistry.get(mediaTypes.JSON_HAL)) {
-      throw new Error('JSON HAL adapter is not registered. From version ' +
+      throw createError('JSON HAL adapter is not registered. From version ' +
         '1.0.0 on, Traverson has no longer built-in support for ' +
         'application/hal+json. HAL support was moved to a separate, optional ' +
-        'plug-in. See https://github.com/basti1302/traverson-hal');
+        'plug-in. See https://github.com/basti1302/traverson-hal',
+        errors.UnsupportedMediaType
+      );
     }
     var builder = new Builder();
     builder.from(url);
@@ -66,5 +70,8 @@ exports.jsonHal = {
 // themselves
 exports.registerMediaType = mediaTypeRegistry.register;
 
-// export media type constants
+// re-export media type constants
 exports.mediaTypes = mediaTypes;
+
+// re-export error names
+exports.errors = errors;

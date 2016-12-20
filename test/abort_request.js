@@ -78,6 +78,7 @@ describe('Aborting requests', function() {
             var error = callback.args[0][0];
             expect(error.message)
               .to.equal('Link traversal process has been aborted.');
+            expect(error.name).to.equal(traverson.errors.TraversalAbortedError);
             done();
           }
         );

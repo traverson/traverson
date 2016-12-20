@@ -69,8 +69,10 @@ describe('Traverson with JSONPath', function() {
       function() {
         expect(callback).to.have.been.calledWith(sinon.match.
             instanceOf(Error));
-        expect(callback.args[0][0].message).to.contain('JSONPath ' +
+        var err = callback.args[0][0];
+        expect(err.message).to.contain('JSONPath ' +
             'expression $.deeply.nested.blink returned no match');
+        expect(err.name).to.equal(traverson.errors.JSONPathError);
         done();
       }
     );
@@ -95,8 +97,10 @@ describe('Traverson with JSONPath', function() {
       function() {
         expect(callback).to.have.been.calledWith(sinon.match.
             instanceOf(Error));
-         expect(callback.args[0][0].message).to.contain('JSONPath ' +
+         var err = callback.args[0][0];
+         expect(err.message).to.contain('JSONPath ' +
              'expression $.arr[*].foo returned more than one match');
+        expect(err.name).to.equal(traverson.errors.JSONPathError);
         done();
       }
     );
@@ -121,9 +125,11 @@ describe('Traverson with JSONPath', function() {
       function() {
         expect(callback).to.have.been.calledWith(sinon.match.
             instanceOf(Error));
-        expect(callback.args[0][0].message).to.contain(
+        var err = callback.args[0][0];
+        expect(err.message).to.contain(
             'JSONPath expression $.deeply.nested was resolved but the result ' +
             'is not a property of type string. Instead it has type "object"');
+        expect(err.name).to.equal(traverson.errors.JSONPathError);
         done();
       }
     );

@@ -211,7 +211,7 @@ describe('Traverson (when tested against a local server)', function() {
         expect(callback.callCount).to.equal(1);
         var error = callback.firstCall.args[0];
         expect(error).to.exist;
-        expect(error.name).to.equal('HTTPError');
+        expect(error.name).to.equal(traverson.errors.HTTPError);
         expect(error.message).to.equal('HTTP GET for ' + rootUri +
             'does/not/exist' + ' resulted in HTTP status code 404.');
         expect(error.url).to.equal(rootUri + 'does/not/exist');
@@ -260,7 +260,7 @@ describe('Traverson (when tested against a local server)', function() {
         expect(callback.callCount).to.equal(1);
         var error = callback.firstCall.args[0];
         expect(error).to.exist;
-        expect(error.name).to.equal('HTTPError');
+        expect(error.name).to.equal(traverson.errors.HTTPError);
         expect(error.message).to.equal('HTTP GET for ' + rootUri +
             'does/not/exist' + ' resulted in HTTP status code 404.');
         expect(error.url).to.equal(rootUri + 'does/not/exist');
@@ -288,7 +288,7 @@ describe('Traverson (when tested against a local server)', function() {
         expect(callback.callCount).to.equal(1);
         var error = callback.firstCall.args[0];
         expect(error).to.exist;
-        expect(error.name).to.equal('JSONError');
+        expect(error.name).to.equal(traverson.errors.JSONError);
         expect(error.message).to.equal('The document at ' + rootUri + 'junk' +
           ' could not be parsed as JSON: { this will :: not parse');
         expect(error.url).to.equal(rootUri + 'junk');
@@ -312,6 +312,7 @@ describe('Traverson (when tested against a local server)', function() {
         expect(callback.callCount).to.equal(1);
         var error = callback.firstCall.args[0];
         expect(error).to.exist;
+        expect(error.name).to.equal(traverson.errors.TraversalAbortedError);
         expect(error.message).to.equal(
            'Link traversal process has been aborted.');
         done();
@@ -332,6 +333,7 @@ describe('Traverson (when tested against a local server)', function() {
         expect(callback.callCount).to.equal(1);
         var error = callback.firstCall.args[0];
         expect(error).to.exist;
+        expect(error.name).to.equal(traverson.errors.TraversalAbortedError);
         expect(error.message).to.equal(
            'Link traversal process has been aborted.');
         done();
@@ -370,7 +372,7 @@ describe('Traverson (when tested against a local server)', function() {
         expect(callback.callCount).to.equal(1);
         var error = callback.firstCall.args[0];
         expect(error).to.exist;
-        expect(error.name).to.equal('HTTPError');
+        expect(error.name).to.equal(traverson.errors.HTTPError);
         expect(error.message).to.equal('HTTP GET for ' + rootUri +
             'does/not/exist' + ' resulted in HTTP status code 404.');
         expect(error.url).to.equal(rootUri + 'does/not/exist');
