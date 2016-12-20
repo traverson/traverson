@@ -1,7 +1,11 @@
 Release Notes
 -------------
 
-* 3.2.0 2016-09-02 (planned, not yet released):
+* 5.0.0 2016-12-20:
+    * Drop support for Node.js 0.10 and 0.12. Node.js versions 4 to 7 are tested and officially supported.
+    * All `Error` objects created by Traverson now have the `name` property set, see [API docs on error names](https://github.com/basti1302/traverson/blob/master/api.markdown#traverson-errors). ([traverson-hal/#21](https://github.com/basti1302/traverson-hal/issues/21) and [traverson-hal/#22](https://github.com/basti1302/traverson-hal/issues/22), thanks to @mimol91)
+    * Remark: There is no version 4.x of Traverson. We skipped from version 3.x to 5.0.0 to align version numbers of Traverson and traverson-hal.
+* 3.2.0 2016-09-02:
     * Fix: Do not discard `requestOption` of type `function`.
       ([#65](https://github.com/basti1302/traverson/issues/65), thanks to @JulienYo)
     * Support for jsonReplacer and jsonReviver in `requestOption` (in Node.js, this is not supported by Traverson in the browser)
