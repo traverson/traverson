@@ -549,7 +549,7 @@ traverson
 
 Out of the box, Traverson works with generic JSON APIs. There are a lot of media types out there that support hypermedia APIs better, among others
 
-* [HAL (application/hal+json)](),
+* [HAL (application/hal+json)](https://github.com/basti1302/traverson-hal),
 * [Mason (application/vnd.mason+json)](),
 * [Collection+JSON (application/vnd.collection+json)](http://amundsen.com/media-types/collection/),
 * [Siren (application/vnd.siren+json)](https://github.com/kevinswiber/siren)
