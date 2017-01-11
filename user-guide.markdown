@@ -549,13 +549,13 @@ traverson
 
 Out of the box, Traverson works with generic JSON APIs. There are a lot of media types out there that support hypermedia APIs better, among others
 
-* [HAL (application/hal+json)](),
-* [Mason (application/vnd.mason+json)](),
+* [HAL (application/hal+json)](https://tools.ietf.org/html/draft-kelly-json-hal),
+* [Mason (application/vnd.mason+json)](https://github.com/JornWildt/Mason/wiki/mason-format-specification),
 * [Collection+JSON (application/vnd.collection+json)](http://amundsen.com/media-types/collection/),
 * [Siren (application/vnd.siren+json)](https://github.com/kevinswiber/siren)
 * [Uber (application/vnd.amundsen-uber+json)](https://rawgit.com/mamund/media-types/master/uber-hypermedia.html),
 
-If you want to leverage the power of a specialized media type, you can use the concept of Traverson's media type plug-ins.
+If you want to leverage the power of a specialized media type, you can use the concept of Traverson's media type plug-ins. As of now, there is a [media type plug-in for HAL](https://github.com/basti1302/traverson-hal), other media type plug-ins could be implemented easily (see below).
 
 Here is an example on how to register a media type plug-in with Traverson.
 
