@@ -53,7 +53,7 @@ describe('Content negotiation', function() {
         require('traverson-mock-response')('application/json ; charset=utf-8');
       firstUri = rootUri + '/first';
       secondUri = rootUri + '/second';
-      rootResponse = mockResponse({ first: firstUri, });
+      rootResponse = mockResponse({ first: firstUri });
       secondResponse = mockResponse({ second: secondUri });
       thirdResponse = mockResponse({ content: 'awesome' });
 
@@ -172,6 +172,40 @@ describe('Content negotiation', function() {
       );
     });
   });
+
+  describe('with unknown media types', function() {
+    beforeEach(function() {
+      var mockResponseUnknown =
+        require('traverson-mock-response')('text/html');
+      rootResponse = mockResponseUnknown({
+        whatever: rootUri + '/whatever',
+      });
+
+      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
+          2, null, rootResponse, rootResponse.body);
+    });
+
+
+    it('should not crash on unknown media type', function(done) {
+      api
+      .newRequest()
+      .follow('whatever')
+      .getResource(callback);
+      waitFor(
+        function() { return callback.called; },
+        function() {
+          assert(callback.calledOnce);
+          expect(callback).to.have.been.calledWith(sinon.match.
+              instanceOf(Error));
+          var err = callback.args[0][0];
+          expect(err.name).to.equal(traverson.errors.UnsupportedMediaType);
+          expect(err.message).to.contain('Unknown content type for content ' +
+            'type detection: text/html');
+          done();
+      });
+    });
+  });
+
 
   function FoobarAdapter(log) {
     this.log = log;

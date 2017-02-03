@@ -49,6 +49,7 @@
   "license": "MIT",
   "scripts": {
     "test": "grunt",
+    "mocha": "mocha",
     "build": "grunt"
   },
   "keywords": [
