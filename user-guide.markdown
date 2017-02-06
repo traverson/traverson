@@ -27,6 +27,7 @@ Table of Contents
     * [Content Type Detection Versus Forcing Media Types](#content-type-detection-versus-forcing-media-types)
     * [Continuing a Link Traversal](#continuing-a-link-traversal)
     * [Aborting the Link Traversal](#aborting-the-link-traversal)
+    * [Link Header](#link-header)
 * [API](https://github.com/basti1302/traverson/blob/master/api.markdown)
 * [Release Notes](https://github.com/basti1302/traverson/blob/master/release-notes.markdown)
 
@@ -712,4 +713,26 @@ var traversal = traverson
 
 Given the call to `abort()` happens while the link traversal is still in process, it will be aborted immediately, that is, all outstanding HTTP requests for the link traversal process are not executed. If there is an HTTP request in progress when abort is called, this HTTP request is also aborted. (There usually is an HTTP request in progress as long as the link traversal is in progress because pretty much everything else in the link traversal process happens synchronously.) The result of aborting the link traversal is that the callback passed to the action method is called with an error which says `Link traversal process has been aborted.`.
 
+### Link Header
 
+Traverson is able to consume the links returned on the `Link` header based on [LinkHeader](https://www.w3.org/wiki/LinkHeader) specification.
+Link header parsing is done using the library [parse-link-header](https://github.com/thlorenz/parse-link-header).
+Additionaly link navigation could be done using link relations, the property `_linkHeaders` of the resource contains all the links of the response.
+```javascript
+var traverson = require('traverson');
+
+traverson
+.from('http://api.example.com')
+.json()
+.linkHeader()
+.follow('link_to', 'resource')
+.getResource(function(error, document) {
+  if (error) {
+    console.error('No luck :-)')
+  } else {
+    console.log('We have followed the path and reached the target resource following a link from Link header.')
+    console.log('The property _linkHeaders contains the returned links.')
+    console.log(document._linkHeaders)
+  }
+});
+```

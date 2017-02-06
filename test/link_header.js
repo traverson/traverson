@@ -59,7 +59,7 @@ describe('Traverson using the link header', function() {
     );
   });
 
-  it('should add the _links to doc',
+  it('should add the _linkHeaders to doc',
       function(done) {
     var pathFromLinkHeader = rootUri + '/path/from/link/header/1';
     var linkHeader = '<' + pathFromLinkHeader + '>; rel="link1"';
@@ -90,7 +90,7 @@ describe('Traverson using the link header', function() {
       function() {
         expect(callback).to.have.been.calledWith(null, {
           the: 'result',
-          _links: {
+          _linkHeaders: {
             self: {
               rel: 'self',
               url: pathFromLinkHeader
