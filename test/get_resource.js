@@ -45,7 +45,8 @@ describe('Traverson\'s getResource', function() {
       waitFor(
         function() { return get.called; },
         function() {
-          expect(get).to.have.been.calledWith(rootUri, {}, sinon.match.func);
+          expect(get).to.have.been.calledWith(
+            rootUri, sinon.match.any, sinon.match.func);
           done();
         }
       );
@@ -86,10 +87,10 @@ describe('Traverson\'s getResource', function() {
 
     it('should follow a single element path', function(done) {
       get
-      .withArgs(rootUri, {}, sinon.match.func)
+      .withArgs(rootUri, sinon.match.any, sinon.match.func)
       .callsArgWithAsync(2, null, rootResponse);
       get
-      .withArgs(rootUri + '/link/to/thing', {}, sinon.match.func)
+      .withArgs(rootUri + '/link/to/thing', sinon.match.any, sinon.match.func)
       .callsArgWithAsync(2, null, result);
 
       api
@@ -108,10 +109,10 @@ describe('Traverson\'s getResource', function() {
 
     it('should follow a single element path as array', function(done) {
       get
-      .withArgs(rootUri, {}, sinon.match.func)
+      .withArgs(rootUri, sinon.match.any, sinon.match.func)
       .callsArgWithAsync(2, null, rootResponse);
       get
-      .withArgs(rootUri + '/link/to/thing', {}, sinon.match.func)
+      .withArgs(rootUri + '/link/to/thing', sinon.match.any, sinon.match.func)
       .callsArgWithAsync(2, null, result);
 
       api
@@ -131,10 +132,10 @@ describe('Traverson\'s getResource', function() {
     it('using get (instead of getResource), but with the ' +
         '"convertResponseToObject" option', function(done) {
       get
-      .withArgs(rootUri, {}, sinon.match.func)
+      .withArgs(rootUri, sinon.match.any, sinon.match.func)
       .callsArgWithAsync(2, null, rootResponse);
       get
-      .withArgs(rootUri + '/link/to/thing', {}, sinon.match.func)
+      .withArgs(rootUri + '/link/to/thing', sinon.match.any, sinon.match.func)
       .callsArgWithAsync(2, null, result);
 
       api
@@ -154,7 +155,7 @@ describe('Traverson\'s getResource', function() {
 
     it('should call callback with err if link is not found', function(done) {
       get
-      .withArgs(rootUri, {}, sinon.match.func)
+      .withArgs(rootUri, sinon.match.any, sinon.match.func)
       .callsArgWithAsync(2, null, rootResponse);
 
       api
@@ -180,11 +181,11 @@ describe('Traverson\'s getResource', function() {
     it('should call callback with err inside recursion', function(done) {
       var err = new Error('test error');
       get
-      .withArgs(rootUri, {}, sinon.match.func)
+      .withArgs(rootUri, sinon.match.any, sinon.match.func)
       .callsArgWithAsync(2, null,
         mockResponse({ firstLink: rootUri + '/first' }));
       get
-      .withArgs(rootUri + '/first', {}, sinon.match.func)
+      .withArgs(rootUri + '/first', sinon.match.any, sinon.match.func)
       .callsArgWithAsync(2, err);
 
       api
@@ -225,19 +226,19 @@ describe('Traverson\'s getResource', function() {
       var response4 = mockResponse({ link4: path4 });
 
       get
-      .withArgs(rootUri, {}, sinon.match.func)
+      .withArgs(rootUri, sinon.match.any, sinon.match.func)
       .callsArgWithAsync(2, null, root);
       get
-      .withArgs(path1, {}, sinon.match.func)
+      .withArgs(path1, sinon.match.any, sinon.match.func)
       .callsArgWithAsync(2, null, response2);
       get
-      .withArgs(path2, {}, sinon.match.func)
+      .withArgs(path2, sinon.match.any, sinon.match.func)
       .callsArgWithAsync(2, null, response3);
       get
-      .withArgs(path3, {}, sinon.match.func)
+      .withArgs(path3, sinon.match.any, sinon.match.func)
       .callsArgWithAsync(2, null, response4);
       get
-      .withArgs(path4, {}, sinon.match.func)
+      .withArgs(path4, sinon.match.any, sinon.match.func)
       .callsArgWithAsync(2, null, result);
 
       api

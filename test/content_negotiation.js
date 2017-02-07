@@ -1,6 +1,7 @@
 'use strict';
 
 var traverson = require('../traverson')
+  , FoobarAdapter = require('./foobar_adapter')
   , waitFor = require('poll-forever')
   , chai = require('chai')
   , sinon = require('sinon')
@@ -57,12 +58,15 @@ describe('Content negotiation', function() {
       secondResponse = mockResponse({ second: secondUri });
       thirdResponse = mockResponse({ content: 'awesome' });
 
-      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
-          2, null, rootResponse, rootResponse.body);
-      get.withArgs(firstUri, {}, sinon.match.func).callsArgWithAsync(
-          2, null, secondResponse, secondResponse.body);
-      get.withArgs(secondUri, {}, sinon.match.func).callsArgWithAsync(
-          2, null, thirdResponse, thirdResponse.body);
+      get
+      .withArgs(rootUri, sinon.match.any, sinon.match.func)
+      .callsArgWithAsync(2, null, rootResponse, rootResponse.body);
+      get
+      .withArgs(firstUri, sinon.match.any, sinon.match.func)
+      .callsArgWithAsync(2, null, secondResponse, secondResponse.body);
+      get
+      .withArgs(secondUri, sinon.match.any, sinon.match.func)
+      .callsArgWithAsync(2, null, thirdResponse, thirdResponse.body);
     });
 
     it('should recognize the media type as application/json', function(done) {
@@ -95,12 +99,15 @@ describe('Content negotiation', function() {
       });
       thirdResponse = mockResponse({ content: 'awesome' });
 
-      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
-          2, null, rootResponse, rootResponse.body);
-      get.withArgs(firstUri, {}, sinon.match.func).callsArgWithAsync(
-          2, null, secondResponse, secondResponse.body);
-      get.withArgs(secondUri, {}, sinon.match.func).callsArgWithAsync(
-          2, null, thirdResponse, thirdResponse.body);
+      get
+      .withArgs(rootUri, sinon.match.any, sinon.match.func)
+      .callsArgWithAsync(2, null, rootResponse, rootResponse.body);
+      get
+      .withArgs(firstUri, sinon.match.any, sinon.match.func)
+      .callsArgWithAsync(2, null, secondResponse, secondResponse.body);
+      get
+      .withArgs(secondUri, sinon.match.any, sinon.match.func)
+      .callsArgWithAsync(2, null, thirdResponse, thirdResponse.body);
     });
 
     it('should recognize the media type and use the adapter',
@@ -144,16 +151,21 @@ describe('Content negotiation', function() {
       });
       fifthResponse = mockResponseApplicationJson({ content: 'awesome' });
 
-      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
-          2, null, rootResponse, rootResponse.body);
-      get.withArgs(firstUri, {}, sinon.match.func).callsArgWithAsync(
-          2, null, secondResponse, secondResponse.body);
-      get.withArgs(secondUri, {}, sinon.match.func).callsArgWithAsync(
-          2, null, thirdResponse, thirdResponse.body);
-      get.withArgs(thirdUri, {}, sinon.match.func).callsArgWithAsync(
-          2, null, fourthResponse, fourthResponse.body);
-      get.withArgs(fourthUri, {}, sinon.match.func).callsArgWithAsync(
-          2, null, fifthResponse, fifthResponse.body);
+      get
+      .withArgs(rootUri, sinon.match.any, sinon.match.func)
+      .callsArgWithAsync(2, null, rootResponse, rootResponse.body);
+      get
+      .withArgs(firstUri, sinon.match.any, sinon.match.func)
+      .callsArgWithAsync(2, null, secondResponse, secondResponse.body);
+      get
+      .withArgs(secondUri, sinon.match.any, sinon.match.func)
+      .callsArgWithAsync(2, null, thirdResponse, thirdResponse.body);
+      get
+      .withArgs(thirdUri, sinon.match.any, sinon.match.func)
+      .callsArgWithAsync(2, null, fourthResponse, fourthResponse.body);
+      get
+      .withArgs(fourthUri, sinon.match.any, sinon.match.func)
+      .callsArgWithAsync(2, null, fifthResponse, fifthResponse.body);
     });
 
     it('should switch the media type on every request',
@@ -181,10 +193,10 @@ describe('Content negotiation', function() {
         whatever: rootUri + '/whatever',
       });
 
-      get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
-          2, null, rootResponse, rootResponse.body);
+      get
+      .withArgs(rootUri, sinon.match.any, sinon.match.func)
+      .callsArgWithAsync(2, null, rootResponse, rootResponse.body);
     });
-
 
     it('should not crash on unknown media type', function(done) {
       api
@@ -205,21 +217,4 @@ describe('Content negotiation', function() {
       });
     });
   });
-
-
-  function FoobarAdapter(log) {
-    this.log = log;
-  }
-
-  FoobarAdapter.mediaType = 'application/foobar+json';
-
-  FoobarAdapter.prototype.findNextStep = function(t, link) {
-    this.log.debug('logging something');
-    return {
-      // No matter what has been specified in the follow method, this adapter
-      // always returns the link relation foobar from the doc.
-      url: t.lastStep.doc.foobar,
-    };
-  };
-
 });

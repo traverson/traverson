@@ -36,10 +36,12 @@ describe('Traverson using a custom request parser', function() {
     api.requestModuleInstance = { get: get };
     callback = sinon.spy();
 
-    get.withArgs(rootUri, {}, sinon.match.func).callsArgWithAsync(
-        2, null, rootResponse, rootResponse.body);
-    get.withArgs(getUri, {}, sinon.match.func).callsArgWithAsync(2, null,
-        secondResponse, secondResponse.body);
+    get
+    .withArgs(rootUri, sinon.match.any, sinon.match.func)
+    .callsArgWithAsync(2, null, rootResponse, rootResponse.body);
+    get
+    .withArgs(getUri, sinon.match.any, sinon.match.func)
+    .callsArgWithAsync(2, null, secondResponse, secondResponse.body);
 
   });
 

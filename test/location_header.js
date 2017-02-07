@@ -39,13 +39,13 @@ describe('Traverson using the location header', function() {
     });
 
     get
-    .withArgs(rootUri, {}, sinon.match.func)
+    .withArgs(rootUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, response1);
     get
-    .withArgs(pathFromLink, {}, sinon.match.func)
+    .withArgs(pathFromLink, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, response2);
     get
-    .withArgs(pathFromLocationHeader, {}, sinon.match.func)
+    .withArgs(pathFromLocationHeader, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, result);
 
     api

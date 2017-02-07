@@ -1,5 +1,6 @@
 require('./abort_request');
 require('./absolute_relative');
+require('./auto_headers.js');
 require('./content_negotiation');
 require('./continue');
 require('./custom_request_parser');

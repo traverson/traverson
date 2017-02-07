@@ -38,13 +38,13 @@ describe('Traverson resolving absolute and relative URLs', function() {
     var response2 = mockResponse({ link2: path2 });
 
     get
-    .withArgs(rootUri, {}, sinon.match.func)
+    .withArgs(rootUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, response1);
     get
-    .withArgs(path1, {}, sinon.match.func)
+    .withArgs(path1, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, response2);
     get
-    .withArgs(path2, {}, sinon.match.func)
+    .withArgs(path2, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, result);
 
     api
@@ -72,13 +72,13 @@ describe('Traverson resolving absolute and relative URLs', function() {
     var response2 = mockResponse({ link2: path2 });
 
     get
-    .withArgs(httpsRootUri, {}, sinon.match.func)
+    .withArgs(httpsRootUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, response1);
     get
-    .withArgs(path1, {}, sinon.match.func)
+    .withArgs(path1, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, response2);
     get
-    .withArgs(path2, {}, sinon.match.func)
+    .withArgs(path2, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, result);
 
     api
@@ -105,13 +105,13 @@ describe('Traverson resolving absolute and relative URLs', function() {
     var response2 = mockResponse({ link2: path2 });
 
     get
-    .withArgs(rootUri, {}, sinon.match.func)
+    .withArgs(rootUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, response1);
     get
-    .withArgs(rootUri + path1, {}, sinon.match.func)
+    .withArgs(rootUri + path1, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, response2);
     get
-    .withArgs(rootUri + path2, {}, sinon.match.func)
+    .withArgs(rootUri + path2, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, result);
 
     api
@@ -136,13 +136,13 @@ describe('Traverson resolving absolute and relative URLs', function() {
     var response2 = mockResponse({ link2: path2 });
 
     get
-    .withArgs(rootUri, {}, sinon.match.func)
+    .withArgs(rootUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, response1);
     get
-    .withArgs(rootUri + path1, {}, sinon.match.func)
+    .withArgs(rootUri + path1, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, response2);
     get
-    .withArgs(rootUri + path1 + path2, {}, sinon.match.func)
+    .withArgs(rootUri + path1 + path2, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, result);
 
     api

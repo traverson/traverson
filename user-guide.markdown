@@ -620,7 +620,7 @@ MediaTypeAdapter.prototype.findNextStep = function(t, link) {
 
 A media type plug-in is always a constructor function. It is passed one argument, a log object. This log object can be used by the plug-in to log messages, if required (it offers the methods `debug(message)`, `info(message)`, `warn(message)` and `error(message)`).
 
-Every media type plug-in *should* provide a propery `mediaType` that represents the registered content type for this plug-in.
+Every media type plug-in *must* provide a propery `mediaType` that represents the registered content type for this plug-in. This property will also be used to set the `Accept` and `Content-Type` header (unless auto headers are disabled).
 
 Every media type plug-in *must* provide a method `findNextStep`, which takes two parameters, `t` and `link`. `t` represents the traversal process and contains all information about the traversal and its current state. The `link` object represents the link relation that has been specified for this step in the `follow` method. The responsibility of the `findNextStep` method is to return a step object, that tells Traverson what to do next.
 

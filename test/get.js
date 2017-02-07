@@ -32,10 +32,10 @@ describe('get method', function() {
     callback = sinon.spy();
 
     get
-    .withArgs(rootUri, {}, sinon.match.func)
+    .withArgs(rootUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, rootResponse, rootResponse.body);
     get
-    .withArgs(getUri, {}, sinon.match.func)
+    .withArgs(getUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, result, result.body);
   });
 
@@ -84,10 +84,10 @@ describe('get method', function() {
     get = sinon.stub();
     api.requestModuleInstance = { get: get };
     get
-    .withArgs(rootUri, {}, sinon.match.func)
+    .withArgs(rootUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, rootResponse);
     get
-    .withArgs(getUri, {}, sinon.match.func)
+    .withArgs(getUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, err);
 
     api

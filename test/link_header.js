@@ -38,10 +38,10 @@ describe('Traverson using the link header', function() {
     var response2 = mockResponse({ the: 'result' });
 
     get
-    .withArgs(rootUri, {}, sinon.match.func)
+    .withArgs(rootUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, response1);
     get
-    .withArgs(pathFromLinkHeader, {}, sinon.match.func)
+    .withArgs(pathFromLinkHeader, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, response2);
 
     api
@@ -73,10 +73,10 @@ describe('Traverson using the link header', function() {
     });
 
     get
-    .withArgs(rootUri, {}, sinon.match.func)
+    .withArgs(rootUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, response1);
     get
-    .withArgs(pathFromLinkHeader, {}, sinon.match.func)
+    .withArgs(pathFromLinkHeader, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, response2);
 
     api
