@@ -8,6 +8,7 @@ require('./get');
 require('./get_resource');
 require('./get_url');
 require('./json_path.js');
+require('./link_header.js');
 require('./localhost');
 require('./location_header');
 require('./maze');
