@@ -55,6 +55,8 @@ A request builder can be obtained by `traverson.newRequest()` or `traverson.from
 
 <a name="builder-useContentNegotiation"></a>`useContentNegotiation()`: Enables content negotiation, that is, the server's response bodies are parsed and interpreted according to the Content-Type header. This is the default behaviour. Calling `useContentNegotiation` reverses the effect of a former call to `setMediaType`, `json` or `jsonHal`. This method returns the request builder instance to allow for method chaining.
 
+<a name="builder-linkHeader"></a>`linkHeader()`: It establishes that the links that are going to follow come from the server's response header `Link`.
+
 <a name="builder-from"></a>`from(url)`: Set the root URL of the API, that is, where the link traversal begins. If you created the request builder instance with `traverson.from(url)` you don't need to call `from` on the request builder instance. This method returns the request builder instance to allow for method chaining.
 
 <a name="builder-follow"></a>`follow(links)`: Provides the list of link relations to follow. Multiple strings can be used as well as an array of strings. For multiple consecutive calls to `follow` the arguments of all calls are aggregated into a single list of links.
