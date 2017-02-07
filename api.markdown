@@ -55,6 +55,38 @@ A request builder can be obtained by `traverson.newRequest()` or `traverson.from
 
 <a name="builder-useContentNegotiation"></a>`useContentNegotiation()`: Enables content negotiation, that is, the server's response bodies are parsed and interpreted according to the Content-Type header. This is the default behaviour. Calling `useContentNegotiation` reverses the effect of a former call to `setMediaType`, `json` or `jsonHal`. This method returns the request builder instance to allow for method chaining.
 
+<a name="builder-disableAutoHeaders"></a>`disableAutoHeaders()`: Disables automatic Accept and Content-Type headers. See `useAutoHeaders()`.
+
+<a name="builder-enableAutoHeaders"></a>`enableAutoHeaders()`: Enables automatic Accept and Content-Type headers. See `useAutoHeaders()`.
+
+<a name="builder-useAutoHeaders"></a>`useAutoHeaders(flag)`: Enables or disables
+automatic headers. With automatic headers enabled,
+traverson will set default Accept and the Content-Type headers for HTTP
+requests, unless you provide these headers explicitly with withRequestOptions
+or addRequestOptions.
+
+The header values depend on the media type (see setMediaType()). For example,
+for plain vanilla JSON (that is, when using setMediaType('application/json')
+or the corresponding shortcut .json()), both headers will be send with the
+value 'application/json'. For HAL (that is, when using
+setMediaType('application/hal+json') or the corresponding shortcut
+jsonHal()), both headers will be send with the value 'application/hal+json'.
+
+If the method is called without arguments (or the first argument is undefined
+or null), automatic headers are turned on, otherwise the argument is
+interpreted as a boolean flag. If it is a truthy value, auto headers
+are enabled, if it is a falsy value (but not null or undefined), auto headers
+are disabled.
+
+A note about the condition "unless you provide these headers explicitly with
+withRequestOptions or addRequestOptions" in the first paragraph: Traverson
+with automatic headers enabled will only check for the header option
+"Accept" and "Content-Type", not for "accept" or "Content-type" or any other
+variation regarding upper case/lower case letters. So to be on the safe
+side, if you mix auto headers with explicitly specified headers, make sure
+to specify your explicit headers with this exact same combination of upper
+case and lower case letters.
+
 <a name="builder-linkHeader"></a>`linkHeader()`: It establishes that the links that are going to follow come from the server's response header `Link`.
 
 <a name="builder-from"></a>`from(url)`: Set the root URL of the API, that is, where the link traversal begins. If you created the request builder instance with `traverson.from(url)` you don't need to call `from` on the request builder instance. This method returns the request builder instance to allow for method chaining.
