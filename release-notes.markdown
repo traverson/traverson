@@ -1,7 +1,7 @@
 Release Notes
 -------------
 
-* 6.0.0 (upcoming):
+* 6.0.0 2017-02-10:
     * *Breaking change*: Traverson now sets `Accept` and `Content-Type` headers automatically when the media type has been set explicitly ([#37](https://github.com/basti1302/traverson/issues/37)). This might be a breaking change for users that
         * *do* set set the media type via `.setMediaType('...')`, `.json()` or `.jsonHal()`,
         * *do not* set headers explicitly (via `.withRequestOptions` or `.addRequestOptions`) and
