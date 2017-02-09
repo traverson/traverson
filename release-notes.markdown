@@ -1,6 +1,13 @@
 Release Notes
 -------------
 
+* 6.0.0 (upcoming):
+    * *Breaking change*: Traverson now sets `Accept` and `Content-Type` headers automatically when the media type has been set explicitly ([#37](https://github.com/basti1302/traverson/issues/37)). This might be a breaking change for users that
+        * *do* set set the media type via `.setMediaType('...')`, `.json()` or `.jsonHal()`,
+        * *do not* set headers explicitly (via `.withRequestOptions` or `.addRequestOptions`) and
+        * whose backends do not cope well when `Accept` and/or `Content-Type` headers are set to `application/json` or `application/hal+json` respectively.
+    * Support for link headers ([#84](https://github.com/basti1302/traverson/issues/84) and [#85](https://github.com/basti1302/traverson/pull/85), thanks to @iunanua)
+    * Fix an error where content negotiation would fail with the wrong error message when receiving an unknown media type ([#82](https://github.com/basti1302/traverson/issues/82), thanks to @Malax for the report and the analysis)
 * 5.0.0 2016-12-20:
     * Drop support for Node.js 0.10 and 0.12. Node.js versions 4 to 7 are tested and officially supported.
     * All `Error` objects created by Traverson now have the `name` property set, see [API docs on error names](https://github.com/basti1302/traverson/blob/master/api.markdown#traverson-errors). ([traverson-hal/#21](https://github.com/basti1302/traverson-hal/issues/21) and [traverson-hal/#22](https://github.com/basti1302/traverson-hal/issues/22), thanks to @mimol91)
