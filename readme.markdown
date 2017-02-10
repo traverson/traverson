@@ -10,8 +10,8 @@ A Hypermedia API/HATEOAS Client for Node.js and the Browser
 
 | File Size (browser build) | KB |
 |---------------------------|---:|
-| minified & gzipped        | 22 |
-| minified                  | 74 |
+| minified & gzipped        | 17 |
+| minified                  | 61 |
 
 
 Quick Links
