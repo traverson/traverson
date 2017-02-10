@@ -7,7 +7,7 @@ set -e
 bin_path=`dirname $0`
 pushd $bin_path/.. > /dev/null
 
-browserify_cmd=node_modules/grunt-browserify/node_modules/browserify/bin/cmd.js
+browserify_cmd=node_modules/.bin/browserify
 
 # This browserify build can be used by users of the module. It contains a
 # UMD (universal module definition) and can be used via an AMD module
@@ -20,8 +20,9 @@ $browserify_cmd \
   --outfile browser/dist/traverson.js \
   --standalone traverson
 
+# https://github.com/hughsk/disc needs to be installed globally
 discify browser/dist/traverson.js > disc.html
 
-xdg-open disc.html
+open disc.html
 
 popd > /dev/null
