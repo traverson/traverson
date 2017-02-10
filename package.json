@@ -1,6 +1,6 @@
 {
   "name": "traverson",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "description": "Hypermedia API/HATEOAS client for Node.js and the browser",
   "repository": "https://github.com/basti1302/traverson.git",
   "main": "traverson.js",
@@ -44,11 +44,16 @@
     {
       "name": "Jade Montagu",
       "email": "jade@jademontagu.com"
+    },
+    {
+      "name": "Igor Unanua",
+      "email": "igor@hdivsecurity.com"
     }
   ],
   "license": "MIT",
   "scripts": {
     "test": "grunt",
+    "mocha": "mocha",
     "build": "grunt"
   },
   "keywords": [
@@ -61,7 +66,7 @@
     "HAL"
   ],
   "dependencies": {
-    "jsonpath-plus": "^0.15.0",
+    "jsonpath-plus": "^0.16.0",
     "minilog": "^3.0.0",
     "request": "^2.28.0",
     "resolve-url": "^0.2.1",

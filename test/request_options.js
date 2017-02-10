@@ -23,7 +23,7 @@ describe('Traverson using request options', function() {
     link: rootUri + '/link',
   });
 
-  var api = traverson.from(rootUri).json();
+  var api = traverson.from(rootUri).json().disableAutoHeaders();
 
   beforeEach(function() {
     get = sinon.stub();
@@ -67,7 +67,10 @@ describe('Traverson using request options', function() {
 
     api
     .newRequest()
-    .withRequestOptions({ jsonReplacer: function firstReplacer() {} })
+    .withRequestOptions(
+      { jsonReplacer: function firstReplacer() {},
+        anotherOption: function anotherFunction() {} 
+    })
     .addRequestOptions({ jsonReplacer: function secondReplacer() {} })
     .follow('link')
     .getResource(callback);
@@ -75,9 +78,13 @@ describe('Traverson using request options', function() {
     waitFor(
       function() { return callback.called; },
       function() {
-        // get.withArgs.calls already check if options are used
         expect(callback).to.have.been.calledWith(null, result.doc);
-        console.log(get.firstCall.args[1].jsonReplacer.name);
+        assert.isFunction(get.firstCall.args[1].jsonReplacer);
+        expect(get.firstCall.args[1].jsonReplacer.name)
+          .to.equal('secondReplacer');
+        assert.isFunction(get.firstCall.args[1].anotherOption);
+        expect(get.firstCall.args[1].anotherOption.name)
+          .to.equal('anotherFunction');
         done();
       }
     );
@@ -217,5 +224,3 @@ describe('Traverson using request options', function() {
     );
   }
 });
-
-

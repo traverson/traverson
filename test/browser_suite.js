@@ -1,5 +1,6 @@
 require('./abort_request');
 require('./absolute_relative');
+require('./auto_headers.js');
 require('./content_negotiation');
 require('./continue');
 require('./custom_request_parser');
@@ -8,6 +9,7 @@ require('./get');
 require('./get_resource');
 require('./get_url');
 require('./json_path.js');
+require('./link_header.js');
 require('./localhost');
 require('./location_header');
 require('./maze');

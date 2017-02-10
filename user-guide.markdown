@@ -620,7 +620,7 @@ MediaTypeAdapter.prototype.findNextStep = function(t, link) {
 
 A media type plug-in is always a constructor function. It is passed one argument, a log object. This log object can be used by the plug-in to log messages, if required (it offers the methods `debug(message)`, `info(message)`, `warn(message)` and `error(message)`).
 
-Every media type plug-in *should* provide a propery `mediaType` that represents the registered content type for this plug-in.
+Every media type plug-in *must* provide a propery `mediaType` that represents the registered content type for this plug-in. This property will also be used to set the `Accept` and `Content-Type` header (unless auto headers are disabled).
 
 Every media type plug-in *must* provide a method `findNextStep`, which takes two parameters, `t` and `link`. `t` represents the traversal process and contains all information about the traversal and its current state. The `link` object represents the link relation that has been specified for this step in the `follow` method. The responsibility of the `findNextStep` method is to return a step object, that tells Traverson what to do next.
 
@@ -634,11 +634,15 @@ In the examples so far, we never explicitly specified the media type the API wou
 
 With <code>traverson.from('http://api.example.com').<b>json()</b></code>, Traverson assumes that the API uses a generic JSON media type. The server will probably set the `Content-Type` header to `application/json`, but because we forced the media type, this is not even checked by Traverson. With the [traverson-hal](https://github.com/basti1302/traverson-hal) plug-in installed you can do <code>traverson.from('http://api.example.com').<b>jsonHal()</b></code>, to make Traverson assume that the API complies with the HAL specification. The server would probably set the `Content-Type` header to `application/hal+json`, again, this is not checked by Traverson. Finally, with <code>traverson.from('http://api.example.com').<b>setMediaType('application/whatever+json')</b></code> you can force Traverson to use an arbitrary media type (as long as a matching media type plug-in is registered).
 
+When a specific media type has been set explicitly, Traverson automatically sets the appropriate `Accept` and `Content-Type` headers when making HTTP requests, unless these headers have been set explicitly via `.withRequestOptions({headers: {...}})` or `.addRequestOptions({headers: {...}})`, or unless this behaviour has been disabled via `.disableAutoHeaders()`.
+
 Instead of forcing a specific media type, you can also let Traverson figure out the media by itself. Actually, as already mentioned, that is the default behaviour. Just omit the `json()`/`jsonHal()/setMediaType()` and Traverson will use the `Content-Type` header coming from the server to decide how to interpret each response. However, for each content type an appropriate media type plug-in needs to be registered. That is, if the server sets a `Content-Type` of `application/hal+json` and the HAL plug-in is registered, the response will automatically be interpreted as HAL.
 
 Without any plug-ins, Traverson will only be able to process `application/json` and will fail if it receives a different content type header.
 
 Content type detection happens for each request/response. If each response in a link traversal process has a different Content-Type header, Traverson will pick a different media type plug-in to process these responses.
+
+Note that Traverson will not set `Accept` or `Content-Type` headers automatically when content type detection is used (that is, when no media type has been set explicitly).
 
 Here is a complete example:
 <pre lang="javascript">

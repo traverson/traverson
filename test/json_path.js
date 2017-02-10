@@ -35,10 +35,10 @@ describe('Traverson with JSONPath', function() {
 
   it('should follow to a link via JSONPath expression', function(done) {
     get
-    .withArgs(rootUri, {}, sinon.match.func)
+    .withArgs(rootUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, rootResponse);
     get
-    .withArgs(uri, {}, sinon.match.func)
+    .withArgs(uri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, result);
 
     api.
@@ -57,7 +57,7 @@ describe('Traverson with JSONPath', function() {
   it('should call callback with err if JSONPath has no match',
       function(done) {
     get
-    .withArgs(rootUri, {}, sinon.match.func)
+    .withArgs(rootUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, rootResponse);
 
     api.
@@ -85,7 +85,7 @@ describe('Traverson with JSONPath', function() {
     });
 
     get
-    .withArgs(rootUri, {}, sinon.match.func)
+    .withArgs(rootUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, rootResponseMulti);
 
     api.
@@ -110,10 +110,10 @@ describe('Traverson with JSONPath', function() {
       'attribute points to an object', function(done) {
 
     get
-    .withArgs(rootUri, {}, sinon.match.func)
+    .withArgs(rootUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, rootResponse);
     get
-    .withArgs(uri, {}, sinon.match.func)
+    .withArgs(uri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, result);
 
     api.

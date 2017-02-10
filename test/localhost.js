@@ -22,6 +22,11 @@ describe('Traverson (when tested against a local server)', function() {
 
   before(function() {
     if (isNodeJs()) {
+      // disable timeout for the before hook.
+      // On travis-ci, it might, in rare cases, take longer than a second to
+      // spin up the test server. Timeouts are still enabled for the following
+      // tests, though.
+      this.enableTimeouts(false);
       testServer = require('traverson-test-server');
       testServer.start();
     }

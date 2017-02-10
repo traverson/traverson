@@ -45,10 +45,10 @@ describe('post method', function() {
     callback = sinon.spy();
 
     get
-    .withArgs(rootUri, {}, sinon.match.func)
+    .withArgs(rootUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, rootResponse, rootResponse.body);
     get
-    .withArgs(postUri, {}, sinon.match.func)
+    .withArgs(postUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(1,
         new Error('GET is not implemented for this URL, please POST ' +
         'something'));

@@ -40,16 +40,16 @@ describe('Traverson with multiple follow calls for one traversal', function() {
     var response3 = mockResponse({ link3: path3 });
 
     get
-    .withArgs(rootUri, {}, sinon.match.func)
+    .withArgs(rootUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, response1);
     get
-    .withArgs(path1, {}, sinon.match.func)
+    .withArgs(path1, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, response2);
     get
-    .withArgs(path2, {}, sinon.match.func)
+    .withArgs(path2, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, response3);
     get
-    .withArgs(path3, {}, sinon.match.func)
+    .withArgs(path3, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, result);
 
     api

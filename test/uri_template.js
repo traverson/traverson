@@ -37,13 +37,14 @@ describe('Traverson with URI templating', function() {
     });
 
     get
-    .withArgs(rootUri, {}, sinon.match.func)
+    .withArgs(rootUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, rootResponseUriTemplate);
     get
-    .withArgs(rootUri + '/users/basti1302/things/4711', {}, sinon.match.func)
+    .withArgs(rootUri + '/users/basti1302/things/4711',
+      sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, next);
     get
-    .withArgs(rootUri + '/another/42', {}, sinon.match.func)
+    .withArgs(rootUri + '/another/42', sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, result);
 
     api
@@ -70,7 +71,7 @@ describe('Traverson with URI templating', function() {
     get = sinon.stub();
     api.requestModuleInstance = { get: get };
     get
-    .withArgs(startUri, {}, sinon.match.func)
+    .withArgs(startUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, rootUriTemplate);
 
     api
@@ -97,13 +98,15 @@ describe('Traverson with URI templating', function() {
       secondTemplate: rootUri + '/another_user/{user}'
     });
     get
-    .withArgs(rootUri, {}, sinon.match.func)
+    .withArgs(rootUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, rootUriTemplate);
     get
-    .withArgs(rootUri + '/users/basti1302/things/4711', {}, sinon.match.func)
+    .withArgs(rootUri + '/users/basti1302/things/4711',
+      sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, next);
     get
-    .withArgs(rootUri + '/another_user/someone_else', {}, sinon.match.func)
+    .withArgs(rootUri + '/another_user/someone_else',
+      sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, result);
 
     api.
@@ -128,10 +131,10 @@ describe('Traverson with URI templating', function() {
       template: rootUri + '/users{?page,size,sort}',
     });
     get
-    .withArgs(rootUri, {}, sinon.match.func)
+    .withArgs(rootUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, responseUriTemplate);
     get
-    .withArgs(rootUri + '/users', {},
+    .withArgs(rootUri + '/users', sinon.match.any,
         sinon.match.func)
     .callsArgWithAsync(2, null, result);
 

@@ -41,7 +41,7 @@ describe('delete method', function() {
     callback = sinon.spy();
 
     get
-    .withArgs(rootUri, {}, sinon.match.func)
+    .withArgs(rootUri, sinon.match.any, sinon.match.func)
     .callsArgWithAsync(2, null, rootResponse, rootResponse.body);
   });
 
