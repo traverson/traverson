@@ -68,7 +68,7 @@
     "superagent": "^3.3.1",
     "underscore.string": "^3.3.4",
     "url-template": "^2.0.4",
-    "parse-link-header": "^0.4.1"
+    "xtend": "~4.0.0"
   },
   "devDependencies": {
     "brfs": "^1.1.1",
