@@ -55,7 +55,7 @@ exports.jsonHal = {
       throw createError('JSON HAL adapter is not registered. From version ' +
         '1.0.0 on, Traverson has no longer built-in support for ' +
         'application/hal+json. HAL support was moved to a separate, optional ' +
-        'plug-in. See https://github.com/basti1302/traverson-hal',
+        'plug-in. See https://github.com/traverson/traverson-hal',
         errors.UnsupportedMediaType
       );
     }

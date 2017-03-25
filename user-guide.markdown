@@ -1,7 +1,7 @@
 Traverson User Guide
 ====================
 
-This documents explains the concepts behind Traverson and explains most of its features with examples. There is also the [API](https://github.com/basti1302/traverson/blob/master/api.markdown) if you looking for something more concise.
+This documents explains the concepts behind Traverson and explains most of its features with examples. There is also the [API](https://github.com/traverson/traverson/blob/master/api.markdown) if you looking for something more concise.
 
 Table of Contents
 -----------------
@@ -32,8 +32,8 @@ Table of Contents
     * [TypeScript Types](#typescript-types)
     * [Traverson Web Component](#traverson-web-component)
     * [Related Projects](#related-projects)
-* [API](https://github.com/basti1302/traverson/blob/master/api.markdown)
-* [Release Notes](https://github.com/basti1302/traverson/blob/master/release-notes.markdown)
+* [API](https://github.com/traverson/traverson/blob/master/api.markdown)
+* [Release Notes](https://github.com/traverson/traverson/blob/master/release-notes.markdown)
 
 Installation
 ------------
@@ -46,7 +46,7 @@ Installation
 
 * If you are using npm and [Browserify](http://browserify.org/): Just `npm install traverson --save` and `require('traverson')`, then browserify your module as usual - browserify will include Traverson and its dependencies for you and also use the shims defined in Traverson's package.json's `browser` property.
 * If you are using [Bower](http://bower.io): `bower install traverson --save`
-* Otherwise you can grab a download from the [latest release](https://github.com/basti1302/traverson/releases/latest):
+* Otherwise you can grab a download from the [latest release](https://github.com/traverson/traverson/releases/latest):
     * `traverson.min.js`: Minified build with UMD. This build can be used with an AMD loader like RequireJS or with a script tag (in which case it will register `traverson` in the global scope). **If in doubt, use this build.**
     * `traverson.js`: Non-minified build with UMD. Same as above, just larger :-)
     * `traverson.external.min.js`: Minified require/external build. Created with browserify's `--require` parameter and intended to be used (required) from other browserified modules, which were created with `--external traverson`. This build could be used if you use browserify but do not want to bundle Traverson with your own browserify build but keep it as a separate file.
@@ -54,19 +54,19 @@ Installation
 
 #### AngularJS
 
-There's an [AngularJS plug-in for Traverson](https://github.com/basti1302/traverson-angular) which makes it possible to integrate the Traverson API seamlessly into an AngularJS app. If you want to use Traverson in an AngularJS app, this is the way to go.
+There's an [AngularJS plug-in for Traverson](https://github.com/traverson/traverson-angular) which makes it possible to integrate the Traverson API seamlessly into an AngularJS app. If you want to use Traverson in an AngularJS app, this is the way to go.
 
 Breaking Change As Of Version 1.0.0
 -----------------------------------
 
-* From version 1.0.0 onwards, support for HAL is no longer included in Traverson. instead, it has been moved to a separate plug-in. If you have used Traverson to work with HAL APIs, you will need some (trivial) changes in your code. See [Using Plug-ins](#using-plug-ins) and [traverson-hal](https://github.com/basti1302/traverson-hal).
+* From version 1.0.0 onwards, support for HAL is no longer included in Traverson. instead, it has been moved to a separate plug-in. If you have used Traverson to work with HAL APIs, you will need some (trivial) changes in your code. See [Using Plug-ins](#using-plug-ins) and [traverson-hal](https://github.com/traverson/traverson-hal).
 * The properties `traverson.json` and `traverson.jsonHal` (that is, using *properties* `json`/`jsonHal` on the `traverson` object) are deprecated as of 1.0.0 (but they still work). Instead, use the methods `json()`/`jsonHal()` on the request builder object. Thus, `traverson.json.from(url)` becomes `traverson.from(url).json()` and `traverson.jsonHal.from(url)` becomes `traverson.from(url).jsonHal()`. You can also omit `json()`/`jsonHal()` completely and use content negotiation.
-* See the [release notes](https://github.com/basti1302/traverson/blob/master/release-notes.markdown) for more details on the changes in version 1.0.0.
+* See the [release notes](https://github.com/traverson/traverson/blob/master/release-notes.markdown) for more details on the changes in version 1.0.0.
 
 Documentation
 -------------
 
-This section shows how to use Traverson's features, one example at a time. There is also the [API reference documentation](https://github.com/basti1302/traverson/blob/master/api.markdown).
+This section shows how to use Traverson's features, one example at a time. There is also the [API reference documentation](https://github.com/traverson/traverson/blob/master/api.markdown).
 
 ### Following Links
 
@@ -144,7 +144,7 @@ Calling `traverson.newRequest()` gives you a new *request builder* instance, whi
 * `withTemplateParameters`: Sets parameters for URI template resolution.
 * `withRequestOptions`: Sets options for the `request` library that is used to execute HTTP requests (like special HTTP headers or OAuth stuff).
 
-There are more configuration options available. Most are explained in more detail in the remainder of this document. A comprehensive list can be found in the [API reference documentation](https://github.com/basti1302/traverson/blob/master/api.markdown#configuration-methods).
+There are more configuration options available. Most are explained in more detail in the remainder of this document. A comprehensive list can be found in the [API reference documentation](https://github.com/traverson/traverson/blob/master/api.markdown#configuration-methods).
 
 #### Reusing Configuration Between Link Traversals
 
@@ -189,7 +189,7 @@ traverson
 });
 </pre>
 
-Actually, `getResource` is just a shortcut for `get` combined with [`convertResponseToObject`](https://github.com/basti1302/traverson/blob/master/api.markdown#builder-convertResponseToObject).
+Actually, `getResource` is just a shortcut for `get` combined with [`convertResponseToObject`](https://github.com/traverson/traverson/blob/master/api.markdown#builder-convertResponseToObject).
 
 Or maybe you even want to execute the last HTTP request all by yourself. The method `getUrl` has you covered. It will only execute the HTTP GET requests until it has found the final link from `follow`, but will not request the resource that this last link leads to.
 
@@ -206,7 +206,7 @@ traverson
 });
 </pre>
 
-URI template resolution will take place before the URL is returned to your callback. So if the last URL is actually a template, make sure to provide the required template parameters via [`withTemplateParameters`](https://github.com/basti1302/traverson/blob/master/api.markdown#builder-withTemplateParameters)
+URI template resolution will take place before the URL is returned to your callback. So if the last URL is actually a template, make sure to provide the required template parameters via [`withTemplateParameters`](https://github.com/traverson/traverson/blob/master/api.markdown#builder-withTemplateParameters)
 
 ### Pass a Link Array
 
@@ -328,7 +328,7 @@ traverson
 });
 ```
 
-All error names and their resepective keys in the `traverson.errors` object are documented in the [API docs](https://github.com/basti1302/traverson/blob/master/api.markdown#traverson-errors).
+All error names and their resepective keys in the `traverson.errors` object are documented in the [API docs](https://github.com/traverson/traverson/blob/master/api.markdown#traverson-errors).
 
 
 #### How HTTP Status Code Are Handled
@@ -512,7 +512,7 @@ traverson
 
 This would add the header `x-my-special-header` and the query string `query` to all requests issued for this three link walk. Check out the [request docs](https://github.com/request/request#requestoptions-callback) to see which options can be used. Among other things, you can set custom headers, do HTTP basic authentication, [OAuth](https://github.com/request/request#oauth-signing) and other cool stuff. If you do not want to use the same options for every step of the link traversal you can pass an array into `withRequestOptions` where each array element represents the options for the corresponding step (similar to `withTemplateParameters`).
 
-A word of warning: When running in the browser and not in Node.js, the request library is shimmed by [SuperAgent](https://github.com/visionmedia/superagent) to shim the request module. Most request options are mapped to appropriate superagent options. If you use Traverson in the browser and you notice odd behaviour regarding `withRequestOptions`, please file an [issue](https://github.com/basti1302/traverson/issues).
+A word of warning: When running in the browser and not in Node.js, the request library is shimmed by [SuperAgent](https://github.com/visionmedia/superagent) to shim the request module. Most request options are mapped to appropriate superagent options. If you use Traverson in the browser and you notice odd behaviour regarding `withRequestOptions`, please file an [issue](https://github.com/traverson/traverson/issues).
 
 You can also pass in a custom request library, as long as it conforms to the same interface as [request](https://github.com/request/request).
 
@@ -560,7 +560,7 @@ Out of the box, Traverson works with generic JSON APIs. There are a lot of media
 * [Siren (application/vnd.siren+json)](https://github.com/kevinswiber/siren)
 * [Uber (application/vnd.amundsen-uber+json)](https://rawgit.com/mamund/media-types/master/uber-hypermedia.html),
 
-If you want to leverage the power of a specialized media type, you can use the concept of Traverson's media type plug-ins. As of now, there is a [media type plug-in for HAL](https://github.com/basti1302/traverson-hal), other media type plug-ins could be implemented easily (see below).
+If you want to leverage the power of a specialized media type, you can use the concept of Traverson's media type plug-ins. As of now, there is a [media type plug-in for HAL](https://github.com/traverson/traverson-hal), other media type plug-ins could be implemented easily (see below).
 
 Here is an example on how to register a media type plug-in with Traverson.
 
@@ -582,7 +582,7 @@ traverson.registerMediaType(MasonAdapter.mediaType, MasonAdapter);
 
 The `setMediaType` call could be changed to `setMediaType(MasonAdapter.mediaType)`, accordingly.
 
-(Note that there currently is no MasonAdapter, this is just an example. There is a [HAL adapter](https://github.com/basti1302/traverson-hal), though.)
+(Note that there currently is no MasonAdapter, this is just an example. There is a [HAL adapter](https://github.com/traverson/traverson-hal), though.)
 
 #### Implementing Media Type Plug-ins
 
@@ -630,13 +630,13 @@ Every media type plug-in *must* provide a method `findNextStep`, which takes two
 
 A step object can be as simple as this `{ url: '/next/url/to/call' }`. This would make Traverson make an HTTP request to the given URL. Some media types (like HAL) contain embeddeded resources. For those, the next step is not an HTTP request. Instead, you can put the part of `doc` that represents the embedded resource into the returned step object, like this: `{ doc: { ... } }`.
 
-If you want to implement your own media type plug-in, having a look at the existing HAL plug-in might be helpful: <https://github.com/basti1302/traverson-hal/blob/master/index.js>, another example is the [stock JSON adapter](https://github.com/basti1302/traverson/blob/master/lib/json_adapter.js) that comes with Traverson.
+If you want to implement your own media type plug-in, having a look at the existing HAL plug-in might be helpful: <https://github.com/traverson/traverson-hal/blob/master/index.js>, another example is the [stock JSON adapter](https://github.com/traverson/traverson/blob/master/lib/json_adapter.js) that comes with Traverson.
 
 ### Content Type Detection Versus Forcing Media Types
 
 In the examples so far, we never explicitly specified the media type the API would use. Traverson usually figures that out by itself by looking at the `Content-Type` header. If the `Content-Type` header of the server's response is `application/json`, Traverson will interpret the response as a plain JSON resource. However, you can force Traverson to interpret the server's response as a certain media type.
 
-With <code>traverson.from('http://api.example.com').<b>json()</b></code>, Traverson assumes that the API uses a generic JSON media type. The server will probably set the `Content-Type` header to `application/json`, but because we forced the media type, this is not even checked by Traverson. With the [traverson-hal](https://github.com/basti1302/traverson-hal) plug-in installed you can do <code>traverson.from('http://api.example.com').<b>jsonHal()</b></code>, to make Traverson assume that the API complies with the HAL specification. The server would probably set the `Content-Type` header to `application/hal+json`, again, this is not checked by Traverson. Finally, with <code>traverson.from('http://api.example.com').<b>setMediaType('application/whatever+json')</b></code> you can force Traverson to use an arbitrary media type (as long as a matching media type plug-in is registered).
+With <code>traverson.from('http://api.example.com').<b>json()</b></code>, Traverson assumes that the API uses a generic JSON media type. The server will probably set the `Content-Type` header to `application/json`, but because we forced the media type, this is not even checked by Traverson. With the [traverson-hal](https://github.com/traverson/traverson-hal) plug-in installed you can do <code>traverson.from('http://api.example.com').<b>jsonHal()</b></code>, to make Traverson assume that the API complies with the HAL specification. The server would probably set the `Content-Type` header to `application/hal+json`, again, this is not checked by Traverson. Finally, with <code>traverson.from('http://api.example.com').<b>setMediaType('application/whatever+json')</b></code> you can force Traverson to use an arbitrary media type (as long as a matching media type plug-in is registered).
 
 When a specific media type has been set explicitly, Traverson automatically sets the appropriate `Accept` and `Content-Type` headers when making HTTP requests, unless these headers have been set explicitly via `.withRequestOptions({headers: {...}})` or `.addRequestOptions({headers: {...}})`, or unless this behaviour has been disabled via `.disableAutoHeaders()`.
 
@@ -668,7 +668,7 @@ traverson
 
 The examples so far were all concerned with one link traversal process. It is not unusual though that, when a link traversal has finished, you want to start a second link traversal process right at the resource where the first link traversal finished. Traverson makes it possible to reuse a finished link traversal to start a new one at its end resource.
 
-The callbacks given to the action methods (`get`, `getResource`, `getUrl`, `post`, `put`, `patch`, `delete`) are actually called with one more additional parameter (that hasn't been shown in the examples so far) which represents the traversal process that has just been finished. This object `traversal` offers only one method, `continue()` which gives you a request builder instance which can be used just as the standard [request builder](https://github.com/basti1302/traverson/blob/master/api.markdown#request-builder). That is, it has the same configuration and action methods.
+The callbacks given to the action methods (`get`, `getResource`, `getUrl`, `post`, `put`, `patch`, `delete`) are actually called with one more additional parameter (that hasn't been shown in the examples so far) which represents the traversal process that has just been finished. This object `traversal` offers only one method, `continue()` which gives you a request builder instance which can be used just as the standard [request builder](https://github.com/traverson/traverson/blob/master/api.markdown#request-builder). That is, it has the same configuration and action methods.
 
 Using `traversal.continue()` to initiate a new traversal ensures that the new traversal is started right where the first traversal stopped and it makes use of the last HTTP response of the first traversal to do so.
 
@@ -761,8 +761,8 @@ If you use TypeScript, check out [traverson-tsd-ambient](https://github.com/rety
 
 A list of projects related to or inspired by Traverson:
 
-* [traverson-hal](https://github.com/basti1302/traverson-hal): a JSON-HAL media type plug-in for Traverson
-* [traverson-angular](https://github.com/basti1302/traverson-angular): a Traverson-wrapper for AngularJS (1.x)
+* [traverson-hal](https://github.com/traverson/traverson-hal): a JSON-HAL media type plug-in for Traverson
+* [traverson-angular](https://github.com/traverson/traverson-angular): a Traverson-wrapper for AngularJS (1.x)
 * [Spring-HATEOAS-Traverson](http://docs.spring.io/autorepo/docs/spring-hateoas/current/api/org/springframework/hateoas/client/Traverson.html): a Java Spring component to ease traversing hypermedia APIs, inspired by Traverson
 * [SwiftyTraverson](https://github.com/smoope/SwiftyTraverson): an implementation of Traverson in Swift
 * A Java version of Traverson: <https://github.com/smoope/traverson>

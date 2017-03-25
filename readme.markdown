@@ -4,7 +4,7 @@ Traverson
 A Hypermedia API/HATEOAS Client for Node.js and the Browser
 -----------------------------------------------------------
 
-[![Build Status](https://travis-ci.org/basti1302/traverson.png?branch=master)](https://travis-ci.org/basti1302/traverson)
+[![Build Status](https://travis-ci.org/traverson/traverson.png?branch=master)](https://travis-ci.org/traverson/traverson)
 
 [![NPM](https://nodei.co/npm/traverson.png?downloads=true&stars=true)](https://nodei.co/npm/traverson/)
 
@@ -17,10 +17,10 @@ A Hypermedia API/HATEOAS Client for Node.js and the Browser
 Quick Links
 -----------
 
-* [Installation](https://github.com/basti1302/traverson/blob/master/user-guide.markdown#installation)
-* [User Guide](https://github.com/basti1302/traverson/blob/master/user-guide.markdown)
-* [API reference documentation](https://github.com/basti1302/traverson/blob/master/api.markdown)
-* [Release Notes](https://github.com/basti1302/traverson/blob/master/release-notes.markdown)
+* [Installation](https://github.com/traverson/traverson/blob/master/user-guide.markdown#installation)
+* [User Guide](https://github.com/traverson/traverson/blob/master/user-guide.markdown)
+* [API reference documentation](https://github.com/traverson/traverson/blob/master/api.markdown)
+* [Release Notes](https://github.com/traverson/traverson/blob/master/release-notes.markdown)
 
 Introduction
 ------------
@@ -52,7 +52,7 @@ traverson
 });
 ```
 
-The [User Guide](https://github.com/basti1302/traverson/blob/master/user-guide.markdown) has a ton of examples of what else Traverson can do for you. Here are some highlights:
+The [User Guide](https://github.com/traverson/traverson/blob/master/user-guide.markdown) has a ton of examples of what else Traverson can do for you. Here are some highlights:
 
 * resolve URI Templates
 * use JSONPath

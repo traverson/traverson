@@ -17,7 +17,7 @@
       .from('https://api.github.com/')
       .follow('repository_url', 'commits_url', 'comments_url')
       .withTemplateParameters({
-        owner: 'basti1302',
+        owner: 'traverson',
         repo: 'traverson',
         sha: '5c82c74583ee67eae727466179dd66c91592dd4a'
       }).getResource(function(err, resource) {

@@ -1,7 +1,7 @@
 Traverson API
 =============
 
-This is the reference documenation for the Traverson API. It is rather technical and concise. Also see the [user guide](https://github.com/basti1302/traverson/blob/master/user-guide.markdown), which explains the concepts behind Traverson in greater depths and has a lot of examples for the various features.
+This is the reference documenation for the Traverson API. It is rather technical and concise. Also see the [user guide](https://github.com/traverson/traverson/blob/master/user-guide.markdown), which explains the concepts behind Traverson in greater depths and has a lot of examples for the various features.
 
 Traverson
 ---------
@@ -34,7 +34,7 @@ This properties are available on the Traverson object - the object acquired by `
 * `TraversalAbortedError: 'TraversalAbortedError'`: When the link traversal process is aborted by the client before it has completed.
 * `UnsupportedMediaType: 'UnsupportedMediaTypeError'`: When a client tries to use a media type that is not supported.
 
-Client code that wants to check for a particular error type is encouraged to use the pattern given in the [user guide](https://github.com/basti1302/traverson/blob/master/user-guide.markdown#error-handling).
+Client code that wants to check for a particular error type is encouraged to use the pattern given in the [user guide](https://github.com/traverson/traverson/blob/master/user-guide.markdown#error-handling).
 
 <a name="traverson-json"></a>`json`: *Deprecated* An object that only has one method, `from(url)`, which in turn creates a new [request builder](#request-builder). Use `traverson.from(url).json()` instead of `traverson.json.from(url)`. Or use `traverson.from(url)` and let Traverson figure out the media type by using the Content-Type header send by the server.
 
@@ -121,7 +121,7 @@ This method returns the request builder instance to allow for method chaining.
 
 Options can either be passed as an object or an array. If an object is passed, the options will be used for each HTTP request. If an array is passed, each element should be an options object and the first array element will be used for the first request, the second element for the second request and so on. `null` elements are allowed. Traverson (on node.js) uses the [request](https://github.com/request/request) internally to execute HTTP requests and this method just exposes the configuration options of request. Refer to the [request documentation about the options object](https://github.com/request/request#requestoptions-callback) for possible configuration options. Among the most common configuration parameters you might want to use are `headers` (additional HTTP headers, `qs` (query parameters), `auth`, `oauth`).
 
-A word of warning: When running in the browser and not in Node.js, the request library is shimmed by [SuperAgent](https://github.com/visionmedia/superagent) to shim the request module. Most request options are mapped to appropriate superagent options including [withCredentials()](https://visionmedia.github.io/superagent/#cors) from CORS. If you use Traverson in the browser and you notice odd behaviour regarding `withRequestOptions`, please file an [issue](https://github.com/basti1302/traverson/issues).
+A word of warning: When running in the browser and not in Node.js, the request library is shimmed by [SuperAgent](https://github.com/visionmedia/superagent) to shim the request module. Most request options are mapped to appropriate superagent options including [withCredentials()](https://visionmedia.github.io/superagent/#cors) from CORS. If you use Traverson in the browser and you notice odd behaviour regarding `withRequestOptions`, please file an [issue](https://github.com/traverson/traverson/issues).
 
 Returns the request builder instance to allow for method chaining.
 
@@ -193,7 +193,7 @@ Each action method returns a handle for the link traversal process, which can be
 
 <a name="builder-get"></a>`get(callback)`: This method is similar to `getResource`, but it does not parse the HTTP response body for you. Instead, it gives you the response object, including the HTTP status code and the raw body. The callback signature is `callback(err, response, traversal)`.
 
-<a name="builder-getUrl"></a>`getUrl(callback)`: This method is similar to `getResource` and `get`, but it will actually not execute the last HTTP request in the link traversal process. Instead it will pass the URL it has discovered for the last HTTP request back to the client so that the client can execute the HTTP request itself. The callback signature is `callback(err, url, traversal)`. URI template resolution will take place before the URL is returned to your callback. So if the last URL is actually a template, make sure to provide the required template parameters via [`withTemplateParameters`](https://github.com/basti1302/traverson/blob/master/api.markdown#builder-withTemplateParameters).
+<a name="builder-getUrl"></a>`getUrl(callback)`: This method is similar to `getResource` and `get`, but it will actually not execute the last HTTP request in the link traversal process. Instead it will pass the URL it has discovered for the last HTTP request back to the client so that the client can execute the HTTP request itself. The callback signature is `callback(err, url, traversal)`. URI template resolution will take place before the URL is returned to your callback. So if the last URL is actually a template, make sure to provide the required template parameters via [`withTemplateParameters`](https://github.com/traverson/traverson/blob/master/api.markdown#builder-withTemplateParameters).
 
 <a name="builder-getUri"></a>`getUri(callback)`: An alias for `getUrl`.
 

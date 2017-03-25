@@ -366,7 +366,7 @@ describe('Traverson (when tested against a local server)', function() {
 
   it('should have the httpStatus of when an intermediate URL fails with 4xx',
       function(done) {
-    // Test for https://github.com/basti1302/traverson/issues/71
+    // Test for https://github.com/traverson/traverson/issues/71
     api
     .newRequest()
     .follow('blind_alley', 'doc')
