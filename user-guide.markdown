@@ -28,6 +28,10 @@ Table of Contents
     * [Continuing a Link Traversal](#continuing-a-link-traversal)
     * [Aborting the Link Traversal](#aborting-the-link-traversal)
     * [Link Header](#link-header)
+    * [Promise API](#promise-api)
+    * [TypeScript Types](#typescript-types)
+    * [Traverson Web Component](#traverson-web-component)
+    * [Related Projects](#related-projects)
 * [API](https://github.com/basti1302/traverson/blob/master/api.markdown)
 * [Release Notes](https://github.com/basti1302/traverson/blob/master/release-notes.markdown)
 
@@ -740,3 +744,27 @@ traverson
   }
 });
 ```
+
+### Promise API
+
+If you prefer a promise API instead of a callback based API, check out [traverson-promise](https://github.com/nie-xin/traverson-promise), a wrapper around traverson that uses [Bluebird](https://github.com/petkaantonov/bluebird) to expose it as a promise based API.
+
+### TypeScript Types
+
+If you use TypeScript, check out [traverson-tsd-ambient](https://github.com/retyped/traverson-tsd-ambient), which has type definitions for Traverson.
+
+### Traverson Web Component
+
+[traverson-traversal](https://github.com/punkstarman/traverson-traversal) exposes Traverson as a web component, in a similar fashion to [iron-ajax](https://www.webcomponents.org/element/PolymerElements/iron-ajax).
+
+### Related Projects
+
+A list of projects related to or inspired by Traverson:
+
+* [traverson-hal](https://github.com/basti1302/traverson-hal): a JSON-HAL media type plug-in for Traverson
+* [traverson-angular](https://github.com/basti1302/traverson-angular): a Traverson-wrapper for AngularJS (1.x)
+* [Spring-HATEOAS-Traverson](http://docs.spring.io/autorepo/docs/spring-hateoas/current/api/org/springframework/hateoas/client/Traverson.html): a Java Spring component to ease traversing hypermedia APIs, inspired by Traverson
+* [SwiftyTraverson](https://github.com/smoope/SwiftyTraverson): an implementation of Traverson in Swift
+* A Java version of Traverson: <https://github.com/smoope/traverson>
+* [restsharp.portable.hal](https://github.com/heartysoft/restsharp.portable.hal): a .NET HAL client inspired by Traverson
+
