@@ -26,15 +26,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="303.6646"
+     inkscape:cx="182.95137"
      inkscape:cy="739.59576"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-width="1680"
-     inkscape:window-height="1028"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-width="1557"
+     inkscape:window-height="887"
+     inkscape:window-x="1877"
+     inkscape:window-y="47"
      inkscape:window-maximized="0"
      inkscape:snap-grids="true"
      inkscape:snap-to-guides="true"
@@ -57,7 +57,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -71,37 +71,39 @@
        cx="315"
        cy="227.3622"
        r="42.32925"
-       inkscape:export-xdpi="103.26"
-       inkscape:export-ydpi="103.26" />
+       inkscape:export-xdpi="299.8613"
+       inkscape:export-ydpi="299.8613" />
     <path
        style="opacity:1;fill:none;fill-opacity:1;stroke:#3e3e3e;stroke-width:15;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stroke-linejoin:miter"
        d="m 290,252.3622 25,-45 25,45 0,190 -25,-35 -25,35 z"
        id="rect4270"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccccc"
-       inkscape:export-xdpi="103.26"
-       inkscape:export-ydpi="103.26" />
+       inkscape:export-xdpi="299.8613"
+       inkscape:export-ydpi="299.8613" />
     <path
        style="opacity:1;fill:none;fill-opacity:1;stroke:#1e1eff;stroke-width:15;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stroke-linejoin:miter"
        d="m 440,199.6249 45,25 -45,25 -78.03046,0 -26.96954,-50 z"
        id="rect4270-4"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccccc"
-       inkscape:export-xdpi="103.26"
-       inkscape:export-ydpi="103.26" />
+       inkscape:export-xdpi="299.8613"
+       inkscape:export-ydpi="299.8613" />
     <path
        style="opacity:1;fill:none;fill-opacity:1;stroke:#551a8b;stroke-width:15;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stroke-linejoin:miter"
        d="m 190,249.6249 -45,-25 45,-25 105,0 -27.52538,50 z"
        id="rect4270-4-9"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccccc"
-       inkscape:export-xdpi="103.26"
-       inkscape:export-ydpi="103.26" />
+       inkscape:export-xdpi="299.8613"
+       inkscape:export-ydpi="299.8613" />
     <flowRoot
        xml:space="preserve"
        id="flowRoot4324"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#c5c5c5;fill-opacity:1;stroke:#000000;stroke-width:2.47214723;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       transform="matrix(0.94195214,0,0,1.5633818,-5.814603,-319.60413)"><flowRegion
+       transform="matrix(0.94195214,0,0,1.5633818,-5.814603,-319.60413)"
+       inkscape:export-xdpi="299.8613"
+       inkscape:export-ydpi="299.8613"><flowRegion
          id="flowRegion4326"><rect
            id="rect4328"
            width="380"

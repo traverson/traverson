@@ -1,3 +1,5 @@
+![Traverson Logo](https://raw.githubusercontent.com/traverson/traverson/master/misc/logo/traverson-logo.72dpi.png)
+
 Traverson User Guide
 ====================
 
