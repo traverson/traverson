@@ -134,7 +134,7 @@ Because the list of link relations given to `follow` is exhausted now (`resource
 
 ```
 We have followed the path and reached the target resource.
-{ "the_document": "that we really wanted to have", "with": "lots of interesting and valuable content", ...  }
+{ "the_resource": "that we really wanted to have", "with": "lots of interesting and valuable content", ...  }
 ```
 
 ### Configuring Traverson &mdash; the Request Builder Object
