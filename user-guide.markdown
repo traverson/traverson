@@ -757,7 +757,7 @@ If you use TypeScript, check out [traverson-tsd-ambient](https://github.com/rety
 
 ### Traverson Web Component
 
-[traverson-traversal](https://github.com/punkstarman/traverson-traversal) exposes Traverson as a web component, in a similar fashion to [iron-ajax](https://www.webcomponents.org/element/PolymerElements/iron-ajax).
+[traverson-traversal](https://github.com/traverson/traverson-traversal) exposes Traverson as a web component, in a similar fashion to [iron-ajax](https://www.webcomponents.org/element/PolymerElements/iron-ajax).
 
 ### Related Projects
 
