@@ -69,7 +69,7 @@ describe('Traverson using request options', function() {
     .newRequest()
     .withRequestOptions(
       { jsonReplacer: function firstReplacer() {},
-        anotherOption: function anotherFunction() {} 
+        anotherOption: function anotherFunction() {}
     })
     .addRequestOptions({ jsonReplacer: function secondReplacer() {} })
     .follow('link')
