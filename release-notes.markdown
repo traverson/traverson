@@ -1,6 +1,8 @@
 Release Notes
 -------------
 
+* 6.0.2 2017-04-05:
+    * Fix bogus character in source code breaking browserify build ([#94](https://github.com/traverson/traverson/pull/94), thanks to @simon-scherzinger).
 * 6.0.1 2017-02-10:
     * Reduce file size of browser build ([#86](https://github.com/traverson/traverson/pull/86), [#87](https://github.com/traverson/traverson/pull/87), thanks to @iunanua).
 * 6.0.0 2017-02-10:
