@@ -1,6 +1,8 @@
 Release Notes
 -------------
 
+* 6.0.3 2017-04-21:
+    * Allow falsy values as payload in HTTP POST/PUT/PATCH requests ([#95](https://github.com/traverson/traverson/issues/95), thanks to @devlato for the report).
 * 6.0.2 2017-04-05:
     * Fix bogus character in source code breaking browserify build ([#94](https://github.com/traverson/traverson/pull/94), thanks to @simon-scherzinger).
 * 6.0.1 2017-02-10:
