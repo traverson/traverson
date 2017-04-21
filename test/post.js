@@ -78,6 +78,29 @@ describe('post method', function() {
     );
   });
 
+  it('should post falsy values as payload',
+      function(done) {
+    post
+    .withArgs(postUri, sinon.match.object, sinon.match.func)
+    .callsArgWithAsync(2, null, result);
+
+    api
+    .newRequest()
+    .follow('post_link')
+    .post(0, callback);
+
+    waitFor(
+      function() { return callback.called; },
+      function() {
+        expect(callback).to.have.been.calledWith(null, result,
+          sinon.match.object);
+        expect(post.firstCall.args[1].body).to.exist;
+        expect(post.firstCall.args[1].body).to.equal('0');
+        done();
+      }
+    );
+  });
+
   it('should convert the response to an object', function(done) {
     post
     .withArgs(postUri, sinon.match.object, sinon.match.func)

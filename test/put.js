@@ -73,6 +73,29 @@ describe('put method', function() {
     );
   });
 
+  it('should put falsy values as payload',
+      function(done) {
+    put
+    .withArgs(putUri, sinon.match.object, sinon.match.func)
+    .callsArgWithAsync(2, null, result);
+
+    api
+    .newRequest()
+    .follow('put_link')
+    .put(false, callback);
+
+    waitFor(
+      function() { return callback.called; },
+      function() {
+        expect(callback).to.have.been.calledWith(null, result,
+          sinon.match.object);
+        expect(put.firstCall.args[1].body).to.exist;
+        expect(put.firstCall.args[1].body).to.equal('false');
+        done();
+      }
+    );
+  });
+
   it('should convert the response to an object', function(done) {
     put
     .withArgs(putUri, sinon.match.object, sinon.match.func)

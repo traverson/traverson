@@ -346,7 +346,6 @@ describe('Traverson (when tested against a local server)', function() {
     );
   });
 
-
   it('should yield the last URL', function(done) {
     api
     .newRequest()
