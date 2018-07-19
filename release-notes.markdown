@@ -1,6 +1,8 @@
 Release Notes
 -------------
 
+* 6.0.4 2018-07-19:
+    * Update to latest version of `request` ([#104](https://github.com/traverson/traverson/pull/104), thanks to @travi).
 * 6.0.3 2017-04-21:
     * Allow falsy values as payload in HTTP POST/PUT/PATCH requests ([#95](https://github.com/traverson/traverson/issues/95)).
 * 6.0.2 2017-04-05:
