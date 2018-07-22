@@ -113,5 +113,10 @@
     "reduce": false,
     "traverson-test-server": false,
     "url": "./browser/lib/shim/url-resolve.js"
+  },
+  "greenkeeper": {
+    "ignore": [
+      "load-grunt-tasks"
+    ]
   }
 }
