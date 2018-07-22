@@ -1,19 +1,17 @@
 language: node_js
 
 node_js:
+- '10.6.0'
 - '6'
 - '7'
 - '8'
 - '9'
-- '10'
 
 sudo: false
 
-# allow greenkeeper to commit package-lock.json
-before_install:
-# package-lock.json was introduced in npm@5
-- '[[ $(node -v) =~ ^v4.*$ ]] || [[ $(node -v) =~ ^v5.*$ ]] || [[ $(node -v) =~ ^v10.*$ ]] || npm install -g npm@latest'
-- npm install -g greenkeeper-lockfile
+# Allow greenkeeper to commit package-lock.json, greenkeeper-lockfile-upload
+# will run only on the first listed node_js version:
+before_install: npm install -g greenkeeper-lockfile
 install: npm install
 before_script: greenkeeper-lockfile-update
 after_script: greenkeeper-lockfile-upload
