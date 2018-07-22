@@ -7,8 +7,9 @@ A Hypermedia API/HATEOAS Client for Node.js and the Browser
 -----------------------------------------------------------
 
 [![Build Status](https://travis-ci.org/traverson/traverson.png?branch=master)](https://travis-ci.org/traverson/traverson)
-
-[![NPM](https://nodei.co/npm/traverson.png?downloads=true&stars=true)](https://nodei.co/npm/traverson/) [![Greenkeeper badge](https://badges.greenkeeper.io/traverson/traverson.svg)](https://greenkeeper.io/)
+[![Dependency Status](https://david-dm.org/traverson/traverson.png)](https://david-dm.org/traverson/traverson)
+[![NPM](https://nodei.co/npm/traverson.png?downloads=true&stars=true)](https://nodei.co/npm/traverson/)
+[![Greenkeeper badge](https://badges.greenkeeper.io/traverson/traverson.svg)](https://greenkeeper.io/)
 
 | File Size (browser build) | KB |
 |---------------------------|---:|
