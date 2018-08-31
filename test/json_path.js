@@ -12,6 +12,8 @@ var traverson = require('../traverson')
 
 chai.use(sinonChai);
 
+traverson.registerJSONPathPlus(require('jsonpath-plus'));
+
 describe('Traverson with JSONPath', function() {
 
   var get;

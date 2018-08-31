@@ -70,7 +70,6 @@
     "HAL"
   ],
   "dependencies": {
-    "jsonpath-plus": "^0.16.0",
     "minilog": "^3.1.0",
     "request": "^2.87.0",
     "resolve-url": "^0.2.1",
@@ -91,6 +90,7 @@
     "grunt-contrib-watch": "^1.0.0",
     "grunt-mocha": "^1.0.4",
     "grunt-mocha-test": "^0.13.3",
+    "jsonpath-plus": "^0.16.0",
     "load-grunt-tasks": "^3.5.2",
     "mocha": "^5.2.0",
     "poll-forever": "^1.0.0",
@@ -101,6 +101,9 @@
     "sinon-chai": "^3.2.0",
     "traverson-mock-response": "1.1.0",
     "traverson-test-server": "1.10.0"
+  },
+  "peerDependencies": {
+    "jsonpath-plus": "^0.16.0"
   },
   "browser": {
     "minilog": "./browser/lib/shim/log.js",

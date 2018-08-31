@@ -31,7 +31,6 @@ Currently, there is no caching implemented. There will be some sort of caching i
 
 There will be some simple on/off toggles for certain parts of Traverson behaviour. For example, it should be possible to
 * disable URI templates,
-* disable JSONPath,
 * disable caching (a feature yet to be implemented in the first place)
 
 ## Other Media Types Besides JSON

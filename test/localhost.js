@@ -13,6 +13,8 @@ var traverson = require('../traverson')
 
 chai.use(sinonChai);
 
+traverson.registerJSONPathPlus(require('jsonpath-plus'));
+
 describe('Traverson (when tested against a local server)', function() {
 
   var api;
