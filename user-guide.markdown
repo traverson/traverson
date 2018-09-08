@@ -753,7 +753,7 @@ If you prefer a promise API instead of a callback based API, check out [traverso
 
 ### TypeScript Types
 
-If you use TypeScript, check out [traverson-tsd-ambient](https://github.com/retyped/traverson-tsd-ambient), which has type definitions for Traverson.
+If you use TypeScript, check out [@types/traverson](https://www.npmjs.com/package/@types/traverson), which has type definitions for Traverson.
 
 ### Traverson Web Component
 
