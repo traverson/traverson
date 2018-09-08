@@ -23,7 +23,7 @@ Quick Links
 * [Installation](https://github.com/traverson/traverson/blob/master/user-guide.markdown#installation)
 * [User Guide](https://github.com/traverson/traverson/blob/master/user-guide.markdown)
 * [API reference documentation](https://github.com/traverson/traverson/blob/master/api.markdown)
-* [Release Notes](https://github.com/traverson/traverson/blob/master/release-notes.markdown)
+* [Release Notes](https://github.com/traverson/traverson/blob/master/CHANGELOG.md)
 
 Introduction
 ------------

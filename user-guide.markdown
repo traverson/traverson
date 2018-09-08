@@ -35,7 +35,7 @@ Table of Contents
     * [Traverson Web Component](#traverson-web-component)
     * [Related Projects](#related-projects)
 * [API](https://github.com/traverson/traverson/blob/master/api.markdown)
-* [Release Notes](https://github.com/traverson/traverson/blob/master/release-notes.markdown)
+* [Release Notes](https://github.com/traverson/traverson/blob/master/CHANGELOG.md)
 
 Installation
 ------------
@@ -63,7 +63,7 @@ Breaking Change As Of Version 1.0.0
 
 * From version 1.0.0 onwards, support for HAL is no longer included in Traverson. instead, it has been moved to a separate plug-in. If you have used Traverson to work with HAL APIs, you will need some (trivial) changes in your code. See [Using Plug-ins](#using-plug-ins) and [traverson-hal](https://github.com/traverson/traverson-hal).
 * The properties `traverson.json` and `traverson.jsonHal` (that is, using *properties* `json`/`jsonHal` on the `traverson` object) are deprecated as of 1.0.0 (but they still work). Instead, use the methods `json()`/`jsonHal()` on the request builder object. Thus, `traverson.json.from(url)` becomes `traverson.from(url).json()` and `traverson.jsonHal.from(url)` becomes `traverson.from(url).jsonHal()`. You can also omit `json()`/`jsonHal()` completely and use content negotiation.
-* See the [release notes](https://github.com/traverson/traverson/blob/master/release-notes.markdown) for more details on the changes in version 1.0.0.
+* See the [release notes](https://github.com/traverson/traverson/blob/master/CHANGELOG.md) for more details on the changes in version 1.0.0.
 
 Documentation
 -------------
