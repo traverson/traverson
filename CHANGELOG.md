@@ -121,5 +121,5 @@ Release Notes
     * Allow falsy values as payload in HTTP POST/PUT/PATCH requests ([#95](https://github.com/traverson/traverson/issues/95)).
 * 6.0.4 2018-07-19:
     * Update to latest version of `request` ([#104](https://github.com/traverson/traverson/pull/104), thanks to @travi).
-* Unreleased:
+* 6.1.0 2018-09-10:
     * Add option `sendRawPayload` to skip payload stringification for non-JSON MIME types ([#103](https://github.com/traverson/traverson/issues/103).
