@@ -108,7 +108,7 @@ Release Notes
     * Remark: There is no version 4.x of Traverson. We skipped from version 3.x to 5.0.0 to align version numbers of Traverson and traverson-hal.
 * 6.0.0 2017-02-10:
     * *Breaking change*: Traverson now sets `Accept` and `Content-Type` headers automatically when the media type has been set explicitly ([#37](https://github.com/traverson/traverson/issues/37)). This might be a breaking change for users that
-        * *do* set set the media type via `.setMediaType('...')`, `.json()` or `.jsonHal()`,
+        * *do* set the media type via `.setMediaType('...')`, `.json()` or `.jsonHal()`,
         * *do not* set headers explicitly (via `.withRequestOptions` or `.addRequestOptions`) and
         * whose backends do not cope well when `Accept` and/or `Content-Type` headers are set to `application/json` or `application/hal+json` respectively.
     * Support for link headers ([#84](https://github.com/traverson/traverson/issues/84) and [#85](https://github.com/traverson/traverson/pull/85), thanks to @iunanua and @anderruiz)
@@ -121,3 +121,5 @@ Release Notes
     * Allow falsy values as payload in HTTP POST/PUT/PATCH requests ([#95](https://github.com/traverson/traverson/issues/95)).
 * 6.0.4 2018-07-19:
     * Update to latest version of `request` ([#104](https://github.com/traverson/traverson/pull/104), thanks to @travi).
+* Unreleased:
+    * Add option `sendRawPayload` to skip payload stringification for non-JSON MIME types ([#103](https://github.com/traverson/traverson/issues/103).

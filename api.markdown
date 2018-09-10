@@ -45,7 +45,7 @@ Client code that wants to check for a particular error type is encouraged to use
 Request Builder
 ---------------
 
-A request builder can be obtained by `traverson.newRequest()` or `traverson.from(url)`. It is used to prepare and execute a single link traversal process. The request builder offers two types of methods: configuration methods and action methods. You can call any number of configuration methods on request builder instance to prepare the link traversal process. You can also chain configuration method calls because they return the request builder instance. When you are done configuring it is time to call one of the action methods. They tell Traverson what to do at the end of the link traversal process. In contrast to the configuration methods you must only call one of the action methods on any request builder instance and should not call a configuration methods after you have called an action method.
+A request builder can be obtained by `traverson.newRequest()` or `traverson.from(url)`. It is used to prepare and execute a single link traversal process. The request builder offers two types of methods: configuration methods and action methods. You can call any number of configuration methods on request builder instance to prepare the link traversal process. You can also chain configuration method calls because they return the request builder instance. When you are done configuring, it is time to call one of the action methods. They tell Traverson what to do at the end of the link traversal process. In contrast to the configuration methods you must only call one of the action methods on any request builder instance and should not call a configuration methods after you have called an action method.
 
 ### Configuration Methods
 
@@ -69,10 +69,10 @@ or addRequestOptions.
 
 The header values depend on the media type (see setMediaType()). For example,
 for plain vanilla JSON (that is, when using setMediaType('application/json')
-or the corresponding shortcut .json()), both headers will be send with the
+or the corresponding shortcut .json()), both headers will be sent with the
 value 'application/json'. For HAL (that is, when using
 setMediaType('application/hal+json') or the corresponding shortcut
-jsonHal()), both headers will be send with the value 'application/hal+json'.
+jsonHal()), both headers will be sent with the value 'application/hal+json'.
 
 If the method is called without arguments (or the first argument is undefined
 or null), automatic headers are turned on, otherwise the argument is
@@ -143,6 +143,17 @@ Returns the request builder instance to allow for method chaining.
 
 <a name="builder-withRequestLibrary"></a>`withRequestLibrary(request)`: Injects a custom request library. Returns the request builder instance to allow for method chaining.
 
+<a name="builder-sendRawPayload"></a>`sendRawPayload(flag)`: With this option enabled, the payload of the last request at the end of the
+traversal will be sent as is, without stringifying it. The default is false, which means that usually Traverson assumes the payload is passed as a JavScript object which will then be stringified (which is the right thing to do for JSON based MIME types like `application/json`. If you want to handle the serialization yourself and don't want Traverson to interfere, this option should be set to true.
+
+If the method is called without arguments (or the first argument is undefined
+or null), this option is switched on, otherwise the argument is
+interpreted as a boolean flag. If it is a truthy value, the option is
+switched to on, if it is a falsy value (but not null or
+undefined), the option is switched off.
+
+Returns the request builder instance to allow for method chaining.
+
 <a name="builder-parseResponseBodiesWith"></a>`parseResponseBodiesWith(parser)`: Injects a custom JSON parser. Returns the request builder instance to allow for method chaining.
 
 <a name="builder-convertResponseToObject"></a>`convertResponseToObject(flag)`: With this option enabled, the body of the response at the end of the traversal will be converted into a JavaScript object (for example by passing it into JSON.parse) and passing the resulting object into the callback. The default is false, which means the full response is handed to the callback.
@@ -178,6 +189,8 @@ If the method is called without arguments (or the first argument is undefined or
 <a name="builder-getRequestLibrary"></a>`getRequestLibrary()`: Returns the custom request library instance set by `withRequestLibrary` or the standard request library instance, if a custom one has not been set.
 
 <a name="builder-getJsonParser"></a>`getJsonParser()`: Returns the custom JSON parser function set by `parseResponseBodiesWith` or the standard parser function, if a custom one has not been set.
+
+<a name="builder-sendsRawPayload"></a>`sendsRawPayload()`: Returns true if the payload will be sent without stringifying it first.
 
 <a name="builder-convertsResponseToObject"></a>`convertsResponseToObject()`: Returns true if the body of the last response will be converted to a JavaScript before passing the result back to the callback.
 
