@@ -117,6 +117,9 @@
     "traverson-test-server": false,
     "url": "./browser/lib/shim/url-resolve.js"
   },
+  "react-native": {
+    "jsonpath-plus": false
+  },
   "greenkeeper": {
     "ignore": [
       "load-grunt-tasks"
