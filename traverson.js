@@ -6,8 +6,7 @@ var minilog = require('minilog')
   , createError = errorModule.createError
   , mediaTypes = require('./lib/media_types')
   , Builder = require('./lib/builder')
-  , mediaTypeRegistry = require('./lib/media_type_registry')
-  , JsonAdapter = require('./lib/json_adapter');
+  , mediaTypeRegistry = require('./lib/media_type_registry');
 
 // activate this line to enable logging
 if (process.env.TRAVERSON_LOGGING) {
@@ -70,8 +69,6 @@ exports.jsonHal = {
 // expose media type registry so that media type plug-ins can register
 // themselves
 exports.registerMediaType = mediaTypeRegistry.register;
-
-exports.registerJSONPathPlus = JsonAdapter.registerJSONPathPlus;
 
 // re-export media type constants
 exports.mediaTypes = mediaTypes;

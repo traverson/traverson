@@ -301,7 +301,6 @@ Reasons for failure could be:
 * One of the documents can not be parsed as JSON, that is, it is not syntactically well formed.
 * One of the intermediate documents does not contain the property (link relation) specified via `follow`.
 * If JSONPath (see below) is used:
-    * The jsonpath-plus module was not registered with `traverson.registerJSONPathPlus(require('jsonpath-plus))`.
     * One of the JSONPath expressions in the path array does not yield a match for the corresponding document.
     * One of the JSONPath expressions in the path array yields more than one match for the corresponding document.
 
@@ -351,8 +350,6 @@ Different APIs use different flavours of links in their responses. Traverson can
 Traverson supports [JSONPath](http://goessner.net/articles/JsonPath/) expressions in the path array. This will come in handy if the link you want to follow from a given document is not a direct property of that document. Consider the following example:
 
 <pre lang="javascript">
-traverson.registerJSONPathPlus(jsonpath);
-
 traverson
 .from('http://api.example.com')
 .follow(<b>'$.deeply.nested.link'</b>)
@@ -381,7 +378,7 @@ http://api.example.com/congrats/you/have/found/me
 
 Upon loading the document from the start URL `http://api.example.com`, Traverson will recognize that the first (and only) link to `follow` is a JSONPath expression and evaluate it against the given document, which results in the URL `http://api.example.com/congrats/you/have/found/me`. Of course you can also call `follow` with more than one element with JSONPath and you can freely mix JSONPath expressions with plain vanilla properties.
 
-Any element of the path array that begins with `$.` or `$[` is assumed to be a JSONPath expression, otherwise the element is interpreted as a plain object property. Since traverson version 7.x.x jsonpath support is disabled by default. You must enable it with `traverson.registerJSONPathPlus(require('jsonpath-plus))` and include `jsonpath-plus` into your projects dependencies.
+Any element of the path array that begins with `$.` or `$[` is assumed to be a JSONPath expression, otherwise the element is interpreted as a plain object property.
 
 More information on JSONPath can be found [here](http://goessner.net/articles/JsonPath/). Traverson uses the npm module [JSONPath](https://www.npmjs.com/package/jsonpath-plus) to evaluate JSONPath expressions.
 
