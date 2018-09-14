@@ -217,7 +217,7 @@ describe('Traverson (when tested against a local server)', function() {
         var error = callback.firstCall.args[0];
         expect(error).to.exist;
         expect(error.name).to.equal(traverson.errors.HTTPError);
-        expect(error.message).to.equal('HTTP GET for ' + rootUri +
+        expect(error.message).to.equal('HTTP GET request to ' + rootUri +
             'does/not/exist' + ' resulted in HTTP status code 404.');
         expect(error.url).to.equal(rootUri + 'does/not/exist');
         expect(error.httpStatus).to.equal(404);
@@ -266,7 +266,7 @@ describe('Traverson (when tested against a local server)', function() {
         var error = callback.firstCall.args[0];
         expect(error).to.exist;
         expect(error.name).to.equal(traverson.errors.HTTPError);
-        expect(error.message).to.equal('HTTP GET for ' + rootUri +
+        expect(error.message).to.equal('HTTP GET request to ' + rootUri +
             'does/not/exist' + ' resulted in HTTP status code 404.');
         expect(error.url).to.equal(rootUri + 'does/not/exist');
         expect(error.httpStatus).to.equal(404);
@@ -377,7 +377,7 @@ describe('Traverson (when tested against a local server)', function() {
         var error = callback.firstCall.args[0];
         expect(error).to.exist;
         expect(error.name).to.equal(traverson.errors.HTTPError);
-        expect(error.message).to.equal('HTTP GET for ' + rootUri +
+        expect(error.message).to.equal('HTTP GET request to ' + rootUri +
             'does/not/exist' + ' resulted in HTTP status code 404.');
         expect(error.url).to.equal(rootUri + 'does/not/exist');
         expect(error.httpStatus).to.equal(404);
@@ -750,6 +750,38 @@ describe('Traverson (when tested against a local server)', function() {
         expect(xhr.withCredentials).to.exist;
         expect(xhr.withCredentials).to.equal(true);
         done();
+      }
+    );
+  });
+
+  it('should correctly state the HTTP verb with convertResponseObject',
+      function (done) {
+    var payload = {'new': 'document'};
+    api
+      .newRequest()
+      .withTemplateParameters({param: 'foobar', id: 13})
+      .follow('uri_template')
+      .withRequestOptions([ {}, { qs: { 'fail': true } } ])
+      .convertResponseToObject()
+      .post(payload, callback);
+    waitFor(
+      function() { return callback.called; },
+      function() {
+        expect(callback.callCount).to.equal(1);
+        var error = callback.firstCall.args[0];
+        expect(error).to.exist;
+        expect(error.name).to.equal(traverson.errors.HTTPError);
+        expect(error.message).to.equal('HTTP POST request to ' + rootUri +
+            'foobar/fixed/13 resulted in HTTP status code 400.');
+        expect(error.url).to.equal(rootUri + 'foobar/fixed/13');
+        expect(error.httpStatus).to.equal(400);
+
+        var lastBody = error.body;
+        expect(lastBody).to.exist;
+        expect(lastBody).to.contain('nope');
+        expect(lastBody).to.contain('nope');
+        done();
+
       }
     );
   });

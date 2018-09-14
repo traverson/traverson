@@ -108,7 +108,7 @@
     "sinon": "^6.1.3",
     "sinon-chai": "^3.2.0",
     "traverson-mock-response": "1.1.0",
-    "traverson-test-server": "1.11.0"
+    "traverson-test-server": "^1.12.1"
   },
   "browser": {
     "minilog": "./browser/lib/shim/log.js",
