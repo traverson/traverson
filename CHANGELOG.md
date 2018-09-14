@@ -123,3 +123,6 @@ Release Notes
     * Update to latest version of `request` ([#104](https://github.com/traverson/traverson/pull/104), thanks to @travi).
 * 6.1.0 2018-09-10:
     * Add option `sendRawPayload` to skip payload stringification for non-JSON MIME types ([#103](https://github.com/traverson/traverson/issues/103).
+* 6.1.1 2018-09-14:
+    * Enable usage of Traverson in React Native (without JSONPath support) ([#114](https://github.com/traverson/traverson/pull/114), thanks to @simon-scherzinger)
+    * Fix wrong HTTP method in error message for convertResponseToObject case.
