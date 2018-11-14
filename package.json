@@ -103,7 +103,7 @@
     "mocha": "^5.2.0",
     "poll-forever": "^1.0.0",
     "proxyquire": "^2.0.1",
-    "proxyquire-universal": "^1.0.8",
+    "proxyquire-universal": "^2.0.0",
     "proxyquireify": "^3.2.1",
     "sinon": "^6.1.3",
     "sinon-chai": "^3.2.0",
