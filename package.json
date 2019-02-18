@@ -100,7 +100,7 @@
     "grunt-mocha-test": "^0.13.3",
     "husky": "^1.0.0-rc.13",
     "load-grunt-tasks": "^3.5.2",
-    "mocha": "^5.2.0",
+    "mocha": "^6.0.0",
     "poll-forever": "^1.0.0",
     "proxyquire": "^2.0.1",
     "proxyquire-universal": "^1.0.8",
