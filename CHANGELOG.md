@@ -1,3 +1,10 @@
+# [7.0.0-alpha.3](https://github.com/traverson/traverson/compare/v7.0.0-alpha.2@alpha...v7.0.0-alpha.3@alpha) (2019-06-15)
+
+
+### Bug Fixes
+
+* **dependencies:** bumped to the latest version of several packages ([f03ef4b](https://github.com/traverson/traverson/commit/f03ef4b))
+
 # [7.0.0-alpha.2](https://github.com/traverson/traverson/compare/v7.0.0-alpha.1@alpha...v7.0.0-alpha.2@alpha) (2019-06-15)
 
 
