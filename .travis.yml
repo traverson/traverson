@@ -20,4 +20,6 @@ deploy:
 
 env:
   global:
-    secure: mVi2+wUDrepjO9/3SU7xdxYmN+iOF62P7AQ2+ar3ODCZ2WaRNz8U1KdLG86RV3xpZJyw2en6yR7owefxtCZ1MYMCm7tu8r9oUUdcb2oA9DPsyzfRfZO2SanOeb90CJbu+7Mnu8/xGK12dNK9ckldIbjI4CnWa+zoLamMUjJA7IE=
+    - secure: mVi2+wUDrepjO9/3SU7xdxYmN+iOF62P7AQ2+ar3ODCZ2WaRNz8U1KdLG86RV3xpZJyw2en6yR7owefxtCZ1MYMCm7tu8r9oUUdcb2oA9DPsyzfRfZO2SanOeb90CJbu+7Mnu8/xGK12dNK9ckldIbjI4CnWa+zoLamMUjJA7IE=
+  - FORCE_COLOR=1
+  - NPM_CONFIG_COLOR=always
