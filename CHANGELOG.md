@@ -1,3 +1,15 @@
+# [7.0.0-alpha.5](https://github.com/traverson/traverson/compare/v7.0.0-alpha.4@alpha...v7.0.0-alpha.5@alpha) (2019-06-15)
+
+
+### chore
+
+* **engines:** defined `engines` to match tested node versions ([6f0f108](https://github.com/traverson/traverson/commit/6f0f108))
+
+
+### BREAKING CHANGES
+
+* **engines:** the engines property now limits supported node versions to v8 and above
+
 # [7.0.0-alpha.4](https://github.com/traverson/traverson/compare/v7.0.0-alpha.3@alpha...v7.0.0-alpha.4@alpha) (2019-06-15)
 
 
