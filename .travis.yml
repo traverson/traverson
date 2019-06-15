@@ -9,17 +9,6 @@ node_js:
 
 sudo: false
 
-# Allow greenkeeper to commit package-lock.json via greenkeeper-lockfile.
-# greenkeeper-lockfile-upload will run only on the first listed node_js version.
-# We still explicitly skip all greenkeeper-lockfile related steps on Node.js
-# versions 4-7 because the build for the first GK commit (that updates
-# package.json) will fail on those versions in the greenkeeper-lockfile-update
-# step.
-before_install: '[[ $(node -v) =~ ^v4.*$ ]] || [[ $(node -v) =~ ^v5.*$ ]] || [[ $(node -v) =~ ^v6.*$ ]] || [[ $(node -v) =~ ^v7.*$ ]] || npm install -g greenkeeper-lockfile'
-install: npm install
-before_script: '[[ $(node -v) =~ ^v4.*$ ]] || [[ $(node -v) =~ ^v5.*$ ]] || [[ $(node -v) =~ ^v6.*$ ]] || [[ $(node -v) =~ ^v7.*$ ]] || greenkeeper-lockfile-update'
-after_script: '[[ $(node -v) =~ ^v4.*$ ]] || [[ $(node -v) =~ ^v5.*$ ]] || [[ $(node -v) =~ ^v6.*$ ]] || [[ $(node -v) =~ ^v7.*$ ]] || greenkeeper-lockfile-upload'
-
 env:
   global:
     secure: mVi2+wUDrepjO9/3SU7xdxYmN+iOF62P7AQ2+ar3ODCZ2WaRNz8U1KdLG86RV3xpZJyw2en6yR7owefxtCZ1MYMCm7tu8r9oUUdcb2oA9DPsyzfRfZO2SanOeb90CJbu+7Mnu8/xGK12dNK9ckldIbjI4CnWa+zoLamMUjJA7IE=
