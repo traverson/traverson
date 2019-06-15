@@ -1,3 +1,15 @@
+# [7.0.0-alpha.1](https://github.com/traverson/traverson/compare/v6.1.1...v7.0.0-alpha.1@alpha) (2019-06-15)
+
+
+### Continuous Integration
+
+* **node-versions:** stopped building against unsupported node versions ([b36aa83](https://github.com/traverson/traverson/commit/b36aa83))
+
+
+### BREAKING CHANGES
+
+* **node-versions:** dropped support for end-of-life'ed versions of node
+
 Release Notes
 -------------
 
