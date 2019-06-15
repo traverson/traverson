@@ -16,7 +16,7 @@ jobs:
     - stage: release
       node_js: 10
       script: skip
-      before_deploy: npm install semantic-release@beta @traverson/semantic-release-config --no-save
+      before_deploy: npm install semantic-release@beta @traverson/semantic-release-config@alpha --no-save
       deploy:
         provider: script
         skip_cleanup: true
