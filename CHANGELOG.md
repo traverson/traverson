@@ -1,3 +1,15 @@
+# [7.0.0-alpha.2](https://github.com/traverson/traverson/compare/v7.0.0-alpha.1@alpha...v7.0.0-alpha.2@alpha) (2019-06-15)
+
+
+### Continuous Integration
+
+* **publish:** dropped bower support ([2915d6d](https://github.com/traverson/traverson/commit/2915d6d))
+
+
+### BREAKING CHANGES
+
+* **publish:** bower is being dropped as a supported platform
+
 # [7.0.0-alpha.1](https://github.com/traverson/traverson/compare/v6.1.1...v7.0.0-alpha.1@alpha) (2019-06-15)
 
 
