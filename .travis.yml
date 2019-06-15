@@ -11,12 +11,18 @@ branches:
   except:
     - /^v\d+\.\d+\.\d+(-(alpha|beta)\.\d+(@(alpha|beta))?)?$/
 
-deploy:
-  provider: script
-  skip_cleanup: true
-  script: npx semantic-release@beta
-  on:
-    all_branches: true
+jobs:
+  include:
+    - stage: release
+      node_js: 10
+      script: skip
+      before_deploy: npm install semantic-release@beta @traverson/semantic-release-config --no-save
+      deploy:
+        provider: script
+        skip_cleanup: true
+        script: npx semantic-release
+        on:
+          all_branches: true
 
 env:
   global:
