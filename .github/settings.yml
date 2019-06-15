@@ -1,0 +1,8 @@
+teams:
+  - name: maintainers
+    permission: push
+collaborators:
+  - username: basti1302
+    permission: push
+  - username: travi
+    permission: push
