@@ -4,6 +4,9 @@
   "description": "Hypermedia API/HATEOAS client for Node.js and the browser",
   "repository": "traverson/traverson",
   "main": "traverson.js",
+  "engines": {
+    "node": ">= 8"
+  },
   "author": {
     "name": "Bastian Krol",
     "email": "bastian.krol@web.de"
