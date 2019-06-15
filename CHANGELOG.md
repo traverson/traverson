@@ -1,3 +1,10 @@
+# [7.0.0-alpha.4](https://github.com/traverson/traverson/compare/v7.0.0-alpha.3@alpha...v7.0.0-alpha.4@alpha) (2019-06-15)
+
+
+### Bug Fixes
+
+* **build:** split the gruntfile to enable running the build separately ([c487b18](https://github.com/traverson/traverson/commit/c487b18))
+
 # [7.0.0-alpha.3](https://github.com/traverson/traverson/compare/v7.0.0-alpha.2@alpha...v7.0.0-alpha.3@alpha) (2019-06-15)
 
 
