@@ -71,7 +71,7 @@ This section shows how to use Traverson's features, one example at a time. There
 
 ### Following Links
 
-The most basic thing you can do with traverson is to let it start at the root URL of an API, follow some links and pass the resource that is found at the end of this journey back to you. We call this procedure a *"link traversal process"*. Here's how:
+The most basic thing you can do with Traverson is to let it start at the root URL of an API, follow some links and pass the resource that is found at the end of this journey back to you. We call this procedure a *"link traversal process"*. Here's how:
 
 ```javascript
 var traverson = require('traverson');
@@ -329,7 +329,7 @@ traverson
 });
 ```
 
-All error names and their resepective keys in the `traverson.errors` object are documented in the [API docs](https://github.com/traverson/traverson/blob/master/api.markdown#traverson-errors).
+All error names and their respective keys in the `traverson.errors` object are documented in the [API docs](https://github.com/traverson/traverson/blob/master/api.markdown#traverson-errors).
 
 
 #### How HTTP Status Code Are Handled
@@ -748,7 +748,7 @@ traverson
 
 ### Promise API
 
-If you prefer a promise API instead of a callback based API, check out [traverson-promise](https://github.com/nie-xin/traverson-promise), a wrapper around traverson that uses [Bluebird](https://github.com/petkaantonov/bluebird) to expose it as a promise based API.
+If you prefer a promise API instead of a callback based API, check out [traverson-promise](https://github.com/nie-xin/traverson-promise), a wrapper around Traverson that uses [Bluebird](https://github.com/petkaantonov/bluebird) to expose it as a promise based API.
 
 ### TypeScript Types
 
