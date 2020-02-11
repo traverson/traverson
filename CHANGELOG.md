@@ -1,3 +1,15 @@
+# [7.0.0-alpha.6](https://github.com/traverson/traverson/compare/v7.0.0-alpha.5...v7.0.0-alpha.6) (2020-02-11)
+
+
+### Build System
+
+* **node-version:** dropped support for node v8, which has reached EOL ([14b6b44](https://github.com/traverson/traverson/commit/14b6b44c35def0f80765a033f5e15fb3db66e163))
+
+
+### BREAKING CHANGES
+
+* **node-version:** node v8 has reached EOL and is no longer supported
+
 # [7.0.0-alpha.5](https://github.com/traverson/traverson/compare/v7.0.0-alpha.4@alpha...v7.0.0-alpha.5@alpha) (2019-06-15)
 
 
