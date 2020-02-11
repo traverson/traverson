@@ -42,7 +42,7 @@ Installation
 
 ### Node.js
 
-    npm install traverson --save
+    npm install traverson --save-prod
 
 ### Browser
 
