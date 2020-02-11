@@ -5,7 +5,7 @@
   "repository": "traverson/traverson",
   "main": "traverson.js",
   "engines": {
-    "node": ">= 8"
+    "node": ">= 10"
   },
   "author": {
     "name": "Bastian Krol",
