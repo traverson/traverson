@@ -1,3 +1,16 @@
+# [7.0.0-alpha.7](https://github.com/traverson/traverson/compare/v7.0.0-alpha.6...v7.0.0-alpha.7) (2020-02-21)
+
+
+### Code Refactoring
+
+* limited the files included in the build to minimum required ([b59a7b3](https://github.com/traverson/traverson/commit/b59a7b320d6cc443a2a346c52769c567f8a7a844))
+
+
+### BREAKING CHANGES
+
+* limited the published files to those used by the public api. use of private files
+could break with this change
+
 # [7.0.0-alpha.6](https://github.com/traverson/traverson/compare/v7.0.0-alpha.5...v7.0.0-alpha.6) (2020-02-11)
 
 
