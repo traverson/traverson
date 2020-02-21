@@ -4,6 +4,10 @@
   "description": "Hypermedia API/HATEOAS client for Node.js and the browser",
   "repository": "traverson/traverson",
   "main": "traverson.js",
+  "files": [
+    "traverson.js",
+    "lib/"
+  ],
   "engines": {
     "node": ">= 10"
   },
