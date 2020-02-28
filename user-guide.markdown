@@ -42,12 +42,11 @@ Installation
 
 ### Node.js
 
-    npm install traverson --save
+    npm install traverson --save-prod
 
 ### Browser
 
 * If you are using npm and [Browserify](http://browserify.org/): Just `npm install traverson --save` and `require('traverson')`, then browserify your module as usual - browserify will include Traverson and its dependencies for you and also use the shims defined in Traverson's package.json's `browser` property.
-* If you are using [Bower](http://bower.io): `bower install traverson --save`
 * Otherwise you can grab a download from the [latest release](https://github.com/traverson/traverson/releases/latest):
     * `traverson.min.js`: Minified build with UMD. This build can be used with an AMD loader like RequireJS or with a script tag (in which case it will register `traverson` in the global scope). **If in doubt, use this build.**
     * `traverson.js`: Non-minified build with UMD. Same as above, just larger :-)

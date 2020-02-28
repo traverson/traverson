@@ -1,3 +1,78 @@
+# [7.0.0-alpha.7](https://github.com/traverson/traverson/compare/v7.0.0-alpha.6...v7.0.0-alpha.7) (2020-02-21)
+
+
+### Code Refactoring
+
+* limited the files included in the build to minimum required ([b59a7b3](https://github.com/traverson/traverson/commit/b59a7b320d6cc443a2a346c52769c567f8a7a844))
+
+
+### BREAKING CHANGES
+
+* limited the published files to those used by the public api. use of private files
+could break with this change
+
+# [7.0.0-alpha.6](https://github.com/traverson/traverson/compare/v7.0.0-alpha.5...v7.0.0-alpha.6) (2020-02-11)
+
+
+### Build System
+
+* **node-version:** dropped support for node v8, which has reached EOL ([14b6b44](https://github.com/traverson/traverson/commit/14b6b44c35def0f80765a033f5e15fb3db66e163))
+
+
+### BREAKING CHANGES
+
+* **node-version:** node v8 has reached EOL and is no longer supported
+
+# [7.0.0-alpha.5](https://github.com/traverson/traverson/compare/v7.0.0-alpha.4@alpha...v7.0.0-alpha.5@alpha) (2019-06-15)
+
+
+### chore
+
+* **engines:** defined `engines` to match tested node versions ([6f0f108](https://github.com/traverson/traverson/commit/6f0f108))
+
+
+### BREAKING CHANGES
+
+* **engines:** the engines property now limits supported node versions to v8 and above
+
+# [7.0.0-alpha.4](https://github.com/traverson/traverson/compare/v7.0.0-alpha.3@alpha...v7.0.0-alpha.4@alpha) (2019-06-15)
+
+
+### Bug Fixes
+
+* **build:** split the gruntfile to enable running the build separately ([c487b18](https://github.com/traverson/traverson/commit/c487b18))
+
+# [7.0.0-alpha.3](https://github.com/traverson/traverson/compare/v7.0.0-alpha.2@alpha...v7.0.0-alpha.3@alpha) (2019-06-15)
+
+
+### Bug Fixes
+
+* **dependencies:** bumped to the latest version of several packages ([f03ef4b](https://github.com/traverson/traverson/commit/f03ef4b))
+
+# [7.0.0-alpha.2](https://github.com/traverson/traverson/compare/v7.0.0-alpha.1@alpha...v7.0.0-alpha.2@alpha) (2019-06-15)
+
+
+### Continuous Integration
+
+* **publish:** dropped bower support ([2915d6d](https://github.com/traverson/traverson/commit/2915d6d))
+
+
+### BREAKING CHANGES
+
+* **publish:** bower is being dropped as a supported platform
+
+# [7.0.0-alpha.1](https://github.com/traverson/traverson/compare/v6.1.1...v7.0.0-alpha.1@alpha) (2019-06-15)
+
+
+### Continuous Integration
+
+* **node-versions:** stopped building against unsupported node versions ([b36aa83](https://github.com/traverson/traverson/commit/b36aa83))
+
+
+### BREAKING CHANGES
+
+* **node-versions:** dropped support for end-of-life'ed versions of node
+
 Release Notes
 -------------
 

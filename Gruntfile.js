@@ -198,14 +198,27 @@ module.exports = function(grunt) {
     'mochaTest',
   ]);
 
-  grunt.registerTask('default', [
-    'dev',
-    'clean',
-    'browserify',
-    'uglify',
+  grunt.registerTask('test', [
+    'jshint',
+    'mochaTest',
+  ]);
+
+  grunt.registerTask('test-browser', [
     'start-test-server',
     'mocha',
     'stop-test-server',
+  ]);
+
+  grunt.registerTask('build', [
+    'clean',
+    'browserify',
+    'uglify'
+  ]);
+
+  grunt.registerTask('default', [
+    'test',
+    'build',
+    'test-browser'
   ]);
 };
 /* jshint +W106 */

@@ -4,15 +4,15 @@ To release version x.y.z:
 
 - Update release notes and/or change the next/unreleased bullet point in the release notes to the version number. Also add date to release notes.
 - bump version in package.json to x.y.z
-- bump version in bower.json to x.y.z
+~~ - bump version in bower.json to x.y.z ~~
 - Make sure you are using Node 10/npm 6.2.x
 - Run npm install once to have the version package-lock.json updated
 - Make sure there are no other changes in package-lock.json except for the main package's version being updated
 - `npm run build` (to create a fresh browser build, also make sure all tests pass etc.)
-- First release? Then `bower register package-name git://github.com/user/repo.git`
+~~ - First release? Then `bower register package-name git://github.com/user/repo.git` ~~
 - `git commit -am"release x.y.z" && git push`
 - `npm publish`
-- `git checkout -b release-x.y.z` (to create the release branch, required for bower)
+~~ - `git checkout -b release-x.y.z` (to create the release branch, required for bower) ~~
 - `git add -f browser/dist/traverson.*` (to add the build artifacts to the release branch)
 - `git commit -m"add build artifacts for release"`
 - `git push origin release-x.y.z`
