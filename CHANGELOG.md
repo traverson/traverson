@@ -1,3 +1,42 @@
+# [7.0.0](https://github.com/traverson/traverson/compare/v6.1.1...v7.0.0) (2020-02-28)
+
+
+### Bug Fixes
+
+* **build:** split the gruntfile to enable running the build separately ([c487b18](https://github.com/traverson/traverson/commit/c487b181179274a3e6f25c3a599561835c21acfd))
+* **dependencies:** bumped to the latest version of several packages ([f03ef4b](https://github.com/traverson/traverson/commit/f03ef4b1b3075695c15ae839942f52dfd0462202))
+
+
+### Build System
+
+* **node-version:** dropped support for node v8, which has reached EOL ([14b6b44](https://github.com/traverson/traverson/commit/14b6b44c35def0f80765a033f5e15fb3db66e163))
+
+
+### chore
+
+* **engines:** defined `engines` to match tested node versions ([6f0f108](https://github.com/traverson/traverson/commit/6f0f108a9e555a500d5edf1490c7c0a73c1eaa1a))
+
+
+### Code Refactoring
+
+* limited the files included in the build to minimum required ([b59a7b3](https://github.com/traverson/traverson/commit/b59a7b320d6cc443a2a346c52769c567f8a7a844))
+
+
+### Continuous Integration
+
+* **node-versions:** stopped building against unsupported node versions ([b36aa83](https://github.com/traverson/traverson/commit/b36aa83d142d1fe5e94241579019eb5f435f7d22))
+* **publish:** dropped bower support ([2915d6d](https://github.com/traverson/traverson/commit/2915d6dd1b8f00ad85a22e098bd888fe1dd4467f))
+
+
+### BREAKING CHANGES
+
+* limited the published files to those used by the public api. use of private files
+could break with this change
+* **node-version:** node v8 has reached EOL and is no longer supported
+* **engines:** the engines property now limits supported node versions to v8 and above
+* **publish:** bower is being dropped as a supported platform
+* **node-versions:** dropped support for end-of-life'ed versions of node
+
 # [7.0.0-alpha.7](https://github.com/traverson/traverson/compare/v7.0.0-alpha.6...v7.0.0-alpha.7) (2020-02-21)
 
 
