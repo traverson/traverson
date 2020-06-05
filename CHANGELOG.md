@@ -1,3 +1,10 @@
+## [7.0.1](https://github.com/traverson/traverson/compare/v7.0.0...v7.0.1) (2020-06-05)
+
+
+### Bug Fixes
+
+* **browser:** included the browser files in the published package ([904efb2](https://github.com/traverson/traverson/commit/904efb24134bb0e0963525eb71bd0b3dde2f9517)), closes [#157](https://github.com/traverson/traverson/issues/157)
+
 # [7.0.0](https://github.com/traverson/traverson/compare/v6.1.1...v7.0.0) (2020-02-28)
 
 
