@@ -6,7 +6,8 @@
   "main": "traverson.js",
   "files": [
     "traverson.js",
-    "lib/"
+    "lib/",
+    "browser/"
   ],
   "engines": {
     "node": ">= 10"
