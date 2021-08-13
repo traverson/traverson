@@ -695,7 +695,7 @@ traverson
 
 This would first follow the links `link1` and `link2` from the root URL for the first link traversal and then call the first callback. Then, by calling `traversal.continue().follow(...).getResource`, a second link traversal is initiated which follows the links `link3` and `link4`, starting at the resource that `link2` linked to.
 
-You can combine `traversal.continue()` with `newRequest()` to clons/split a continued link traversal and follow multiple link relations from a resource,
+You can combine `traversal.continue()` with `newRequest()` to clone/split a continued link traversal and follow multiple link relations from a resource,
 
 ### Aborting the Link Traversal
 
