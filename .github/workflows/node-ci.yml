@@ -41,6 +41,7 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: npm
       - run: npm clean-install
+      - run: 'npm ls >/dev/null'
       - run: npm test
   trigger-release:
     runs-on: ubuntu-latest
