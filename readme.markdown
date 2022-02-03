@@ -6,8 +6,8 @@ Traverson
 A Hypermedia API/HATEOAS Client for Node.js and the Browser
 -----------------------------------------------------------
 
-[![Build Status](https://img.shields.io/travis/com/traverson/traverson.svg?branch=master)](https://travis-ci.com/traverson/traverson)
-[![Dependency Status](https://david-dm.org/traverson/traverson.png)](https://david-dm.org/traverson/traverson)
+[![Node CI Workflow Status][github-actions-ci-badge]][github-actions-ci-link]
+
 [![NPM](https://nodei.co/npm/traverson.png?downloads=true&stars=true)](https://nodei.co/npm/traverson/)
 [![Greenkeeper badge](https://badges.greenkeeper.io/traverson/traverson.svg)](https://greenkeeper.io/)
 
@@ -71,3 +71,7 @@ License
 -------
 
 MIT
+
+[github-actions-ci-link]: https://github.com/traverson/traverson/actions?query=workflow%3A%22Node.js+CI%22+branch%3Amaster
+
+[github-actions-ci-badge]: https://github.com/traverson/traverson/workflows/Node.js%20CI/badge.svg
