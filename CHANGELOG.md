@@ -1,3 +1,15 @@
+# [8.0.0](https://github.com/traverson/traverson/compare/v7.0.1...v8.0.0) (2022-02-03)
+
+
+### Features
+
+* **node-versions:** dropped support for EOL versions ([cae9dd9](https://github.com/traverson/traverson/commit/cae9dd9d65859b2ceaaa4e336920e2f43742e3c2))
+
+
+### BREAKING CHANGES
+
+* **node-versions:** versions of node that have reached EOL are no longer supported
+
 ## [7.0.1](https://github.com/traverson/traverson/compare/v7.0.0...v7.0.1) (2020-06-05)
 
 
