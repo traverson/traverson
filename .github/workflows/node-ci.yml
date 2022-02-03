@@ -47,6 +47,7 @@ jobs:
     if: github.event_name == 'push'
     needs:
       - verify
+      - verify-matrix
     steps:
       - uses: octokit/request-action@v2.x
         with:
