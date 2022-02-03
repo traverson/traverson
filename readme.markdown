@@ -7,7 +7,7 @@ A Hypermedia API/HATEOAS Client for Node.js and the Browser
 -----------------------------------------------------------
 
 [![Node CI Workflow Status][github-actions-ci-badge]][github-actions-ci-link]
-
+![node][node-badge]
 [![NPM](https://nodei.co/npm/traverson.png?downloads=true&stars=true)](https://nodei.co/npm/traverson/)
 [![Greenkeeper badge](https://badges.greenkeeper.io/traverson/traverson.svg)](https://greenkeeper.io/)
 
@@ -75,3 +75,5 @@ MIT
 [github-actions-ci-link]: https://github.com/traverson/traverson/actions?query=workflow%3A%22Node.js+CI%22+branch%3Amaster
 
 [github-actions-ci-badge]: https://github.com/traverson/traverson/workflows/Node.js%20CI/badge.svg
+
+[node-badge]: https://img.shields.io/node/v/traverson.svg?logo=node.js
