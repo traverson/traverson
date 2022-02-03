@@ -54,8 +54,8 @@ jobs:
           route: >-
             POST
             /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches
-          owner: form8ion
-          repo: base
+          owner: traverson
+          repo: traverson
           ref: ${{ github.ref }}
           workflow_id: release.yml
         env:
