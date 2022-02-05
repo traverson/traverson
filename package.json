@@ -67,7 +67,8 @@
     "test": "grunt",
     "mocha": "mocha",
     "build": "grunt build",
-    "prepack": "run-s build"
+    "prepack": "run-s build",
+    "prepare": "husky install"
   },
   "config": {
     "commitizen": {
