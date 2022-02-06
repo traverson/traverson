@@ -98,7 +98,7 @@
     "btoa": "1.2.1",
     "chai": "4.3.6",
     "commitlint-config-traverson": "1.0.26",
-    "cz-conventional-changelog": "3.0.2",
+    "cz-conventional-changelog": "3.3.0",
     "grunt": "1.4.1",
     "grunt-browserify": "6.0.0",
     "grunt-cli": "1.4.3",
