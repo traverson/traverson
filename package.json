@@ -91,7 +91,7 @@
     "resolve-url": "^0.2.1",
     "superagent": "^7.0.0",
     "underscore.string": "^3.3.4",
-    "url-template": "^2.0.8"
+    "url-template": "^3.0.0"
   },
   "devDependencies": {
     "brfs": "2.0.2",
