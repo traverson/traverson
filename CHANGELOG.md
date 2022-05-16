@@ -1,3 +1,17 @@
+## [8.0.2](https://github.com/traverson/traverson/compare/v8.0.1...v8.0.2) (2022-05-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency jsonpath-plus to ^0.20.0 ([cb070cf](https://github.com/traverson/traverson/commit/cb070cfb69f1e3ffb59a4513faccefb066a5e92f))
+* **deps:** update dependency jsonpath-plus to v6 ([ed828fd](https://github.com/traverson/traverson/commit/ed828fd32b44bc0a7c2a694097728c3f4b05f3ff))
+* **deps:** update dependency url-template to v3 ([d215b7d](https://github.com/traverson/traverson/commit/d215b7de1a3ee4aac6910d4191e4287f2e9d89ac))
+
+
+### Reverts
+
+* dependency updates that were merged when CI was failing to trigger ([0434605](https://github.com/traverson/traverson/commit/0434605b6479823004bbcca7f47c9ec6e8e9ffd7))
+
 ## [8.0.1](https://github.com/traverson/traverson/compare/v8.0.0...v8.0.1) (2022-02-04)
 
 
