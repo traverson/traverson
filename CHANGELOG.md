@@ -1,3 +1,10 @@
+## [8.0.3](https://github.com/traverson/traverson/compare/v8.0.2...v8.0.3) (2022-06-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency superagent to v8 ([afc8a97](https://github.com/traverson/traverson/commit/afc8a97c38460329bd9c6e5e7b1ca77fb0f5b0db))
+
 ## [8.0.2](https://github.com/traverson/traverson/compare/v8.0.1...v8.0.2) (2022-05-16)
 
 
