@@ -30,27 +30,34 @@ jobs:
     strategy:
       matrix:
         node:
-          - 12.0.0
-          - 14.0.0
+          - '12.0.0'
           - 14
-          - 16.0.0
           - 16
-          - 18
-          - 19
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          cache: npm
           node-version: ${{ matrix.node }}
+          cache: npm
       - run: npm clean-install
-      - run: npm ls --prod >/dev/null
+      - run: 'npm ls --prod >/dev/null'
       - run: npm test
-  release:
+  trigger-release:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
     needs:
       - verify
       - verify-matrix
-    uses: form8ion/.github/.github/workflows/release-package.yml@master
-    secrets:
-      NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+    steps:
+      - uses: octokit/request-action@v2.x
+        with:
+          route: >-
+            POST
+            /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches
+          owner: traverson
+          repo: traverson
+          ref: ${{ github.ref }}
+          workflow_id: release.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
