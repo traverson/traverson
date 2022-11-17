@@ -3,25 +3,8 @@ name: Release
   push:
     branches:
       - alpha
-  workflow_dispatch: {}
-env:
-  FORCE_COLOR: 1
-  NPM_CONFIG_COLOR: always
-  HUSKY: 0
 jobs:
   release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-      - run: npm clean-install
-      - run: npm install semantic-release @traverson/semantic-release-config --no-save
-      - name: semantic-release
-        run: npx semantic-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+    uses: traverson/.github/.github/workflows/release-package.yml@master
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
