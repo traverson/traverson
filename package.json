@@ -97,7 +97,7 @@
     "brfs": "2.0.2",
     "btoa": "1.2.1",
     "chai": "4.3.7",
-    "commitlint-config-traverson": "1.0.51",
+    "commitlint-config-traverson": "1.0.52",
     "cz-conventional-changelog": "3.3.0",
     "grunt": "1.6.1",
     "grunt-browserify": "6.0.0",
