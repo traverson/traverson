@@ -96,7 +96,7 @@
   "devDependencies": {
     "brfs": "2.0.2",
     "btoa": "1.2.1",
-    "chai": "4.3.9",
+    "chai": "4.3.10",
     "commitlint-config-traverson": "1.0.53",
     "cz-conventional-changelog": "3.3.0",
     "grunt": "1.6.1",
