@@ -1,0 +1,60 @@
+diff --git a/node_modules/minilog/lib/node/formatters/npm.js b/node_modules/minilog/lib/node/formatters/npm.js
+index c0b7a23..2de3061 100644
+--- a/node_modules/minilog/lib/node/formatters/npm.js
++++ b/node_modules/minilog/lib/node/formatters/npm.js
+@@ -6,12 +6,12 @@ Transform.mixin(FormatNpm);
+ 
+ FormatNpm.prototype.write = function(name, level, args) {
+   var out = {
+-        debug: '\033[34;40m' + 'debug' + '\033[39m ',
+-        info: '\033[32m' + 'info'  + '\033[39m  ',
+-        warn: '\033[30;41m' + 'WARN' + '\033[0m  ',
+-        error: '\033[31;40m' + 'ERR!' + '\033[0m  '
++        debug: '\x1b[34;40m' + 'debug' + '\x1b[39m ',
++        info: '\x1b[32m' + 'info'  + '\x1b[39m  ',
++        warn: '\x1b[30;41m' + 'WARN' + '\x1b[0m  ',
++        error: '\x1b[31;40m' + 'ERR!' + '\x1b[0m  '
+       };
+-  this.emit('item', (name ? '\033[37;40m'+ name +'\033[0m ' : '')
++  this.emit('item', (name ? '\x1b[37;40m'+ name +'\x1b[0m ' : '')
+           + (level && out[level]? out[level] : '')
+           + args.join(' '));
+ };
+diff --git a/node_modules/minilog/lib/node/formatters/util.js b/node_modules/minilog/lib/node/formatters/util.js
+index 4288e6c..ad1e90b 100644
+--- a/node_modules/minilog/lib/node/formatters/util.js
++++ b/node_modules/minilog/lib/node/formatters/util.js
+@@ -1,20 +1,20 @@
+ var styles = {
+     //styles
+-    'bold'      : ['\033[1m',  '\033[22m'],
+-    'italic'    : ['\033[3m',  '\033[23m'],
+-    'underline' : ['\033[4m',  '\033[24m'],
+-    'inverse'   : ['\033[7m',  '\033[27m'],
++    'bold'      : ['\x1b[1m',  '\x1b[22m'],
++    'italic'    : ['\x1b[3m',  '\x1b[23m'],
++    'underline' : ['\x1b[4m',  '\x1b[24m'],
++    'inverse'   : ['\x1b[7m',  '\x1b[27m'],
+     //grayscale
+-    'white'     : ['\033[37m', '\033[39m'],
+-    'grey'      : ['\033[90m', '\033[39m'],
+-    'black'     : ['\033[30m', '\033[39m'],
++    'white'     : ['\x1b[37m', '\x1b[39m'],
++    'grey'      : ['\x1b[90m', '\x1b[39m'],
++    'black'     : ['\x1b[30m', '\x1b[39m'],
+     //colors
+-    'blue'      : ['\033[34m', '\033[39m'],
+-    'cyan'      : ['\033[36m', '\033[39m'],
+-    'green'     : ['\033[32m', '\033[39m'],
+-    'magenta'   : ['\033[35m', '\033[39m'],
+-    'red'       : ['\033[31m', '\033[39m'],
+-    'yellow'    : ['\033[33m', '\033[39m']
++    'blue'      : ['\x1b[34m', '\x1b[39m'],
++    'cyan'      : ['\x1b[36m', '\x1b[39m'],
++    'green'     : ['\x1b[32m', '\x1b[39m'],
++    'magenta'   : ['\x1b[35m', '\x1b[39m'],
++    'red'       : ['\x1b[31m', '\x1b[39m'],
++    'yellow'    : ['\x1b[33m', '\x1b[39m']
+   };
+ 
+ exports.levelMap = { debug: 1, info: 2, warn: 3, error: 4 };
