@@ -116,7 +116,7 @@
     "proxyquire": "2.1.3",
     "proxyquire-universal": "3.0.1",
     "proxyquireify": "3.2.1",
-    "sinon": "15.2.0",
+    "sinon": "19.0.2",
     "sinon-chai": "3.7.0",
     "traverson-mock-response": "1.1.0",
     "traverson-test-server": "1.12.1"
