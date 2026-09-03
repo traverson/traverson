@@ -99,7 +99,7 @@
     "chai": "4.5.0",
     "commitlint-config-traverson": "1.0.72",
     "cz-conventional-changelog": "3.3.0",
-    "grunt": "1.6.1",
+    "grunt": "1.6.3",
     "grunt-browserify": "6.0.0",
     "grunt-cli": "1.5.0",
     "grunt-contrib-clean": "2.0.1",
