@@ -5,6 +5,6 @@ name: Release
       - alpha
 jobs:
   release:
-    uses: traverson/.github/.github/workflows/release-package.yml@master
+    uses: traverson/.github/.github/workflows/release-package.yml@10512fdc75b34c8b9ad6ba6a908593430c506bc5 # master
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
